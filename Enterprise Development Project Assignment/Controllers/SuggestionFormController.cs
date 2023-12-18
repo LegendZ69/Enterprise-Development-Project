@@ -24,7 +24,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 || x.ActivityName.Contains(search)
                 || x.ActivityType.Contains(search)
                 || x.ActivityDescription.Contains(search)
-                || x.ActivityReason.Contains(search));
+                || x.ActivityReason.Contains(search)
+                || x.CreatedAt.ToString().Contains(search)
+                || x.UpdatedAt.ToString().Contains(search));
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(list);
@@ -92,6 +94,5 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
     }
 }

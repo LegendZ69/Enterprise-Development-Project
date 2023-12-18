@@ -21,10 +21,13 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             if (search != null)
             {
                 result = result.Where(x => x.Email.Contains(search)
-                || x.ActivityName.Contains(search)
-                || x.ActivityType.Contains(search)
-                || x.ActivityDescription.Contains(search)
-                || x.ActivityReason.Contains(search));
+                || x.FirstName.Contains(search)
+                || x.LastName.Contains(search)
+                || x.ContactNo.ToString().Contains(search)
+                || x.Topic.Contains(search)
+                || x.Message.Contains(search)
+                || x.CreatedAt.ToString().Contains(search)
+                || x.UpdatedAt.ToString().Contains(search));
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(list);
@@ -49,10 +52,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 //only can trim string
                 Email = FeedbackForm.Email.Trim(),
-                ActivityName = FeedbackForm.ActivityName.Trim(),
-                ActivityType = FeedbackForm.ActivityType.Trim(),
-                ActivityDescription = FeedbackForm.ActivityDescription.Trim(),
-                ActivityReason = FeedbackForm.ActivityReason.Trim(),
+                FirstName = FeedbackForm.FirstName.Trim(),
+                LastName = FeedbackForm.LastName.Trim(),
+                ContactNo = FeedbackForm.ContactNo,
+                Topic = FeedbackForm.Topic.Trim(),
+                Message = FeedbackForm.Message.Trim(),
                 CreatedAt = now,
                 UpdatedAt = now
             };
@@ -71,10 +75,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return NotFound();
             }
             myFeedbackForm.Email = FeedbackForm.Email.Trim();
-            myFeedbackForm.ActivityName = FeedbackForm.ActivityName.Trim();
-            myFeedbackForm.ActivityType = FeedbackForm.ActivityType.Trim();
-            myFeedbackForm.ActivityDescription = FeedbackForm.ActivityDescription.Trim();
-            myFeedbackForm.ActivityReason = FeedbackForm.ActivityReason.Trim();
+            myFeedbackForm.FirstName = FeedbackForm.FirstName.Trim();
+            myFeedbackForm.LastName = FeedbackForm.LastName.Trim();
+            myFeedbackForm.ContactNo = FeedbackForm.ContactNo;
+            myFeedbackForm.Topic = FeedbackForm.Topic.Trim(); //dropdown menu no trim
+            myFeedbackForm.Message = FeedbackForm.Message.Trim();
             myFeedbackForm.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
             return Ok();
@@ -92,6 +97,5 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
     }
 }
