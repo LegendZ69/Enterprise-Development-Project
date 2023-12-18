@@ -19,5 +19,7 @@ namespace Enterprise_Development_Project_Assignment
             }
         }
         public DbSet<SuggestionForm> SuggestionForms { get; set; }
+        public DbSet<FeedbackForm> FeedbackForms { get; set; }
+        public DbSet<RatingsAndReviews> RatingsAndReviews { get; set; }
     }
 }
