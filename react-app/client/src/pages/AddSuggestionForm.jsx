@@ -3,14 +3,48 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { Box, Typography, Button, TextField } from '@mui/material';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+// import StaffContext from '../contexts/StaffContext';
+// import UserContext from '../contexts/UserContext';
 
 function AddSuggestionForm() {
     const navigate = useNavigate();
 
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
+    // const { user } = useContext(UserContext);
+
     const formik = useFormik({
+        // initialValues: user //if signed in as user, autofill fields with user info
+        //     ? {
+        //         // email: user.email, //merge with user.id
+        // activityName: "",
+        // activityType: "",
+        // activityDescription: "",
+        // activityReason: ""
+        //     }
+        //     : staff
+        //         ? {
+        //             // email: staff.email, //merge with user.id
+        // activityName: "",
+        // activityType: "",
+        // activityDescription: "",
+        // activityReason: ""
+        //         }
+        //         : {
+        // email: "",
+        // activityName: "",
+        // activityType: "",
+        // activityDescription: "",
+        // activityReason: ""
+        //         },
+        
         initialValues: {
-            email: "", //merge with user.id
+            // email: user.email, //merge with user.id
+            email: "", //delete this after
             activityName: "",
             activityType: "",
             activityDescription: "",
@@ -20,16 +54,14 @@ function AddSuggestionForm() {
         validationSchema: yup.object({
             //refer to edp ass
             email: yup.string().trim()
-                .min(3, 'Email must be at least 3 characters')
+                .email('Enter a valid email')
                 .max(100, 'Email must be at most 100 characters')
                 .required('Email is required'),
             activityName: yup.string().trim()
                 .min(3, 'Activity Name must be at least 3 characters')
                 .max(50, 'Activity Name must be at most 50 characters')
                 .required('Activity Name is required'),
-            activityType: yup.string().trim() //change to dropdown menu, no need trim
-                .min(3, 'Activity Type must be at least 3 characters')
-                .max(500, 'Activity Type must be at most 500 characters')
+            activityType: yup.string()
                 .required('Activity Type is required'),
             activityDescription: yup.string().trim()
                 .min(3, 'Activity Description must be at least 3 characters')
@@ -42,15 +74,41 @@ function AddSuggestionForm() {
         }),
 
         onSubmit: (data) => {
-            data.email = data.email.trim();
+            data.email = data.email.trim().toLowerCase();
             data.activityName = data.activityName.trim();
-            data.activityType = data.activityType.trim();
+            data.activityType = data.activityType;
             data.activityDescription = data.activityDescription.trim();
             data.activityReason = data.activityReason.trim();
+
+            //if AccessToken is staff, post form as staff else user
+            // if (localStorage.getItem("staffAccessToken")) {
+            //     http.post("/contactUsForm/staff", data)
+            //         .then((res) => {
+            //             console.log(res.data);
+            //             navigate("/formSuccess");
+            //         })
+            //         .catch(function (err) {
+            //             toast.error(`${err.response.data.message}`);
+            //         });
+            // } else if (localStorage.getItem("userAccessToken")) {
+            //     http.post("/contactUsForm/user", data)
+            //         .then((res) => {
+            //             console.log(res.data);
+            //             navigate("/formSuccess");
+            //         })
+            //         .catch(function (err) {
+            //             toast.error(`${err.response.data.message}`);
+            //         });
+            // };
+
+            //delete this after merge
             http.post("/suggestionForm", data)
                 .then((res) => {
                     console.log(res.data);
                     navigate("/formSuccess");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
                 });
         }
     });
@@ -62,6 +120,8 @@ function AddSuggestionForm() {
             </Typography>
 
             <Box component="form" onSubmit={formik.handleSubmit}>
+
+                {/* remove email field, only allow signed in user to suggest / review */}
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     label="Email"
@@ -72,27 +132,41 @@ function AddSuggestionForm() {
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
                 />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Activity Name"
-                    name="activityName"
-                    value={formik.values.activityName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityName && Boolean(formik.errors.activityName)}
-                    helperText={formik.touched.activityName && formik.errors.activityName}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline minRows={2}
-                    label="Activity Type"
-                    name="activityType"
-                    value={formik.values.activityType}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityType && Boolean(formik.errors.activityType)}
-                    helperText={formik.touched.activityType && formik.errors.activityType}
-                />
+
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Activity Name"
+                            name="activityName"
+                            value={formik.values.activityName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.activityName && Boolean(formik.errors.activityName)}
+                            helperText={formik.touched.activityName && formik.errors.activityName}
+                        />
+                    </Grid>
+                    <Grid item xs={6} sx={{ mt: 1 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id='activityType'>Activity Type</InputLabel>
+                            <Select margin="dense"
+                                label="Activity Type"
+                                name="activityType"
+                                value={formik.values.activityType}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.activityType && Boolean(formik.errors.activityType)}
+                                helperText={formik.touched.activityType && formik.errors.activityType}
+                            >
+                                <MenuItem value="Leisure And Entertainment">Leisure and Entertainment</MenuItem>
+                                <MenuItem value="Sports and Adventure">Sports and Adventure</MenuItem>
+                                <MenuItem value="Family and Friends">Family and Friends</MenuItem>
+                                <MenuItem value="Others">Others</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     multiline minRows={2}

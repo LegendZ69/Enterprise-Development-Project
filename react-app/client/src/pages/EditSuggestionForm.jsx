@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
-import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import http from '../http';
 import { useFormik } from 'formik';
@@ -8,6 +9,7 @@ import * as yup from 'yup';
 
 function EditSuggestionForm() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [suggestionForm, setSuggestionForm] = useState({
         email: "",
@@ -27,18 +29,15 @@ function EditSuggestionForm() {
         initialValues: suggestionForm,
         enableReinitialize: true,
         validationSchema: yup.object({
-            //refer to edp ass
             email: yup.string().trim()
-                .min(3, 'Email must be at least 3 characters')
+                .email('Enter a valid email')
                 .max(100, 'Email must be at most 100 characters')
                 .required('Email is required'),
             activityName: yup.string().trim()
                 .min(3, 'Activity Name must be at least 3 characters')
                 .max(50, 'Activity Name must be at most 50 characters')
                 .required('Activity Name is required'),
-            activityType: yup.string().trim() //change to dropdown menu, no need trim
-                .min(3, 'Activity Type must be at least 3 characters')
-                .max(500, 'Activity Type must be at most 500 characters')
+            activityType: yup.string()
                 .required('Activity Type is required'),
             activityDescription: yup.string().trim()
                 .min(3, 'Activity Description must be at least 3 characters')
@@ -51,14 +50,18 @@ function EditSuggestionForm() {
         }),
 
         onSubmit: (data) => {
-            data.email = data.email.trim();
+            data.email = data.email.trim().toLowerCase();
             data.activityName = data.activityName.trim();
-            data.activityType = data.activityType.trim();
+            data.activityType = data.activityType;
             data.activityDescription = data.activityDescription.trim();
             data.activityReason = data.activityReason.trim();
             http.put(`/suggestionForm/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
+                    navigate("/suggestionForm");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
                 });
         }
     });
@@ -78,6 +81,9 @@ function EditSuggestionForm() {
             .then((res) => {
                 console.log(res.data);
                 navigate("/suggestionForm");
+            })
+            .catch(function (err) {
+                console.log(err.response);
             });
     }
 
@@ -88,6 +94,7 @@ function EditSuggestionForm() {
             </Typography>
 
             <Box component="form" onSubmit={formik.handleSubmit}>
+
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     label="Email"
@@ -98,27 +105,41 @@ function EditSuggestionForm() {
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
                 />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Activity Name"
-                    name="activityName"
-                    value={formik.values.activityName}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityName && Boolean(formik.errors.activityName)}
-                    helperText={formik.touched.activityName && formik.errors.activityName}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline minRows={2}
-                    label="Activity Type"
-                    name="activityType"
-                    value={formik.values.activityType}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityType && Boolean(formik.errors.activityType)}
-                    helperText={formik.touched.activityType && formik.errors.activityType}
-                />
+
+                <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Activity Name"
+                            name="activityName"
+                            value={formik.values.activityName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.activityName && Boolean(formik.errors.activityName)}
+                            helperText={formik.touched.activityName && formik.errors.activityName}
+                        />
+                    </Grid>
+                    <Grid item xs={6} sx={{ mt: 1 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id='activityType'>Activity Type</InputLabel>
+                            <Select margin="dense" autoComplete="off"
+                                label="Activity Type"
+                                name="activityType"
+                                value={formik.values.activityType}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.activityType && Boolean(formik.errors.activityType)}
+                                helperText={formik.touched.activityType && formik.errors.activityType}
+                            >
+                                <MenuItem value="Leisure and Entertainment">Leisure and Entertainment</MenuItem>
+                                <MenuItem value="Sports and Adventure">Sports and Adventure</MenuItem>
+                                <MenuItem value="Family and Friends">Family and Friends</MenuItem>
+                                <MenuItem value="Others">Others</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     multiline minRows={2}

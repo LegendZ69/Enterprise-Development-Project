@@ -45,13 +45,6 @@ function SuggestionForm() {
         getSuggestionForms();
     };
 
-    // useEffect(() => {
-    //     http.get('/suggestionForm').then((res) => {
-    //         console.log(res.data);
-    //         setSuggestionFormList(res.data);
-    //     });
-    // }, []);
-
     return (
         <Box>
             <Typography variant="h1" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
@@ -86,10 +79,12 @@ function SuggestionForm() {
                             <Grid item xs={12} md={6} lg={4} key={suggestionForm.id}>
                                 <Card>
                                     <CardContent>
-                                        <Box sx={{ display: 'flex', mb: 1 }}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                                {suggestionForm.email}
+
+                                        <Box sx={{ display: 'flex' }}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                                                {suggestionForm.activityName} - {suggestionForm.activityType}
                                             </Typography>
+
                                             <Link to={`/editSuggestionForm/${suggestionForm.id}`}>
                                                 <IconButton color="primary" sx={{ padding: '4px' }}>
                                                     <Edit />
@@ -97,26 +92,35 @@ function SuggestionForm() {
                                             </Link>
                                         </Box>
 
-                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
-                                            color="text.secondary">
-                                            <AccessTime sx={{ mr: 1 }} />
-                                            <Typography>
+                                        <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                                            <Typography variant='body2' sx={{ mr: 1 }}>
+                                                {suggestionForm.email}
+                                            </Typography>
+
+                                            <AccessTime fontSize='small' />
+                                            <Typography variant='body2'>
                                                 {dayjs(suggestionForm.createdAt).format(global.datetimeFormat)}
                                             </Typography>
                                         </Box>
 
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {suggestionForm.activityName}
-                                        </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {suggestionForm.activityType}
-                                        </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
                                             {suggestionForm.activityDescription}
                                         </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+
+                                        <Typography variant='body3' sx={{ whiteSpace: 'pre-wrap', fontWeight: 'bold' }}>
+                                            Reason:
+                                        </Typography>
+                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
                                             {suggestionForm.activityReason}
                                         </Typography>
+
+                                        <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
+                                            Staff Remarks:
+                                        </Typography>
+                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {suggestionForm.staffRemark}
+                                        </Typography>
+                                        
                                     </CardContent>
                                 </Card>
                             </Grid>
