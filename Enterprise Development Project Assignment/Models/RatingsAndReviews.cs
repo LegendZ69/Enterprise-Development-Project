@@ -7,15 +7,22 @@ namespace Enterprise_Development_Project_Assignment.Models
     {
         public int Id { get; set; }
 
+        //FK property
         public int BookingId { get; set; }
+
+        // Navigation property to represent the one-to-many relationship
+/*        public Booking? Booking { get; set; } */
 
         [Column(TypeName = "datetime")]
         public DateTime BookingDate { get; set; }
 
         [Required, MinLength(3), MaxLength(50)]
+        // Regular expression to enforce name format
+        [RegularExpression(@"^[a-zA-Z '-,.]+$", ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(50)]
+        [RegularExpression(@"^[a-zA-Z '-,.]+$", ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
         public string LastName { get; set; } = string.Empty;
 
         [Required]
@@ -29,5 +36,9 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+
+        // Navigation property to represent the one-to-many relationship, add in Booking class
+/*      [JsonIgnore]
+        public List<FeedbackForm>? FeedbackForms { get; set; } */
     }
 }

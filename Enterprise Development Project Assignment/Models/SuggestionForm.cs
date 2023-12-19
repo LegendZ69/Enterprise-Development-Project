@@ -9,13 +9,19 @@ namespace Enterprise_Development_Project_Assignment.Models
         //everytime after changing any of these properties, must add-migration [Name] and update-database
         public int Id { get; set; }
 
-        [Required, MinLength(3), MaxLength(100)]
+        //FK property
+/*        public int UserId { get; set; }
+*/
+        // Navigation property to represent the one-to-many relationship
+        /*        public User? User { get; set; } */
+
+        [Required, EmailAddress, MaxLength(100)]
         public string Email { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(50)]
         public string ActivityName { get; set; } = string.Empty;
 
-        [Required, MinLength(3), MaxLength(50)]
+        [Required]
         public string ActivityType { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(200)]
@@ -29,5 +35,9 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+
+        // Navigation property to represent the one-to-many relationship, add in User class
+        /*        [JsonIgnore]
+                  public List<SuggestionForm>? SuggestionForms { get; set; } */
     }
 }

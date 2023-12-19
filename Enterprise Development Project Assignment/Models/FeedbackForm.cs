@@ -5,15 +5,23 @@ namespace Enterprise_Development_Project_Assignment.Models
 {
     public class FeedbackForm
     {
-        public int Id { get; set; }
+        public int Id { get; set; } //FormId
 
-        [Required, MinLength(3), MaxLength(100)]
+        //FK property
+        public int UserId { get; set; }
+
+        // Navigation property to represent the one-to-many relationship
+        /*        public User? User { get; set; } */
+
+        [Required, EmailAddress, MaxLength(100)]
         public string Email { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(50)]
+        [RegularExpression(@"^[a-zA-Z '-,.]+$", ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
         public string FirstName { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(50)]
+        [RegularExpression(@"^[a-zA-Z '-,.]+$", ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
         public string LastName { get; set; } = string.Empty;
 
         [Required, MinLength(8), MaxLength(8)]
@@ -25,10 +33,18 @@ namespace Enterprise_Development_Project_Assignment.Models
         [Required, MinLength(3), MaxLength(200)]
         public string Message { get; set; } = string.Empty;
 
+        //addon
+        [MinLength(3), MaxLength(200)]
+        public string StaffRemark { get; set; } = string.Empty;
+
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+
+        // Navigation property to represent the one-to-many relationship, add in User class
+/*        [JsonIgnore]
+          public List<FeedbackForm>? FeedbackForms { get; set; } */
     }
 }

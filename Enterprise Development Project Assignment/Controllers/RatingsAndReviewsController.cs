@@ -20,14 +20,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             IQueryable<RatingsAndReviews> result = _context.RatingsAndReviews;
             if (search != null)
             {
-                result = result.Where(x => x.BookingId.ToString().Contains(search)
-                || x.BookingDate.ToString().Contains(search)
-                || x.FirstName.Contains(search)
+                result = result.Where(x => 
+/*                x.BookingId.ToString().Contains(search)
+*//*                || x.BookingDate.ToString().Contains(search)
+*/                 x.FirstName.Contains(search)
                 || x.LastName.Contains(search)
-                || x.Rating.ToString().Contains(search)
-                || x.Opinion.Contains(search)
-                || x.CreatedAt.ToString().Contains(search)
-                || x.UpdatedAt.ToString().Contains(search));
+/*                || x.Rating.ToString().Contains(search)
+*/                || x.Opinion.Contains(search)
+                );
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(list);

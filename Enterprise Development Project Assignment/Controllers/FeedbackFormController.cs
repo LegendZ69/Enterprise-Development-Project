@@ -24,10 +24,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 || x.FirstName.Contains(search)
                 || x.LastName.Contains(search)
                 || x.ContactNo.ToString().Contains(search)
-                || x.Topic.Contains(search)
-                || x.Message.Contains(search)
-                || x.CreatedAt.ToString().Contains(search)
-                || x.UpdatedAt.ToString().Contains(search));
+/*                || x.Topic.Contains(search)
+*/                || x.Message.Contains(search)
+                );
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
             return Ok(list);
@@ -51,11 +50,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             var myFeedbackForm = new FeedbackForm()
             {
                 //only can trim string
-                Email = FeedbackForm.Email.Trim(),
+                Email = FeedbackForm.Email.Trim().ToLower(),
                 FirstName = FeedbackForm.FirstName.Trim(),
                 LastName = FeedbackForm.LastName.Trim(),
                 ContactNo = FeedbackForm.ContactNo,
-                Topic = FeedbackForm.Topic.Trim(),
+                Topic = FeedbackForm.Topic,
                 Message = FeedbackForm.Message.Trim(),
                 CreatedAt = now,
                 UpdatedAt = now
@@ -74,11 +73,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 return NotFound();
             }
-            myFeedbackForm.Email = FeedbackForm.Email.Trim();
+            myFeedbackForm.Email = FeedbackForm.Email.Trim().ToLower();
             myFeedbackForm.FirstName = FeedbackForm.FirstName.Trim();
             myFeedbackForm.LastName = FeedbackForm.LastName.Trim();
             myFeedbackForm.ContactNo = FeedbackForm.ContactNo;
-            myFeedbackForm.Topic = FeedbackForm.Topic.Trim(); //dropdown menu no trim
+            myFeedbackForm.Topic = FeedbackForm.Topic;
             myFeedbackForm.Message = FeedbackForm.Message.Trim();
             myFeedbackForm.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
