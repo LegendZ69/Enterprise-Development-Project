@@ -11,13 +11,14 @@ function Activities() {
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Link to="/addSuggestionForm" style={{ textDecoration: 'none' }}>
-                    <Button variant='contained' sx={{ backgroundColor: 'black' }}>
+                    <Button variant="contained">
                         Suggest An Activity
                     </Button>
                 </Link>
             </Box>
 
         </Box>
+
     )
 }
 

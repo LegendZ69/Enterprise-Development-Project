@@ -3,3 +3,11 @@
   text-decoration: none;
   margin-right: 16px;
 }
+
+.AppBar a:hover {
+  color: goldenrod;
+}
+
+button:hover {
+  color: gold;
+}

@@ -3,6 +3,7 @@ import { Container, AppBar, Toolbar, Typography } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
+import Logo from './assets/logo.png';
 import AddSuggestionForm from './pages/AddSuggestionForm';
 import SuggestionForm from './pages/SuggestionForm';
 import EditSuggestionForm from './pages/EditSuggestionForm';
@@ -19,11 +20,9 @@ function App() {
           <Container>
             <Toolbar disableGutters={true}>
               <Link to="/">
-                <Typography variant="h6" component="div">
-                  UPlay Logo
-                </Typography>
+                  <img src={Logo} alt="logo" width={100} />
               </Link>
-              <Link to="/activities" ><Typography>Activities</Typography></Link>
+              <Link to="/activities"><Typography>Activities</Typography></Link>
               <Link to="/suggestionForm" ><Typography>Suggestion Form</Typography></Link>
               <Link to="/feedbackForm" ><Typography>Feedback Form</Typography></Link>
               <Link to="/ratingsAndReviews" ><Typography>Ratings and Reviews</Typography></Link>
