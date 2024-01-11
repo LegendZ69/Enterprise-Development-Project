@@ -8,13 +8,16 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Id { get; set; }
 
         //FK property
-        public int BookingId { get; set; }
+        /* public int BookingId { get; set; }*/
 
         // Navigation property to represent the one-to-many relationship
-/*        public Booking? Booking { get; set; } */
+        /*        public Booking? Booking { get; set; } */
 
-        [Column(TypeName = "datetime")]
-        public DateTime BookingDate { get; set; }
+        /*[Column(TypeName = "datetime")]
+        public DateTime BookingDate { get; set; }*/
+
+        [Required, EmailAddress, MaxLength(100)]
+        public string Email { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(50)]
         // Regular expression to enforce name format
@@ -29,7 +32,9 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Rating { get; set; }
 
         [Required, MinLength(3), MaxLength(100)]
-        public string Opinion { get; set; } = string.Empty;
+        public string Review { get; set; } = string.Empty;
+
+        public int Like { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
@@ -8,7 +9,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Id { get; set; } //FormId
 
         //FK property
-        public int UserId { get; set; }
+        /*public int UserId { get; set; }*/
 
         // Navigation property to represent the one-to-many relationship
         /*        public User? User { get; set; } */
@@ -24,17 +25,13 @@ namespace Enterprise_Development_Project_Assignment.Models
         [RegularExpression(@"^[a-zA-Z '-,.]+$", ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
         public string LastName { get; set; } = string.Empty;
 
-        [Required, MinLength(8), MaxLength(8)]
-        public int ContactNo { get; set; }
-
         [Required]
         public string Topic { get; set; } = string.Empty;
 
         [Required, MinLength(3), MaxLength(200)]
         public string Message { get; set; } = string.Empty;
 
-        //addon
-        [MinLength(3), MaxLength(200)]
+        [MaxLength(200)]
         public string StaffRemark { get; set; } = string.Empty;
 
         [Column(TypeName = "datetime")]

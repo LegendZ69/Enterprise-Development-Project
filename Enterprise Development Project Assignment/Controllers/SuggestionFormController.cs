@@ -37,7 +37,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 result = result.Where(x => x.Email.Contains(search)
                 || x.ActivityName.Contains(search)
-/*                || x.ActivityTypez.Contains(search)
+/*                || x.ActivityType.Contains(search)
 */                || x.ActivityDescription.Contains(search)
                 || x.ActivityReason.Contains(search)
                 );
@@ -135,6 +135,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             mySuggestionForm.ActivityType = suggestionForm.ActivityType;
             mySuggestionForm.ActivityDescription = suggestionForm.ActivityDescription.Trim();
             mySuggestionForm.ActivityReason = suggestionForm.ActivityReason.Trim();
+            mySuggestionForm.StaffRemark = suggestionForm.StaffRemark.Trim();
             mySuggestionForm.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
             return Ok();

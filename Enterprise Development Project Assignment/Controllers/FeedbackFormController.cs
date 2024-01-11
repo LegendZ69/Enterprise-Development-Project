@@ -23,9 +23,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 result = result.Where(x => x.Email.Contains(search)
                 || x.FirstName.Contains(search)
                 || x.LastName.Contains(search)
-                || x.ContactNo.ToString().Contains(search)
-/*                || x.Topic.Contains(search)
-*/                || x.Message.Contains(search)
+                || x.Topic.Contains(search)
+                || x.Message.Contains(search)
                 );
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
@@ -53,7 +52,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 Email = FeedbackForm.Email.Trim().ToLower(),
                 FirstName = FeedbackForm.FirstName.Trim(),
                 LastName = FeedbackForm.LastName.Trim(),
-                ContactNo = FeedbackForm.ContactNo,
                 Topic = FeedbackForm.Topic,
                 Message = FeedbackForm.Message.Trim(),
                 CreatedAt = now,
@@ -76,9 +74,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             myFeedbackForm.Email = FeedbackForm.Email.Trim().ToLower();
             myFeedbackForm.FirstName = FeedbackForm.FirstName.Trim();
             myFeedbackForm.LastName = FeedbackForm.LastName.Trim();
-            myFeedbackForm.ContactNo = FeedbackForm.ContactNo;
             myFeedbackForm.Topic = FeedbackForm.Topic;
             myFeedbackForm.Message = FeedbackForm.Message.Trim();
+            myFeedbackForm.StaffRemark = FeedbackForm.StaffRemark.Trim();
             myFeedbackForm.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
             return Ok();

@@ -26,7 +26,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 */                 x.FirstName.Contains(search)
                 || x.LastName.Contains(search)
 /*                || x.Rating.ToString().Contains(search)
-*/                || x.Opinion.Contains(search)
+*/                || x.Review.Contains(search)
                 );
             }
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
@@ -51,11 +51,13 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             var myRatingsAndReviews = new RatingsAndReviews()
             {
                 //only can trim string
-                BookingId = RatingsAndReviews.BookingId,
-                BookingDate = RatingsAndReviews.BookingDate,
+                /*                BookingId = RatingsAndReviews.BookingId,
+                */                /*BookingDate = RatingsAndReviews.BookingDate,*/
+                Email = RatingsAndReviews.Email.Trim().ToLower(),
                 FirstName = RatingsAndReviews.FirstName.Trim(),
                 LastName = RatingsAndReviews.LastName.Trim(),
                 Rating = RatingsAndReviews.Rating,
+                Review = RatingsAndReviews.Review.Trim(),
                 CreatedAt = now,
                 UpdatedAt = now
             };
@@ -73,12 +75,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 return NotFound();
             }
-            myRatingsAndReviews.BookingId = RatingsAndReviews.BookingId;
-            myRatingsAndReviews.BookingDate = RatingsAndReviews.BookingDate;
+            /*            myRatingsAndReviews.BookingId = RatingsAndReviews.BookingId;
+            */            /*myRatingsAndReviews.BookingDate = RatingsAndReviews.BookingDate;*/
+            myRatingsAndReviews.Email = RatingsAndReviews.Email.Trim();
             myRatingsAndReviews.FirstName = RatingsAndReviews.FirstName.Trim();
             myRatingsAndReviews.LastName = RatingsAndReviews.LastName.Trim();
             myRatingsAndReviews.Rating = RatingsAndReviews.Rating;
-            myRatingsAndReviews.Opinion = RatingsAndReviews.Opinion.Trim();
+            myRatingsAndReviews.Review = RatingsAndReviews.Review.Trim();
+            myRatingsAndReviews.Like = RatingsAndReviews.Like;
             myRatingsAndReviews.UpdatedAt = DateTime.Now;
             _context.SaveChanges();
             return Ok();
