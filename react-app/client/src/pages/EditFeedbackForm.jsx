@@ -1,54 +1,33 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Divider } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import http from '../http';
-import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
 
-function FeedbackForm() {
+function EditFeedbackForm() {
+    const { id } = useParams();
     const navigate = useNavigate();
 
-    //add form as user/staff
-    // const { staff } = useContext(StaffContext);
-    // const { user } = useContext(UserContext);
+    const [feedbackForm, setFeedbackForm] = useState({
+        // email: user.email, //merge with user.id
+        email: "", //delete this after
+        firstName: "",
+        lastName: "",
+        topic: "",
+        message: ""
+    });
+
+    useEffect(() => {
+        http.get(`/feedbackForm/${id}`).then((res) => {
+            setFeedbackForm(res.data);
+        });
+    }, []);
 
     const formik = useFormik({
-        // initialValues: user //if signed in as user, autofill fields with user info
-        //     ? {
-        //         // email: user.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //     }
-        //     : staff
-        //         ? {
-        //             // email: staff.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         }
-        //         : {
-        // email: "",
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         },
-
-        initialValues: {
-            // email: user.email, //merge with user.id
-            email: "", //delete this after
-            firstName: "",
-            lastName: "",
-            topic: "",
-            message: ""
-        },
-
+        initialValues: feedbackForm,
+        enableReinitialize: true,
         validationSchema: yup.object({
             email: yup.string().trim()
                 .email('Enter a valid email')
@@ -67,7 +46,8 @@ function FeedbackForm() {
             message: yup.string().trim()
                 .min(3, 'Message must be at least 3 characters')
                 .max(200, 'Message must be at most 200 characters')
-                .required('Message is required')
+                .required('Message is required'),
+            staffRemark: yup.string().trim()
         }),
 
         onSubmit: (data) => {
@@ -76,33 +56,11 @@ function FeedbackForm() {
             data.lastName = data.lastName.trim();
             data.topic = data.topic;
             data.message = data.message.trim();
-
-            //if AccessToken is staff, post form as staff else user
-            // if (localStorage.getItem("staffAccessToken")) {
-            //     http.post("/contactUsForm/staff", data)
-            //         .then((res) => {
-            //             console.log(res.data);
-            //             navigate("/formSuccess");
-            //         })
-            //         .catch(function (err) {
-            //             toast.error(`${err.response.data.message}`);
-            //         });
-            // } else if (localStorage.getItem("userAccessToken")) {
-            //     http.post("/contactUsForm/user", data)
-            //         .then((res) => {
-            //             console.log(res.data);
-            //             navigate("/formSuccess");
-            //         })
-            //         .catch(function (err) {
-            //             toast.error(`${err.response.data.message}`);
-            //         });
-            // };
-
-            //delete this after merge
-            http.post("/feedbackForm", data)
+            data.staffRemark = data.staffRemark.trim();
+            http.put(`/feedbackForm/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/formSuccess");
+                    navigate("/displayFeedbackForm");
                 })
                 .catch(function (err) {
                     console.log(err.response);
@@ -110,41 +68,32 @@ function FeedbackForm() {
         }
     });
 
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const deleteFeedbackForm = () => {
+        http.delete(`/feedbackForm/${id}`)
+            .then((res) => {
+                console.log(res.data);
+                navigate("/displayFeedbackForm");
+            })
+            .catch(function (err) {
+                console.log(err.response);
+            });
+    }
+
     return (
         <Box>
             <Typography variant="h1" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
-                Feedback Form
+                Edit Feedback Form
             </Typography>
-
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <iframe
-                        src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31909.302941679718!2d103.93467295405858!3d1.3789471609109833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da3db3e616ca81%3A0xb96062afab4f6058!2sSingapore%20519599!5e0!3m2!1sen!2ssg!4v1702980262703!5m2!1sen!2ssg`}
-                        frameBorder={0}
-                        width="555"
-                        height="450"
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography variant='h6' sx={{ whiteSpace: 'pre-wrap', fontWeight: 'bold' }}>
-                        We love to hear from you!
-                    </Typography>
-                    <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                        lorem ipsum
-                    </Typography>
-
-                    <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                        NTUC Club - UPlay
-                    </Typography>
-                    <Typography gutterBottom>
-                        Market Square @ Downtown East, E!Avenue, Level 3
-                    </Typography>
-
-                    <LocationOnIcon /> 1 Pasir Ris Close Singapore 519599
-                    <PhoneIcon />
-                    <EmailIcon />
-                </Grid>
-            </Grid>
 
             <Box component="form" onSubmit={formik.handleSubmit} mt={15}>
                 {/* remove email field, only allow signed in user to suggest / review */}
@@ -216,14 +165,53 @@ function FeedbackForm() {
                     error={formik.touched.message && Boolean(formik.errors.message)}
                     helperText={formik.touched.message && formik.errors.message}
                 />
+
+                <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+                
+                <TextField
+                    fullWidth margin="normal" autoComplete="on"
+                    multiline minRows={4}
+                    label="Staff Remark"
+                    name="staffRemark"
+                    value={formik.values.staffRemark}
+                    onChange={formik.handleChange}
+                    error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
+                    helperText={formik.touched.staffRemark && formik.errors.staffRemark}
+                />
+
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">
-                        Add
+                        Update
+                    </Button>
+                    <Button variant="contained" sx={{ ml: 2 }} color="error"
+                        onClick={handleOpen}>
+                        Delete
                     </Button>
                 </Box>
             </Box>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>
+                    Delete Feedback Form
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this feedback form?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="inherit"
+                        onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" color="error"
+                        onClick={deleteFeedbackForm}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
 
-export default FeedbackForm
+export default EditFeedbackForm
