@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Grid, Card, CardContent } from '@mui/material';
 
 function Activities() {
     return (
@@ -16,6 +16,17 @@ function Activities() {
                     </Button>
                 </Link>
             </Box>
+
+            <Grid item xs={12} md={6} lg={4}>
+                <Link to="/activityInfo" style={{ textDecoration: 'none' }}>
+                    <Card>
+                    <CardContent>
+                            <Typography sx={{ fontSize: '25px' }}>activity 1 placeholder</Typography>
+                    </CardContent>
+                </Card>
+                </Link>
+                
+            </Grid>
 
         </Box>
 
