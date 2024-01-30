@@ -1,24 +1,23 @@
-using Enterprise_Development_Project_Assignment;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using Microsoft.OpenApi.Models;
 using AutoMapper;
+using LearningAPI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddDbContext<MyDbContext>();
-// Auto Mapper
 
+// Auto Mapper
 var mappingConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new MappingProfile());
 });
 IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
-
 
 // Add CORS policy
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
@@ -28,28 +27,28 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins(allowedOrigins)
-         .AllowAnyMethod()
-         .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
         });
 });
 
 // Authentication
 var secret = builder.Configuration.GetValue<string>("Authentication:Secret");
 builder.Services
-.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-    Encoding.UTF8.GetBytes(secret)
-    ),
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(secret)
+            ),
+        };
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -76,7 +75,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -90,8 +88,8 @@ app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
