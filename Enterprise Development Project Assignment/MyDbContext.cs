@@ -1,27 +1,28 @@
-﻿using Enterprise_Development_Project_Assignment.Models;
+﻿using LearningAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Enterprise_Development_Project_Assignment
+namespace LearningAPI
 {
     public class MyDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
+
         public MyDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string? connectionString = _configuration.GetConnectionString("MyConnection");
             if (connectionString != null)
             {
-                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseMySQL(connectionString);
             }
         }
-        public DbSet<SuggestionForm> SuggestionForms { get; set; }
-        public DbSet<FeedbackForm> FeedbackForms { get; set; }
-        public DbSet<RatingsAndReviews> RatingsAndReviews { get; set; }
-        public DbSet<Coupons> Coupons { get; set; }
-        public DbSet<CreditCard> CreditCard { get; set; }
+
+        public DbSet<Tutorial> Tutorials { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 }
