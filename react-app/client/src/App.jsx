@@ -19,6 +19,15 @@ import FAQs from './pages/FAQs';
 
 import Activities from './pages/Activities';
 import ActivityInfo from './pages/ActivityInfo';
+import Coupons from './pages/Coupons';
+import AddCoupons from './pages/AddCoupons';
+import UpdateCoupons from './pages/UpdateCoupons';
+import CouponsValid from './pages/CouponValid';
+import CreditCard from './pages/CreditCard';
+import AddCreditCard from './pages/AddCreditCard';
+import UpdateCreditCard from './pages/UpdateCreditCard';
+import Checkout from './pages/Checkout';
+
 
 function App() {
   return (
@@ -32,13 +41,16 @@ function App() {
               </Link>
               <Link to="/activities"><Typography>Activities</Typography></Link>
               <Link to="/suggestionForm" ><Typography>Suggestion Form</Typography></Link>
-              <Link to="/displaySuggestionForm" ><Typography>DisplaySuggestionForm</Typography></Link>
+              <Link to="/displaySuggestionForm" ><Typography>Display Suggestion Form</Typography></Link>
               <Link to="/feedbackForm" ><Typography>Feedback Form</Typography></Link>
-              <Link to="/displayFeedbackForm" ><Typography>DisplayFeedbackForm</Typography></Link>
+              <Link to="/displayFeedbackForm" ><Typography>Display Feedback Form</Typography></Link>
               <Link to="/ratingsAndReviews" ><Typography>Ratings and Reviews</Typography></Link>
-              <Link to="/displayRatingsAndReviews" ><Typography>DisplayRatingsReviews</Typography></Link>
+              <Link to="/displayRatingsAndReviews" ><Typography>Display Ratings Reviews</Typography></Link>
               <Link to="/aboutUs" ><Typography>About Us</Typography></Link>
               <Link to="/faqs" ><Typography>FAQs</Typography></Link>
+              <Link to="/coupons" ><Typography>Coupons</Typography></Link>
+              <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
+              <Link to="/checkout" ><Typography>Checkout</Typography></Link>
             </Toolbar>
           </Container>
         </AppBar>
@@ -61,6 +73,14 @@ function App() {
 
             <Route path={"/activities"} element={<Activities />} />
             <Route path={"/activityInfo"} element={<ActivityInfo />} />
+            <Route path={"/coupons"} element={<Coupons />} />
+            <Route path={"/addCoupons"} element={<AddCoupons />} />
+            <Route path={"/updateCoupons/:id"} element={<UpdateCoupons />} />
+            <Route path={"/validCoupon/:id"} element={<CouponsValid />} />
+            <Route path={"/creditcard"} element={<CreditCard />} />
+            <Route path={"/addCreditCard"} element={<AddCreditCard />} />
+            <Route path={"/updateCreditCard/:id"} element={<UpdateCreditCard />} />
+            <Route path={"/checkout"} element={<Checkout />} />
           </Routes>
         </Container>
 
