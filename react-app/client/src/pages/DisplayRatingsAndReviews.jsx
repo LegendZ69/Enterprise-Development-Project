@@ -80,8 +80,8 @@ function DisplayRatingsAndReviews() {
                             <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
                                 <Card>
                                     <CardContent>
-
                                         <Box sx={{ display: 'flex' }}>
+
                                             <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
                                                 {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
                                             </Typography>
@@ -91,11 +91,11 @@ function DisplayRatingsAndReviews() {
                                                     <Edit />
                                                 </IconButton>
                                             </Link>
+
                                         </Box>
 
                                         <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
                                             <Rating value={ratingsAndReviews.rating} readOnly />
-
                                             <AccessTime fontSize='small' />
                                             <Typography variant='body2'>
                                                 {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
@@ -105,18 +105,6 @@ function DisplayRatingsAndReviews() {
                                         <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
                                             {ratingsAndReviews.review}
                                         </Typography>
-
-                                        <Box sx={{ display: 'flex' }}>
-                                            <IconButton aria-label="like"
-                                                onClick={() => {
-                                                    var count;
-                                                    count += 1;
-                                                }}>
-                                                <ThumbUpIcon />
-                                            </IconButton>
-
-                                            <Typography sx={{ fontSize: '25px' }}>{ratingsAndReviews.like}</Typography>
-                                        </Box>
 
                                     </CardContent>
                                 </Card>

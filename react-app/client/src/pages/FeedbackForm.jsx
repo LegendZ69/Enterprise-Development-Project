@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Stack, } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -116,38 +116,36 @@ function FeedbackForm() {
                 Feedback Form
             </Typography>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={12}>
                 <Grid item xs={6}>
                     <iframe
                         src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31909.302941679718!2d103.93467295405858!3d1.3789471609109833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da3db3e616ca81%3A0xb96062afab4f6058!2sSingapore%20519599!5e0!3m2!1sen!2ssg!4v1702980262703!5m2!1sen!2ssg`}
                         frameBorder={0}
-                        width="555"
+                        width="600"
                         height="450"
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography variant='h6' sx={{ whiteSpace: 'pre-wrap', fontWeight: 'bold' }}>
-                        We love to hear from you!
-                    </Typography>
-                    <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                        lorem ipsum
-                    </Typography>
+                    <Stack direction="column" spacing={2}>
+                        <Typography gutterBottom>
+                            <LocationOnIcon /> Market Square @ Downtown East
+                            <br /> E!Avenue, Level 3
+                            <br /> 1 Pasir Ris Close Singapore 519599 NTUC Club - UPlay
+                        </Typography>
 
-                    <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                        NTUC Club - UPlay
-                    </Typography>
-                    <Typography gutterBottom>
-                        Market Square @ Downtown East, E!Avenue, Level 3
-                    </Typography>
+                        <Typography gutterBottom>
+                            <EmailIcon /> sales@uplay.com.sg
+                        </Typography>
 
-                    <LocationOnIcon /> 1 Pasir Ris Close Singapore 519599
-                    <PhoneIcon />
-                    <EmailIcon />
+                        <Typography gutterBottom>
+                            <PhoneIcon /> +65 6192 8374
+                        </Typography>
+                    </Stack>
+
                 </Grid>
             </Grid>
 
-            <Box component="form" onSubmit={formik.handleSubmit} mt={15}>
-                {/* remove email field, only allow signed in user to suggest / review */}
+            <Box component="form" onSubmit={formik.handleSubmit} mt={12}>
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     label="Email"

@@ -68,6 +68,15 @@ function EditFeedbackForm() {
         }
     });
 
+    const submitStaffRemark = (remark) => {
+        formik.setValues({
+            ...formik.values,
+            staffRemark: remark
+        });
+
+        formik.handleSubmit();
+    };
+
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
@@ -96,7 +105,6 @@ function EditFeedbackForm() {
             </Typography>
 
             <Box component="form" onSubmit={formik.handleSubmit} mt={15}>
-                {/* remove email field, only allow signed in user to suggest / review */}
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
                     label="Email"
@@ -178,6 +186,16 @@ function EditFeedbackForm() {
                     error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
                     helperText={formik.touched.staffRemark && formik.errors.staffRemark}
                 />
+
+                <Button variant="contained" onClick={() => submitStaffRemark("Thanks for the feedback!")}
+                >
+                    Thanks for the feedback!
+                </Button>
+
+                <Button variant="contained" onClick={() => submitStaffRemark("We apologize for the inconvenience caused.")}
+                >
+                    We apologize for the inconvenience caused.
+                </Button>
 
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">
