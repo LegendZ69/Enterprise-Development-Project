@@ -1,0 +1,19 @@
+﻿using System.ComponentModel.DataAnnotations;
+namespace Enterprise_Development_Project_Assignment.Models
+{
+    public class UpdateCoupons
+    {
+        [Required, MinLength(1), MaxLength(25)]
+        [RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessage = "Only allow numbers, and letters")]
+        public string? CouponName { get; set; }
+        [Range(1, 100, ErrorMessage = "Discount must be between 1 and 100")]
+        public decimal? Discount { get; set; }
+
+        public int? Usage { get; set; }
+        public bool? Valid { get; set; }
+
+        [Required, MinLength(1), MaxLength(50)]
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Only allow letters, numbers, and spaces.")]
+        public string? CouponStatus { get; set; }
+    }
+}
