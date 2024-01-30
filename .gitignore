@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Enterprise Development Project Assignment/appsettings.json
+/Enterprise Development Project Assignment/Migrations/20240130141657_RatingsAndReviews_FeedbackForm_SuggestionForm.cs
