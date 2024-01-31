@@ -16,103 +16,123 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly MyDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(MyDbContext context, IConfiguration configuration, IMapper mapper)
+        public UserController(MyDbContext context, IConfiguration configuration, IMapper mapper,
+            ILogger<UserController> logger)
         {
             _context = context;
             _configuration = configuration;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest request)
         {
-            // Trim string values
-            request.Name = request.Name.Trim();
-            request.Email = request.Email.Trim().ToLower();
-            request.Password = request.Password.Trim();
-
-            // Check email
-            var foundUser = _context.Users.Where(
-            x => x.Email == request.Email).FirstOrDefault();
-            if (foundUser != null)
+            try
             {
-                string message = "Email already exists.";
-                return BadRequest(new { message });
+                // Trim string values
+                request.Name = request.Name.Trim();
+                request.Email = request.Email.Trim().ToLower();
+                request.Password = request.Password.Trim();
+
+                // Check email
+                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+                if (foundUser != null)
+                {
+                    string message = "Email already exists.";
+                    return BadRequest(new { message });
+                }
+
+                // Create user object
+                var now = DateTime.Now;
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                var user = new User()
+                {
+                    Name = request.Name,
+                    Email = request.Email,
+                    Password = passwordHash,
+                    CreatedAt = now,
+                    UpdatedAt = now
+                };
+
+                // Add user
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return Ok();
             }
-
-
-            // Create user object
-            var now = DateTime.Now;
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            var user = new User()
+            catch (Exception ex)
             {
-                Name = request.Name,
-                Email = request.Email,
-                Password = passwordHash,
-                CreatedAt = now,
-                UpdatedAt = now
-            };
-            // Add user
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return Ok();
+                _logger.LogError(ex, "Error when user register");
+                return StatusCode(500);
+            }
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
         public IActionResult Login(LoginRequest request)
         {
-            // Trim string values
-            request.Email = request.Email.Trim().ToLower();
-            request.Password = request.Password.Trim();
+            try
+            {
+                // Trim string values
+                request.Email = request.Email.Trim().ToLower();
+                request.Password = request.Password.Trim();
 
-            // Check email and password
-            string message = "Email or password is not correct.";
-            var foundUser = _context.Users.Where(
-            x => x.Email == request.Email).FirstOrDefault();
-            if (foundUser == null)
-            {
-                return BadRequest(new { message });
-            }
-            bool verified = BCrypt.Net.BCrypt.Verify(
-            request.Password, foundUser.Password);
-            if (!verified)
-            {
-                return BadRequest(new { message });
-            }
+                // Check email and password
+                string message = "Email or password is not correct.";
+                var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+                if (foundUser == null)
+                {
+                    return BadRequest(new { message });
+                }
+                bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
+                if (!verified)
+                {
+                    return BadRequest(new { message });
+                }
 
-            // Return user info
-            UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
-            string accessToken = CreateToken(foundUser);
-            LoginResponse response = new()
+                // Return user info
+                UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
+                string accessToken = CreateToken(foundUser);
+                LoginResponse response = new() { User = userDTO, AccessToken = accessToken };
+                return Ok(response);
+            }
+            catch (Exception ex)
             {
-                User = userDTO,
-                AccessToken = accessToken
-            };
-            return Ok(response);
+                _logger.LogError(ex, "Error when user login");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("auth"), Authorize]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         public IActionResult Auth()
         {
-            var id = Convert.ToInt32(User.Claims.Where(
-            c => c.Type == ClaimTypes.NameIdentifier)
-            .Select(c => c.Value).SingleOrDefault());
-            var name = User.Claims.Where(c => c.Type == ClaimTypes.Name)
-            .Select(c => c.Value).SingleOrDefault();
-            var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
-            .Select(c => c.Value).SingleOrDefault();
-            if (id != 0 && name != null && email != null)
+            try
             {
-                UserDTO userDTO = new() { Id = id, Name = name, Email = email };
-                AuthResponse response = new() { User = userDTO };
-                return Ok(response);
+                var id = Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
+                .Select(c => c.Value).SingleOrDefault());
+                var name = User.Claims.Where(c => c.Type == ClaimTypes.Name)
+                    .Select(c => c.Value).SingleOrDefault();
+                var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
+                    .Select(c => c.Value).SingleOrDefault();
+
+                if (id != 0 && name != null && email != null)
+                {
+                    UserDTO userDTO = new() { Id = id, Name = name, Email = email };
+                    AuthResponse response = new() { User = userDTO };
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Unauthorized();
+                _logger.LogError(ex, "Error when user auth");
+                return StatusCode(500);
             }
         }
 
@@ -120,22 +140,174 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         {
             string secret = _configuration.GetValue<string>("Authentication:Secret");
             int tokenExpiresDays = _configuration.GetValue<int>("Authentication:TokenExpiresDays");
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(secret);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email)
-            }),
+                {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Name),
+                        new Claim(ClaimTypes.Email, user.Email)
+                }),
                 Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             string token = tokenHandler.WriteToken(securityToken);
+
             return token;
         }
+        [HttpGet("users")]
+        [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
+        public IActionResult GetAllUsers(string? search)
+        {
+            try
+            {
+                IQueryable<User> result = _context.Users;
+                if (search != null)
+                {
+                    result = result.Where(x => x.Name.Contains(search) || x.Email.Contains(search));
+                }
+
+                var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+                IEnumerable<UserDTO> data = list.Select(u => _mapper.Map<UserDTO>(u));
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when get all users");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        public IActionResult GetUser(int id)
+        {
+            try
+            {
+                User? user = _context.Users.FirstOrDefault(u => u.Id == id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                UserDTO data = _mapper.Map<UserDTO>(user);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when getting user by id");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("{id}"), Authorize]
+        public IActionResult UpdateUser(int id, UpdateUserRequest userUpdate)
+        {
+            try
+            {
+                var user = _context.Users.Find(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+
+
+                if (userUpdate.Name != null)
+                {
+                    user.Name = userUpdate.Name.Trim();
+                }
+                if (userUpdate.Email != null)
+                {
+                    user.Email = userUpdate.Email.Trim().ToLower();
+                }
+                if (userUpdate.ImageFile != null)
+                {
+                    user.ImageFile = userUpdate.ImageFile;
+                }
+                user.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when updating user");
+                return StatusCode(500);
+            }
+        }
+        [HttpDelete("{id}"), Authorize]
+
+        public IActionResult DeleteUser(int id)
+        {
+            try
+            {
+                var user = _context.Users.Find(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when deleting user");
+                return StatusCode(500);
+            }
+        }
+        [HttpPut("changepassword"), Authorize]
+        public IActionResult ChangePassword(int id, ChangePasswordRequest changePasswordRequest)
+        {
+            try
+            {
+                // Trim string values
+                changePasswordRequest.CurrentPassword = changePasswordRequest.CurrentPassword.Trim();
+                changePasswordRequest.NewPassword = changePasswordRequest.NewPassword.Trim();
+
+                // Retrieve user based on the authenticated user
+                int userId = id;
+                var user = _context.Users.Find(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                // Log the received data
+                _logger.LogInformation($"Received data - Id: {id}, CurrentPassword: {changePasswordRequest.CurrentPassword}, NewPassword: {changePasswordRequest.NewPassword}");
+                // Verify the current password
+                bool currentPasswordVerified = BCrypt.Net.BCrypt.Verify(changePasswordRequest.CurrentPassword, user.Password);
+                if (!currentPasswordVerified)
+                {
+                    string message = "Current password is incorrect.";
+                    return BadRequest(new { message });
+                }
+                // Check if the new password is the same as the current password
+                if (changePasswordRequest.CurrentPassword == changePasswordRequest.NewPassword)
+                {
+                    string message = "New password must be different from the current password.";
+                    return BadRequest(new { message });
+                }
+                // Update the password with the new one
+                user.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordRequest.NewPassword);
+                user.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when changing password");
+                return StatusCode(500);
+            }
+        }
+
+
     }
 }
