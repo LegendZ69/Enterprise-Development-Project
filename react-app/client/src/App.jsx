@@ -41,7 +41,6 @@ function App() {
                 <img src={Logo} alt="logo" width={100} />
               </Link>
               <Link to="/activities"><Typography>Activities</Typography></Link>
-              <Link to="/suggestionForm" ><Typography>Suggestion Form</Typography></Link>
               <Link to="/displaySuggestionForm" ><Typography>Display Suggestion Form</Typography></Link>
               <Link to="/feedbackForm" ><Typography>Feedback Form</Typography></Link>
               <Link to="/displayFeedbackForm" ><Typography>Display Feedback Form</Typography></Link>
@@ -84,8 +83,6 @@ function App() {
             <Route path={"/checkout"} element={<Checkout />} />
           </Routes>
         </Container>
-
-        {/* <script type="text/javascript">!function(t,e){t.artibotApi = { l: [], t: [], on: function () { this.l.push(arguments) }, trigger: function () { this.t.push(arguments) } };var a=!1,i=e.createElement("script");i.async=!0,i.type="text/javascript",i.src="https://app.artibot.ai/loader.js",e.getElementsByTagName("head").item(0).appendChild(i),i.onreadystatechange=i.onload=function(){if(!(a||this.readyState&&"loaded"!=this.readyState&&"complete"!=this.readyState)){new window.ArtiBot({ i: "db63d958-7c0b-441b-bbed-372e7d73c014" });a=!0}}}(window,document);</script> */}
 
         <BottomNavigation
           className="BottomNavigation"

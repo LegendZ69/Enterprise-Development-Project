@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Divider } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
@@ -45,7 +45,8 @@ function EditSuggestionForm() {
             activityReason: yup.string().trim()
                 .min(3, 'Activity Reason must be at least 3 characters')
                 .max(50, 'Activity Reason must be at most 50 characters')
-                .required('Activity Reason is required')
+                .required('Activity Reason is required'),
+            staffRemark: yup.string().trim()
         }),
 
         onSubmit: (data) => {
@@ -54,16 +55,26 @@ function EditSuggestionForm() {
             data.activityType = data.activityType;
             data.activityDescription = data.activityDescription.trim();
             data.activityReason = data.activityReason.trim();
+            data.staffRemark = data.staffRemark.trim();
             http.put(`/suggestionForm/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/suggestionForm");
+                    navigate("/displaySuggestionForm");
                 })
                 .catch(function (err) {
                     console.log(err.response);
                 });
         }
     });
+
+    const submitStaffRemark = (remark) => {
+        formik.setValues({
+            ...formik.values,
+            staffRemark: remark
+        });
+
+        formik.handleSubmit();
+    };
 
     const [open, setOpen] = useState(false);
 
@@ -79,7 +90,7 @@ function EditSuggestionForm() {
         http.delete(`/suggestionForm/${id}`)
             .then((res) => {
                 console.log(res.data);
-                navigate("/suggestionForm");
+                navigate("/displaySuggestionForm");
             })
             .catch(function (err) {
                 console.log(err.response);
@@ -161,6 +172,30 @@ function EditSuggestionForm() {
                     error={formik.touched.activityReason && Boolean(formik.errors.activityReason)}
                     helperText={formik.touched.activityReason && formik.errors.activityReason}
                 />
+
+                <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+
+                <TextField
+                    fullWidth margin="normal" autoComplete="on"
+                    multiline minRows={4}
+                    label="Staff Remark"
+                    name="staffRemark"
+                    value={formik.values.staffRemark}
+                    onChange={formik.handleChange}
+                    error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
+                    helperText={formik.touched.staffRemark && formik.errors.staffRemark}
+                />
+
+                <Button variant="contained" onClick={() => submitStaffRemark("Thanks for the suggestion! We will incorporate it in future.")}
+                >
+                    Thanks for the suggestion! We will incorporate it in future.
+                </Button>
+
+                <Button variant="contained" onClick={() => submitStaffRemark("Unfortunately, this suggestion is not feasible.")}
+                >
+                    Unfortunately, this suggestion is not feasible.
+                </Button>
+
                 <Box sx={{ mt: 2 }}>
                     <Button variant="contained" type="submit">
                         Update
