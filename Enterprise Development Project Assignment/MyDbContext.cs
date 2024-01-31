@@ -23,5 +23,9 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<RatingsAndReviews> RatingsAndReviews { get; set; }
         public DbSet<Coupons> Coupons { get; set; }
         public DbSet<CreditCard> CreditCard { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+
+
     }
 }
