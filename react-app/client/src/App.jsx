@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
 import Logo from './assets/logo.png';
+import Home from './pages/Home';
 import SuggestionForm from './pages/SuggestionForm';
 import DisplaySuggestionForm from './pages/DisplaySuggestionForm';
 import EditSuggestionForm from './pages/EditSuggestionForm';
@@ -57,7 +58,7 @@ function App() {
 
         <Container>
           <Routes>
-            <Route path={"/"} />
+            <Route path={"/"} element={<Home />} />
             <Route path={"/suggestionForm"} element={<SuggestionForm />} />
             <Route path={"/displaySuggestionForm"} element={<DisplaySuggestionForm />} />
             <Route path={"/editSuggestionForm/:id"} element={<EditSuggestionForm />} />
