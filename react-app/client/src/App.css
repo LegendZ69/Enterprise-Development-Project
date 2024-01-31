@@ -18,3 +18,7 @@ button:hover {
   height: 100vh;
   background-repeat: no-repeat;
 }
+.AppBar button {
+  color: inherit;
+  margin-left: 12px;
+}

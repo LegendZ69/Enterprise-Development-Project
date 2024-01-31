@@ -1,5 +1,6 @@
 import './App.css';
-import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box } from '@mui/material';
+import { useState, useEffect, useContext } from 'react';
+import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box,Button } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
@@ -28,10 +29,34 @@ import CreditCard from './pages/CreditCard';
 import AddCreditCard from './pages/AddCreditCard';
 import UpdateCreditCard from './pages/UpdateCreditCard';
 import Checkout from './pages/Checkout';
+import MyForm from './pages/MyForm';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import http from './http';
+import UserContext from './contexts/UserContext';
+import Users from './pages/Users';
+import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
+import ChangePassword from './pages/ChangePassword';
 
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken")) {
+      http.get('/user/auth').then((res) => {
+        setUser(res.data.user);
+      });
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.clear();
+    window.location = "/";
+  };
   return (
+    <UserContext.Provider value={{ user, setUser }}>
     <Router>
       <ThemeProvider theme={MyTheme}>
         <AppBar position="static" className='AppBar'>
@@ -51,6 +76,23 @@ function App() {
               <Link to="/coupons" ><Typography>Coupons</Typography></Link>
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
+              {user && (
+                <Link to="/users"><Typography>Users</Typography></Link>
+              )}
+              <Box sx={{ flexGrow: 1 }}></Box>
+              {user && (
+                <>
+                  <Link to="/profile"><Typography>{user.name}</Typography></Link>
+                  <Button onClick={logout}><Typography>Logout</Typography></Button>
+                </>
+              )
+              }
+              {!user && (
+                <>
+                  <Link to="/register" ><Typography>Register</Typography></Link>
+                  <Link to="/login" ><Typography>Login</Typography></Link>
+                </>
+              )}
             </Toolbar>
           </Container>
         </AppBar>
@@ -81,12 +123,19 @@ function App() {
             <Route path={"/addCreditCard"} element={<AddCreditCard />} />
             <Route path={"/updateCreditCard/:id"} element={<UpdateCreditCard />} />
             <Route path={"/checkout"} element={<Checkout />} />
+            <Route path={"/register"} element={<Register />} />
+            <Route path={"/login"} element={<Login />} />
+            <Route path={"/form"} element={<MyForm />} />
+            <Route path={"/users"} element={<Users />} />
+            <Route path={"/profile"} element={<Profile />} />
+            <Route path={"/editprofile/:id"} element={< EditProfile />} />
+            <Route path={"/changepassword"} element={<ChangePassword />} />
           </Routes>
         </Container>
 
         <BottomNavigation
           className="BottomNavigation"
-          showLabels
+          showlabels
           sx={{ mt: 30, backgroundColor: "black", color: "white" }}
         >
           <Grid container alignItems="center">
@@ -122,6 +171,7 @@ function App() {
 
       </ThemeProvider>
     </Router>
+    </UserContext.Provider>
   );
 }
 
