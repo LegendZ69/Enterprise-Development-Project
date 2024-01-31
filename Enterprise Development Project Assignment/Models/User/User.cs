@@ -15,7 +15,10 @@ namespace Enterprise_Development_Project_Assignment.Models
 		[MaxLength(50)]
 		public string Email { get; set; } = string.Empty;
 
-		[MaxLength(100), JsonIgnore]
+        [MaxLength(20)]
+        public string? ImageFile { get; set; }
+
+        [MaxLength(100), JsonIgnore]
 		public string Password { get; set; } = string.Empty;
 
 		[Column(TypeName = "datetime")]
