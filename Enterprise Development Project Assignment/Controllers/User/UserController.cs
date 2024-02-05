@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using Enterprise_Development_Project_Assignment.Helpers;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -17,14 +18,16 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<UserController> _logger;
+        private readonly AuditLogHelper _auditLogHelper;
 
         public UserController(MyDbContext context, IConfiguration configuration, IMapper mapper,
-            ILogger<UserController> logger)
+            ILogger<UserController> logger,AuditLogHelper auditLogHelper)
         {
             _context = context;
             _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
 
         [HttpPost("register")]
@@ -65,6 +68,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 // Add user
                 _context.Users.Add(user);
                 _context.SaveChanges();
+
+                _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), "User registered").Wait();
+
                 return Ok();
             }
             catch (Exception ex)
@@ -89,14 +95,20 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
                 if (foundUser == null)
                 {
+                    // Log failed login attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Login: User not found").Wait();
                     return BadRequest(new { message });
                 }
                 bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
                 if (!verified)
                 {
+                    // Log failed login attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Login: Wrong Password").Wait();
                     return BadRequest(new { message });
                 }
 
+                // Log successful login
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User logged in successfully").Wait();
                 // Return user info
                 UserDTO userDTO = _mapper.Map<UserDTO>(foundUser);
                 string accessToken = CreateToken(foundUser);
@@ -246,6 +258,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     if (existingUser != null)
                     {
                         string message = "Email already exists for another user.";
+                        _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), $"Failed Update: {message}").Wait();
                         return BadRequest(new { message });
                     }
 
@@ -264,6 +277,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
 
                 user.UpdatedAt = DateTime.Now;
+
+                _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), "Updated user information").Wait(); ;
 
                 _context.SaveChanges();
                 return Ok();
@@ -285,7 +300,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 {
                     return NotFound();
                 }
-
+                _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), "User deleted").Wait();
                 _context.Users.Remove(user);
                 _context.SaveChanges();
                 return Ok();
@@ -320,18 +335,21 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 if (!currentPasswordVerified)
                 {
                     string message = "Current password is incorrect.";
+                    _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), $"Failed Change Password: {message}").Wait();
                     return BadRequest(new { message });
                 }
                 // Check if the new password is the same as the current password
                 if (changePasswordRequest.CurrentPassword == changePasswordRequest.NewPassword)
                 {
                     string message = "New password must be different from the current password.";
+                    _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), $"Failed Change Password: {message}").Wait();
                     return BadRequest(new { message });
                 }
                 // Update the password with the new one
                 user.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordRequest.NewPassword);
                 user.UpdatedAt = DateTime.Now;
 
+                _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), "Changed Password").Wait();
                 _context.SaveChanges();
                 return Ok();
             }
@@ -402,6 +420,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     // Add user
                     _context.Users.Add(user);
                 }
+
+                // Log the user activity
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                _auditLogHelper.LogUserActivityAsync(userId, "Populated Admin Accounts").Wait();
 
                 // Save changes after adding all admin accounts
                 _context.SaveChanges();
