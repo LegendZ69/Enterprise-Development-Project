@@ -10,8 +10,8 @@ namespace Enterprise_Development_Project_Assignment.Models
 		public string Description { get; set; } = string.Empty;
 		[MaxLength(20)]
 		public string? ImageFile { get; set; }
-        public decimal? Price { get; set; } // Add Price property
-        public string? Category { get; set; } // Add Category property
+        public decimal? Price { get; set; } 
+        public string? Category { get; set; } 
     }
 
 

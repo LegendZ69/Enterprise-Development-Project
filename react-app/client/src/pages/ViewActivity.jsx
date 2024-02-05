@@ -44,7 +44,7 @@ function ViewActivity() {
         toast.success('Booking successful');
 
         // Navigate to the BookingTest component with the newBookingId
-        navigate(`/bookingTest/${newBookingId}`);
+        navigate(`/viewBooking/${newBookingId}`);
       })
       .catch((error) => {
         console.error('Booking failed:', error.message);

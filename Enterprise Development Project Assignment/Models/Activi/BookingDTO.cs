@@ -10,5 +10,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         public DateTime BookingDate { get; set; }
         public UserBasicDTO User { get; set; }
         public int Quantity { get; set; }
+        public string ActivityTitle { get; set; }
+
     }
 }

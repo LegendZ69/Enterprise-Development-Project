@@ -65,7 +65,7 @@ public class BookingController : ControllerBase
         int userId = GetUserId();
 
         var booking = _context.Bookings
-            .Include(b => b.Activity)
+            .Include(b => b.Activity) // 
             .FirstOrDefault(b => b.Id == id && b.UserId == userId);
 
         if (booking == null)
@@ -74,7 +74,41 @@ public class BookingController : ControllerBase
         }
 
         var bookingDTO = _mapper.Map<BookingDTO>(booking);
+
+        // Set the ActivityName property
+        bookingDTO.ActivityTitle = booking.Activity.Title;
+
         return Ok(bookingDTO);
     }
+
+    [HttpGet("userBookings"), Authorize]
+    [ProducesResponseType(typeof(List<BookingDTO>), StatusCodes.Status200OK)]
+    public IActionResult GetUserBookings()
+    {
+        int userId = GetUserId();
+
+        var userBookings = _context.Bookings
+            .Include(b => b.Activity)
+            .Where(b => b.UserId == userId)
+            .ToList();
+
+        var userBookingDTOs = userBookings.Select(booking => new BookingDTO
+        {
+            Id = booking.Id,
+            ActivityId = booking.ActivityId,
+            UserId = booking.UserId,
+            BookingDate = booking.BookingDate,
+            User = _mapper.Map<UserBasicDTO>(booking.User),
+            Quantity = booking.Quantity,
+            ActivityTitle = booking.Activity.Title 
+        }).ToList();
+
+        return Ok(userBookingDTOs);
+    }
+
+
+
+
+
 
 }
