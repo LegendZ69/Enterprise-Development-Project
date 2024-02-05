@@ -26,7 +26,7 @@ function BookingTest() {
   }, [id]);
 
   const goBack = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   if (loading) {
@@ -55,6 +55,9 @@ function BookingTest() {
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
         Activity ID: {booking.activityId}
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
+        Activity Name: {booking.activityTitle} {/* Display ActivityName */}
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
         User ID: {booking.userId}

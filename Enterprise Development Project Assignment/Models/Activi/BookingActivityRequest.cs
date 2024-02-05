@@ -1,6 +1,4 @@
-﻿// BookingActivityRequest.cs
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
@@ -10,6 +8,8 @@ namespace Enterprise_Development_Project_Assignment.Models
         public DateTime BookingDate { get; set; }
 
         public int Quantity { get; set; }
+
+
     }
 }
 

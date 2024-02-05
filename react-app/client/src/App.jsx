@@ -23,7 +23,8 @@ import Activities from './pages/Activities';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity'
 import ViewActivity from './pages/ViewActivity'
-import BookingTest from './pages/BookingTest';
+import UserBookings from './pages/UserBookings';
+import ViewBooking from './pages/ViewBooking';
 
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
@@ -81,6 +82,7 @@ function App() {
               <Link to="/coupons" ><Typography>Coupons</Typography></Link>
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
+              <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
               {user && (
                 <Link to="/users"><Typography>Users</Typography></Link>
               )}
@@ -122,7 +124,8 @@ function App() {
             <Route path={"/addActivity"} element={<AddActivity />} />
             <Route path={"/viewActivity/:id"} element={<ViewActivity />} />
             <Route path={"/editActivity/:id"} element={<EditActivity />} />
-            <Route path={"/bookingTest/:id"} element={<BookingTest />} />
+            <Route path={"/userBookings"} element={<UserBookings />} />
+            <Route path={"/viewBooking/:id"} element={<ViewBooking />} />
 
             
 
