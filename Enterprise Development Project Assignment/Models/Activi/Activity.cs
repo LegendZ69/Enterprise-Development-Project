@@ -9,18 +9,24 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Id { get; set; }
 
         [Required, MinLength(3), MaxLength(100)]
-        public string Title { get; set; } = string.Empty;
+        public string? Title { get; set; }
 
         [Required, MinLength(3), MaxLength(500)]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
         public decimal? Price { get; set; }
 
         [MaxLength(50)]
         public string? Category { get; set; }
 
-        [MaxLength(20)]
+        [Required, MaxLength(20)]
         public string? ImageFile { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime EventDate { get; set; }
+
+        [MaxLength(100)]
+        public string? Location { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }

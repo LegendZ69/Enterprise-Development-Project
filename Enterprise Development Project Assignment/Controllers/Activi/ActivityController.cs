@@ -27,21 +27,27 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			.Select(c => c.Value).SingleOrDefault());
 		}
 
-		[HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
-		public IActionResult GetAll(string? search)
-		{
-			IQueryable<Activity> result = _context.Activities.Include(a => a.User);
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
+        public IActionResult GetAll(string? search, DateTime? date)
+        {
+            IQueryable<Activity> result = _context.Activities.Include(a => a.User);
 
-			if (search != null)
-			{
-				result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
-			}
+            if (search != null)
+            {
+                result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
+            }
 
-			var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-			IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
-			return Ok(data);
-		}
+            if (date.HasValue)
+            {
+                // Filter activities based on the selected date
+                result = result.Where(x => x.EventDate.Date == date.Value.Date);
+            }
+
+            var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+            IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
+            return Ok(data);
+        }
 
         [HttpPost, Authorize]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
@@ -55,8 +61,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 Title = activity.Title.Trim(),
                 Description = activity.Description.Trim(),
                 ImageFile = activity.ImageFile,
-                Price = activity.Price, 
+                Price = activity.Price,
                 Category = activity.Category,
+                EventDate = activity.EventDate,
+                Location = activity.Location,
                 CreatedAt = now,
                 UpdatedAt = now,
                 UserId = userId
@@ -84,7 +92,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			ActivityDTO data = _mapper.Map<ActivityDTO>(activity);
 			return Ok(data);
 		}
-
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateTutorial(int id, UpdateActivityRequest activity)
         {
@@ -112,13 +119,21 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 myActivity.ImageFile = activity.ImageFile;
             }
-            if (activity.Price != null) 
+            if (activity.Price != null)
             {
                 myActivity.Price = activity.Price;
             }
-            if (activity.Category != null) 
+            if (activity.Category != null)
             {
                 myActivity.Category = activity.Category;
+            }
+            if (activity.EventDate != default)
+            {
+                myActivity.EventDate = activity.EventDate;
+            }
+            if (!string.IsNullOrEmpty(activity.Location))
+            {
+                myActivity.Location = activity.Location;
             }
 
             _context.SaveChanges();
@@ -142,7 +157,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
         [HttpGet("category/{category}")]
         [ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
-        public IActionResult GetActivitiesByCategory(string category, string? search)
+        public IActionResult GetActivitiesByCategory(string category, string? search, DateTime? date)
         {
             IQueryable<Activity> result = _context.Activities.Include(a => a.User);
 
@@ -154,6 +169,12 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
+            }
+
+            if (date.HasValue)
+            {
+                // Filter activities based on the selected date
+                result = result.Where(x => x.EventDate.Date == date.Value.Date);
             }
 
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
