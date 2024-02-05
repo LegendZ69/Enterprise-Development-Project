@@ -21,6 +21,7 @@ import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
 import global from '../global';
+import '../css/activities.css';
 
 function Activities() {
   const [activitiesList, setActivitiesList] = useState([]);
@@ -149,21 +150,20 @@ function Activities() {
         <Grid container spacing={4}>
           {activitiesList.map((activity) => (
             <Grid item key={activity.id} xs={12} sm={6} md={3}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }} className='card-container'>
                 {activity.imageFile && (
                   <CardMedia
                     component="div"
+                    className='card-img'
                     sx={{
                       pt: '55%',
                     }}
                     image={`${import.meta.env.VITE_FILE_BASE_URL}${activity.imageFile}`}
                   />
                 )}
-                <CardContent sx={{ flexGrow: 1, position: 'relative' }}>
-                  <Box sx={{ display: 'flex', mb: 1 }}>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                      {activity.title}
-                    </Typography>
+                <CardContent className="card-content">
+                  <Typography variant="h6" className="card-title">
+                    {activity.title}
                     {user && user.id === activity.userId && (
                       <Link to={`/editActivity/${activity.id}`}>
                         <IconButton color="primary" sx={{ padding: '4px' }}>
@@ -171,22 +171,23 @@ function Activities() {
                         </IconButton>
                       </Link>
                     )}
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                    <AccountCircle sx={{ mr: 1 }} />
-                    <Typography>{activity.user?.name}</Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                    <AccessTime sx={{ mr: 1 }} />
-                    <Typography>{dayjs(activity.createdAt).format(global.datetimeFormat)}</Typography>
-                  </Box>
-                  <Typography sx={{ whiteSpace: 'pre-wrap' }}>{activity.description}</Typography>
-                  <Link to={`/viewActivity/${activity.id}`} style={{ textDecoration: 'none' }}>
-                    <Button size="small" sx={{ position: 'absolute', bottom: 8, right: 8 }}>
-                      View
-                    </Button>
+                  </Typography>
+                  
+                  <Typography className="card-description">{activity.description}</Typography>
+                  <div className="card-details">
+                      <Typography color="textSecondary">
+                          Created by: {activity.user?.name}
+                      </Typography>
+                      <Typography color="textSecondary">
+                          Date Created: {dayjs(activity.createdAt).format(global.datetimeFormat)}
+                      </Typography>
+                  </div>
+
+                  <Link to={`/viewActivity/${activity.id}`} className='card-btn'>
+                    View
                   </Link>
                 </CardContent>
+
               </Card>
             </Grid>
           ))}
