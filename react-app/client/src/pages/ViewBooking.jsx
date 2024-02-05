@@ -26,7 +26,7 @@ function BookingTest() {
   }, [id]);
 
   const goBack = () => {
-    navigate("/");
+    navigate("/UserBookings");
   };
 
   if (loading) {

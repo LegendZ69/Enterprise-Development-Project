@@ -100,15 +100,10 @@ public class BookingController : ControllerBase
             BookingDate = booking.BookingDate,
             User = _mapper.Map<UserBasicDTO>(booking.User),
             Quantity = booking.Quantity,
-            ActivityTitle = booking.Activity.Title 
+            ActivityTitle = booking.Activity.Title,
+            Price = booking.Activity.Price
         }).ToList();
 
         return Ok(userBookingDTOs);
     }
-
-
-
-
-
-
 }
