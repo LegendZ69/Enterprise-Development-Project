@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240205083055_create")]
+    [Migration("20240205121826_create")]
     partial class create
     {
         /// <inheritdoc />
@@ -45,9 +45,16 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("ImageFile")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");

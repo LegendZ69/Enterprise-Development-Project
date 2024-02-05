@@ -140,6 +140,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    EventDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)

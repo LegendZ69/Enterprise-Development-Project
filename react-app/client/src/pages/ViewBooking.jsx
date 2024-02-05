@@ -60,9 +60,12 @@ function BookingTest() {
         Activity Name: {booking.activityTitle} {/* Display ActivityName */}
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
+        Quantity: {booking.quantity} {/* Display Quantity */}
+      </Typography>
+      <Typography variant="body1" sx={{ mb: 2 }}>
         User ID: {booking.userId}
       </Typography>
-
+  
       {/* Additional UI elements, e.g., a button to navigate back */}
       <Button variant="contained" onClick={goBack}>
         Go Back

@@ -64,7 +64,7 @@ function UserBookings() {
             </Typography>
             {booking.price && (
               <Typography variant="body1" sx={{ mb: 2 }}>
-                Price: {booking.price}
+                Total Price: ${booking.price}
               </Typography>
             )}
           </Box>

@@ -16,7 +16,7 @@ import {
   CardActions,
   InputBase
 } from '@mui/material';
-import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
+import { AccountCircle, AccessTime, Search, Clear, Edit, Event  } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
@@ -161,32 +161,37 @@ function Activities() {
                     image={`${import.meta.env.VITE_FILE_BASE_URL}${activity.imageFile}`}
                   />
                 )}
-                <CardContent className="card-content">
-                  <Typography variant="h6" className="card-title">
-                    {activity.title}
-                    {user && user.id === activity.userId && (
-                      <Link to={`/editActivity/${activity.id}`}>
-                        <IconButton color="primary" sx={{ padding: '4px' }}>
-                          <Edit />
-                        </IconButton>
-                      </Link>
-                    )}
-                  </Typography>
-                  
-                  <Typography className="card-description">{activity.description}</Typography>
-                  <div className="card-details">
-                      <Typography color="textSecondary">
-                          Created by: {activity.user?.name}
-                      </Typography>
-                      <Typography color="textSecondary">
-                          Date Created: {dayjs(activity.createdAt).format(global.datetimeFormat)}
-                      </Typography>
-                  </div>
+<CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+  <Typography variant="h6" className="card-title">
+    {activity.title}
+    {user && user.id === activity.userId && (
+      <Link to={`/editActivity/${activity.id}`}>
+        <IconButton color="primary" sx={{ padding: '4px' }}>
+          <Edit />
+        </IconButton>
+      </Link>
+    )}
+  </Typography>
 
-                  <Link to={`/viewActivity/${activity.id}`} className='card-btn'>
-                    View
-                  </Link>
-                </CardContent>
+  <div className="card-details" sx={{ flexGrow: 1 }}>
+    <Typography color="textSecondary" sx={{ marginBottom: 1 }}>
+      <Event fontSize="small" sx={{ marginRight: 1 }} />
+      {dayjs(activity.eventDate).format('DD/MM/YYYY')}
+    </Typography>
+
+    <Typography variant="body" color="textSecondary" sx={{ marginBottom: 1 }}>
+      Price: <strong>${activity.price}</strong>
+    </Typography>
+  </div>
+
+  <Link to={`/viewActivity/${activity.id}`} className='card-btn' sx={{ alignSelf: 'flex-start', mt: 'auto' }}>
+    View
+  </Link>
+</CardContent>
+
+
+
+
 
               </Card>
             </Grid>
