@@ -15,33 +15,36 @@ function Register() {
             name: "",
             email: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            phoneNumber: "" // Added phoneNumber field
         },
         validationSchema: yup.object({
             name: yup.string().trim()
                 .min(3, 'Name must be at least 3 characters')
                 .max(50, 'Name must be at most 50 characters')
                 .required('Name is required')
-                .matches(/^[a-zA-Z '-,.]+$/,
-                    "Only allow letters, spaces and characters: ' - , ."),
+                .matches(/^[a-zA-Z '-,.]+$/, "Only allow letters, spaces and characters: ' - , ."),
             email: yup.string().trim()
                 .email('Enter a valid email')
                 .max(50, 'Email must be at most 50 characters')
                 .required('Email is required'),
             password: yup.string().trim()
-                .min(8, 'Password must be at least 8 characters')
+                .min(12, 'Password must be at least 12 characters')
                 .max(50, 'Password must be at most 50 characters')
                 .required('Password is required')
-                .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/,
-                    "At least 1 letter and 1 number"),
+                .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$/, "Password must include lowercase, uppercase, number, and special character"),
             confirmPassword: yup.string().trim()
                 .required('Confirm password is required')
-                .oneOf([yup.ref('password')], 'Passwords must match')
+                .oneOf([yup.ref('password')], 'Passwords must match'),
+            phoneNumber: yup.string().trim()
+            .matches(/^\d{8}$/, 'Phone number must be 8 digits')
+            .required('Phone number is required') // Validation for phone number can be added if needed
         }),
         onSubmit: (data) => {
             data.name = data.name.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
+            data.phoneNumber = data.phoneNumber.trim(); 
             http.post("/user/register", data)
                 .then((res) => {
                     console.log(res.data);
@@ -84,6 +87,16 @@ function Register() {
                     onBlur={formik.handleBlur}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                    fullWidth margin="dense" autoComplete="off"
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={formik.values.phoneNumber}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                    helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
                 />
                 <TextField
                     fullWidth margin="dense" autoComplete="off"

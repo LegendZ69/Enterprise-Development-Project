@@ -39,6 +39,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 request.Name = request.Name.Trim();
                 request.Email = request.Email.Trim().ToLower();
                 request.Password = request.Password.Trim();
+                request.PhoneNumber = request.PhoneNumber.Trim();
 
                 // Check email
                 var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
@@ -62,7 +63,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     Password = passwordHash,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    Role = role
+                    Role = role,
+                    PhoneNumber =request.PhoneNumber,
                 };
 
                 // Add user

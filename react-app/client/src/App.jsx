@@ -44,6 +44,7 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
+import AuditLog from './pages/AuditLog';
 
 
 function App() {
@@ -83,8 +84,11 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
-              {user && (
+              {user && user.role === "admin" && (
+              <>
                 <Link to="/users"><Typography>Users</Typography></Link>
+                <Link to="/auditlog"><Typography>Audit Log</Typography></Link>
+              </>
               )}
               <Box sx={{ flexGrow: 1 }}></Box>
               {user && (
@@ -145,6 +149,7 @@ function App() {
             <Route path={"/profile"} element={<Profile />} />
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
+            <Route path={"/auditlog"} element ={<AuditLog/>}/>
           </Routes>
         </Container>
 
