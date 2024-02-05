@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Enterprise_Development_Project_Assignment.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddControllers();
+builder.Services.AddScoped<AuditLogHelper>();
 
 builder.Services.AddSwaggerGen(options =>
 {

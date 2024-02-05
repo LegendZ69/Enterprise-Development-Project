@@ -48,5 +48,6 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<User> Users { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
     }
 }

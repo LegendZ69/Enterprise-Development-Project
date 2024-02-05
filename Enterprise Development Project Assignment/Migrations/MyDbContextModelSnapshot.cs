@@ -67,6 +67,28 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("Activities");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
