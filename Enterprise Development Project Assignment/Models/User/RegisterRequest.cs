@@ -4,19 +4,18 @@ namespace Enterprise_Development_Project_Assignment.Models
 {
 	public class RegisterRequest
 	{
-		[Required, MinLength(3), MaxLength(50)]
-		// Regular expression to enforce name format
-		[RegularExpression(@"^[a-zA-Z '-,.]+$",
-		ErrorMessage = "Only allow letters, spaces and characters: ' - , .")]
-		public string Name { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Name is required")]
+        [DataType(DataType.Text)]
+        public string Name { get; set; } = string.Empty;
 
-		[Required, EmailAddress, MaxLength(50)]
-		public string Email { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Email is required")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Invalid Email Address")]
+        public string Email { get; set; } = string.Empty;
 
-		[Required, MinLength(8), MaxLength(50)]
-		// Regular expression to enforce password complexity
-		[RegularExpression(@"^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$",
-		ErrorMessage = "At least 1 letter and 1 number")]
-		public string Password { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Password is required")]
+        [MinLength(12, ErrorMessage = "Password must be at least 12 characters long")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$", ErrorMessage = "Password must include lowercase, uppercase, number, and special character")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = string.Empty;
 	}
 }

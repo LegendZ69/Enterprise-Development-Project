@@ -26,7 +26,12 @@ namespace Enterprise_Development_Project_Assignment.Models
 
 		[Column(TypeName = "datetime")]
 		public DateTime UpdatedAt { get; set; }
+		[MaxLength(8)]
+		public string PhoneNumber { get; set; } = string.Empty;
 
+		public string Role { get; set; } = string.Empty;
+
+		
 		//// Navigation property to represent the one-to-many relationship
 		[JsonIgnore]
 		public List<Activity>? Activities { get; set; }
