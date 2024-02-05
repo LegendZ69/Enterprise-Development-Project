@@ -342,6 +342,81 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
+        [HttpPost("popualteadminaccs"), Authorize]
+        public IActionResult PopulateAdminAccs()
+        {
+            try
+            {
+                // Check if the authenticated user has the "admin" role
+                var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+                if (roleClaim == null || roleClaim.Value.ToLower() != "admin")
+                {
+                    return StatusCode(403, new { error = "You do not have authorization to perform this action." });
+                }
+
+                // Define a list of test admin accounts
+                var adminAccounts = new List<RegisterRequest>
+        {
+            new RegisterRequest { Name = "Admin1", Email = "admin1@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin2", Email = "admin2@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin3", Email = "admin3@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin4", Email = "admin4@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin5", Email = "admin5@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin6", Email = "admin6@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin7", Email = "admin7@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin8", Email = "admin8@admin.com", Password = "Admin@1234567" },
+            new RegisterRequest { Name = "Admin9", Email = "admin9@admin.com", Password = "Admin@1234567" },
+
+            // Add more admin accounts as needed
+        };
+
+                foreach (var adminAccount in adminAccounts)
+                {
+                    // Trim and lowercase email
+                    adminAccount.Email = adminAccount.Email.Trim().ToLower();
+
+                    // Check if email already exists
+                    var existingUser = _context.Users.FirstOrDefault(u => u.Email == adminAccount.Email);
+                    if (existingUser != null)
+                    {
+                        // Skip if the email already exists
+                        continue;
+                    }
+
+                    // Determine user role based on email
+                    string role = "admin";
+
+                    // Create user object
+                    var now = DateTime.Now;
+                    string passwordHash = BCrypt.Net.BCrypt.HashPassword(adminAccount.Password);
+                    var user = new User()
+                    {
+                        Name = adminAccount.Name,
+                        Email = adminAccount.Email,
+                        Password = passwordHash,
+                        CreatedAt = now,
+                        UpdatedAt = now,
+                        Role = role
+                    };
+
+                    // Add user
+                    _context.Users.Add(user);
+                }
+
+                // Save changes after adding all admin accounts
+                _context.SaveChanges();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when adding admin accounts");
+                return StatusCode(500);
+            }
+        }
+
+
+
 
     }
 }
