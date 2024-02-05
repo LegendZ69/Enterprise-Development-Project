@@ -15,8 +15,10 @@ function AddActivity() {
         initialValues: {
             title: '',
             description: '',
-            price: '', 
-            category: '' 
+            price: '',
+            category: '',
+            eventDate: '', // new field for date
+            location: '',  // new field for location
         },
         validationSchema: yup.object({
             title: yup.string().trim()
@@ -28,7 +30,9 @@ function AddActivity() {
                 .max(500, 'Description must be at most 500 characters')
                 .required('Description is required'),
             price: yup.number().min(0, 'Price must be greater than or equal to 0'),
-            category: yup.string().required('Category is required')
+            category: yup.string().required('Category is required'),
+            eventDate: yup.date().required('Event date is required'), // validation for date
+            location: yup.string().trim().required('Location is required'), // validation for location
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -134,6 +138,31 @@ function AddActivity() {
                             <MenuItem value="leisure">Leisure</MenuItem>
                             <MenuItem value="family">Family</MenuItem>
                         </TextField>
+                        <TextField
+                            fullWidth
+                            margin="dense"
+                            autoComplete="off"
+                            label="Event Date"
+                            name="eventDate"
+                            type="date"
+                            value={formik.values.eventDate}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
+                            helperText={formik.touched.eventDate && formik.errors.eventDate}
+                        />
+                        <TextField
+                            fullWidth
+                            margin="dense"
+                            autoComplete="off"
+                            label="Location"
+                            name="location"
+                            value={formik.values.location}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.location && Boolean(formik.errors.location)}
+                            helperText={formik.touched.location && formik.errors.location}
+                        />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
                         <Box sx={{ textAlign: 'center', mt: 2 }}>
