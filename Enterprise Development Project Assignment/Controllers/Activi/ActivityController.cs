@@ -55,8 +55,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 Title = activity.Title.Trim(),
                 Description = activity.Description.Trim(),
                 ImageFile = activity.ImageFile,
-                Price = activity.Price, // Add Price property
-                Category = activity.Category, // Add Category property
+                Price = activity.Price, 
+                Category = activity.Category,
                 CreatedAt = now,
                 UpdatedAt = now,
                 UserId = userId

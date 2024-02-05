@@ -54,18 +54,28 @@ function UserBookings() {
         User Bookings
       </Typography>
       {currentBookings.map((booking) => (
-        <Box key={booking.id} sx={{ mb: 4, border: '1px solid #ccc', padding: '16px', borderRadius: '8px' }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Activity: {booking.activityTitle}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            Date Booked: {new Date(booking.bookingDate).toLocaleDateString()}
-          </Typography>
-          <Link to={`/viewBooking/${booking.id}`} style={{ textDecoration: 'none' }}>
-            <Button variant="contained" color="primary">
-              View Details
-            </Button>
-          </Link>
+        <Box key={booking.id} sx={{ mb: 4, border: '1px solid #ccc', padding: '16px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Activity: {booking.activityTitle}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2 }}>
+              Date Booked: {new Date(booking.bookingDate).toLocaleDateString()}
+            </Typography>
+            {booking.price && (
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                Price: {booking.price}
+              </Typography>
+            )}
+          </Box>
+          <Box>
+            {/* Additional UI elements, e.g., a button to view details */}
+            <Link to={`/viewBooking/${booking.id}`} style={{ textDecoration: 'none' }}>
+              <Button variant="contained" color="primary">
+                View Details
+              </Button>
+            </Link>
+          </Box>
         </Box>
       ))}
 

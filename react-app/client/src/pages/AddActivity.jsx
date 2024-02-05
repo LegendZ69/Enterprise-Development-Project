@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function AddActivity() {
     const navigate = useNavigate();
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState('');
 
     const formik = useFormik({
         initialValues: {
@@ -143,7 +143,7 @@ function AddActivity() {
                             </Button>
                             {imageFile && (
                                 <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                    <img alt="tutorial" src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} />
+                                    <img alt="image" src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`} />
                                 </Box>
                             )}
                         </Box>
