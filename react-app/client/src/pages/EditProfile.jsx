@@ -40,7 +40,10 @@ function EditProfile() {
             email: yup.string().trim()
                 .email('Invalid email address')
                 .max(50, 'Email must be at most 50 characters')
-                .required('Email is required')
+                .required('Email is required'),
+            phoneNumber: yup.string().trim()
+                .matches(/^\d{8}$/, 'Phone number must be 8 digits')
+                .required('Phone number is required'),
             // Add other validations for additional user properties
         }),
         onSubmit: (data) => {
@@ -48,11 +51,21 @@ function EditProfile() {
                 data.imageFile = imageFile;
             }
             data.name = data.name.trim();
-            data.email = data.email.trim()
+            data.email = data.email.trim();
+            data.phoneNumber = data.phoneNumber.trim();
+            // Check if the email is updated
+            const isEmailUpdated = data.email !== user.email;
+
             http.put(`/user/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
+                    
+                    if(isEmailUpdated){
+                        logout()
+                    }else{
+
                     navigate("/profile");
+                    }
                 });
         }
     });
@@ -65,7 +78,7 @@ function EditProfile() {
     const logout = () => {
         localStorage.clear();
         window.location = "/";
-      };
+    };
 
     const handleClose = () => {
         setOpen(false);
@@ -131,6 +144,16 @@ function EditProfile() {
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.email && Boolean(formik.errors.email)}
                                     helperText={formik.touched.email && formik.errors.email}
+                                />
+                                <TextField
+                                    fullWidth margin="dense" autoComplete="off"
+                                    label="Phone Number"
+                                    name="phoneNumber"
+                                    value={formik.values.phoneNumber}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                                    helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
                                 />
                                 {/* Add additional fields as needed */}
                             </Grid>

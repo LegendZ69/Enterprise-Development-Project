@@ -64,7 +64,14 @@ function UserProfile() {
                             <AccountCircle sx={{ mr: 1 }} />
                             <Typography>Email: {userProfile.email}</Typography>
                         </Box>
-                        {/* Add other user-related information here */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                            <AccountCircle sx={{ mr: 1 }} />
+                            <Typography>Role: {userProfile.role}</Typography>
+                        </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                                <AccountCircle sx={{ mr: 1 }} />
+                                <Typography>Phone Number: {userProfile.phoneNumber}</Typography>
+                            </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                             <AccessTime sx={{ mr: 1 }} />
                             <Typography>
