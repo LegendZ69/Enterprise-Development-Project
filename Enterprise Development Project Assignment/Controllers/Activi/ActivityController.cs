@@ -112,11 +112,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 myActivity.ImageFile = activity.ImageFile;
             }
-            if (activity.Price != null) // Add Price property
+            if (activity.Price != null) 
             {
                 myActivity.Price = activity.Price;
             }
-            if (activity.Category != null) // Add Category property
+            if (activity.Category != null) 
             {
                 myActivity.Category = activity.Category;
             }

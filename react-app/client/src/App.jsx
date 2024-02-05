@@ -20,7 +20,10 @@ import AboutUs from './pages/AboutUs';
 import FAQs from './pages/FAQs';
 
 import Activities from './pages/Activities';
-import ActivityInfo from './pages/ActivityInfo';
+import AddActivity from './pages/AddActivity';
+import EditActivity from './pages/EditActivity'
+import ViewActivity from './pages/ViewActivity'
+
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
 import UpdateCoupons from './pages/UpdateCoupons';
@@ -114,7 +117,11 @@ function App() {
             <Route path={"/faqs"} element={<FAQs />} />
 
             <Route path={"/activities"} element={<Activities />} />
-            <Route path={"/activityInfo"} element={<ActivityInfo />} />
+            <Route path={"/addActivity"} element={<AddActivity />} />
+            <Route path={"/viewActivity/:id"} element={<ViewActivity />} />
+            <Route path={"/editActivity/:id"} element={<EditActivity />} />
+
+            
             <Route path={"/coupons"} element={<Coupons />} />
             <Route path={"/addCoupons"} element={<AddCoupons />} />
             <Route path={"/updateCoupons/:id"} element={<UpdateCoupons />} />
