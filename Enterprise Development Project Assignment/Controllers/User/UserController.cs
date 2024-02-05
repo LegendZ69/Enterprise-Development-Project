@@ -291,21 +291,35 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
-        [HttpDelete("{id}"), Authorize]
-
-        public IActionResult DeleteUser(int id)
+        [HttpDelete("{deleteid}/{deleterid}"), Authorize]
+        public IActionResult DeleteUser(int deleteid, int deleterid)
         {
             try
             {
-                var user = _context.Users.Find(id);
-                if (user == null)
+                // Check if the user making the request (deleter) exists
+                var deleter = _context.Users.Find(deleterid);
+                if (deleter == null)
                 {
-                    return NotFound();
+                    return NotFound("Deleter not found");
                 }
-                _auditLogHelper.LogUserActivityAsync(user.Id.ToString(), "User deleted").Wait();
-                _context.Users.Remove(user);
+
+                // Check if the user to be deleted (deleteid) exists
+                var userToDelete = _context.Users.Find(deleteid);
+                if (userToDelete == null)
+                {
+                    return NotFound("User to delete not found");
+                }
+
+                // You might want to check if the deleter has the necessary permissions here
+
+                // Log the user activity
+                _auditLogHelper.LogUserActivityAsync(deleter.Id.ToString(), $"User {userToDelete.Id} has been deleted").Wait();
+
+                // Remove the user
+                _context.Users.Remove(userToDelete);
                 _context.SaveChanges();
-                return Ok();
+
+                return Ok("User deleted successfully");
             }
             catch (Exception ex)
             {
@@ -313,6 +327,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
+
         [HttpPut("changepassword"), Authorize]
         public IActionResult ChangePassword(int id, ChangePasswordRequest changePasswordRequest)
         {

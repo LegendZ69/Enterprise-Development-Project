@@ -75,18 +75,18 @@ function Users() {
             handleClose();
             return;
         }
-
-        http.delete(`/user/${selectedUser.id}`)
+    
+        http.delete(`/user/${selectedUser.id}/${user.id}`)
             .then((res) => {
                 console.log(res.data);
-
+    
                 if (selectedUser.id === user.id) {
                     // If the current user is being deleted, perform logout
                     // Implement the logout function according to your application's logic
                     logout(); // Replace 'logout' with your actual logout function
                 } else {
                     // If it's another user, navigate to the users' page
-                    getUsers();;
+                    getUsers();
                 }
             })
             .catch((error) => {
@@ -97,6 +97,7 @@ function Users() {
                 handleClose(); // Close the dialog regardless of success or failure
             });
     };
+    
     
     const logout = () => {
         localStorage.clear();

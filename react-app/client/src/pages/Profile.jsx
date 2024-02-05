@@ -61,15 +61,12 @@ function UserProfile() {
                                                     </Link>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                            <AccountCircle sx={{ mr: 1 }} />
                             <Typography>Email: {userProfile.email}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                            <AccountCircle sx={{ mr: 1 }} />
                             <Typography>Role: {userProfile.role}</Typography>
                         </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                                <AccountCircle sx={{ mr: 1 }} />
                                 <Typography>Phone Number: {userProfile.phoneNumber}</Typography>
                             </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
