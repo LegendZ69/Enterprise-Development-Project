@@ -46,6 +46,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("ImageFile")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
