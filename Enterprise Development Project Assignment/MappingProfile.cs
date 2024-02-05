@@ -10,7 +10,8 @@ namespace Enterprise_Development_Project_Assignment
 			CreateMap<Activity, ActivityDTO>();
             CreateMap<User, UserBasicDTO>();
             CreateMap<User, UserDTO>();
-			
-		}
-	}
+            CreateMap<Booking, BookingDTO>();
+
+        }
+    }
 }

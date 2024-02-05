@@ -33,5 +33,8 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         // Navigation property to represent the one-to-many relationship
         public User? User { get; set; }
+
+        // Navigation property to represent the one-to-many relationship
+        public List<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }
