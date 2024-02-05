@@ -23,6 +23,7 @@ import Activities from './pages/Activities';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity'
 import ViewActivity from './pages/ViewActivity'
+import BookingTest from './pages/BookingTest';
 
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
@@ -41,6 +42,7 @@ import Users from './pages/Users';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
+import { Book } from '@mui/icons-material';
 
 
 function App() {
@@ -120,6 +122,9 @@ function App() {
             <Route path={"/addActivity"} element={<AddActivity />} />
             <Route path={"/viewActivity/:id"} element={<ViewActivity />} />
             <Route path={"/editActivity/:id"} element={<EditActivity />} />
+            <Route path={"/bookingTest/:id"} element={<BookingTest />} />
+
+            
 
             
             <Route path={"/coupons"} element={<Coupons />} />

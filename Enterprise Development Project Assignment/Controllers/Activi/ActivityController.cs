@@ -139,53 +139,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			return Ok();
 		}
 
-		//[HttpPost("book/{id}"), Authorize]
-		//[ProducesResponseType(typeof(BookingDTO), StatusCodes.Status200OK)]
-		//public IActionResult BookActivity(int id, BookingActivityRequest request)
-		//{
-		//	int userId = GetUserId();
-
-		//	var existingBooking = _context.Bookings
-		//		.FirstOrDefault(b => b.ActivityId == id && b.UserId == userId);
-
-		//	if (existingBooking != null)
-		//	{
-		//		string message = "You have already booked this activity.";
-		//		return BadRequest(new { message });
-		//	}
-
-		//	var booking = new Booking
-		//	{
-		//		ActivityId = id,
-		//		UserId = userId,
-		//		BookingDate = request.BookingDate
-		//	};
-
-		//	_context.Bookings.Add(booking);
-		//	_context.SaveChanges();
-
-		//	var bookingDTO = _mapper.Map<BookingDTO>(booking);
-		//	return Ok(bookingDTO);
-		//}
-
-		//[HttpGet("book/{bookingId}"), Authorize]
-		//[ProducesResponseType(typeof(BookingDTO), StatusCodes.Status200OK)]
-		//public IActionResult GetBooking(int bookingId)
-		//{
-		//	int userId = GetUserId();
-
-		//	var booking = _context.Bookings
-		//		.Include(b => b.Activity)
-		//		.FirstOrDefault(b => b.Id == bookingId && b.UserId == userId);
-
-		//	if (booking == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	var bookingDTO = _mapper.Map<BookingDTO>(booking);
-		//	return Ok(bookingDTO);
-		//}
 
         [HttpGet("category/{category}")]
         [ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]

@@ -1,5 +1,4 @@
-﻿using Enterprise_Development_Project_Assignment.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Enterprise_Development_Project_Assignment.Models;using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment
 {
@@ -18,6 +17,29 @@ namespace Enterprise_Development_Project_Assignment
                 optionsBuilder.UseSqlServer(connectionString);
             }
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Activities)
+                .WithOne(a => a.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Bookings)
+                .WithOne(b => b.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Activity>()
+                .HasMany(a => a.Bookings)
+                .WithOne(b => b.Activity)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ... other configurations
+        }
+
+
+
         public DbSet<SuggestionForm> SuggestionForms { get; set; }
         public DbSet<FeedbackForm> FeedbackForms { get; set; }
         public DbSet<RatingsAndReviews> RatingsAndReviews { get; set; }
@@ -25,7 +47,6 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<CreditCard> CreditCard { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Activity> Activities { get; set; }
-
-
+        public DbSet<Booking> Bookings { get; set; }
     }
 }

@@ -11,3 +11,4 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string? Category { get; set; } // Add Category property
     }
 }
+
