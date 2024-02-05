@@ -45,6 +45,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     return BadRequest(new { message });
                 }
 
+                // Determine user role based on email
+                string role = request.Email.EndsWith("@admin.com") ? "admin" : "user";
+
+
                 // Create user object
                 var now = DateTime.Now;
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -54,7 +58,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     Email = request.Email,
                     Password = passwordHash,
                     CreatedAt = now,
-                    UpdatedAt = now
+                    UpdatedAt = now,
+                    Role = role
                 };
 
                 // Add user
@@ -104,23 +109,32 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
-
         [HttpGet("auth"), Authorize]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         public IActionResult Auth()
         {
             try
             {
-                var id = Convert.ToInt32(User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
-                .Select(c => c.Value).SingleOrDefault());
-                var name = User.Claims.Where(c => c.Type == ClaimTypes.Name)
-                    .Select(c => c.Value).SingleOrDefault();
-                var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
-                    .Select(c => c.Value).SingleOrDefault();
+                var idClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
 
-                if (id != 0 && name != null && email != null)
+                if (idClaim != null && nameClaim != null && emailClaim != null)
                 {
-                    UserDTO userDTO = new() { Id = id, Name = name, Email = email };
+                    int id = Convert.ToInt32(idClaim.Value);
+                    string name = nameClaim.Value;
+                    string email = emailClaim.Value;
+                    string role = roleClaim?.Value ?? "user";
+
+                    UserDTO userDTO = new()
+                    {
+                        Id = id,
+                        Name = name,
+                        Email = email,
+                        Role = role
+                    };
+
                     AuthResponse response = new() { User = userDTO };
                     return Ok(response);
                 }
@@ -132,9 +146,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when user auth");
-                return StatusCode(500);
+                return StatusCode(500, new { error = "Internal Server Error" });
             }
         }
+
 
         private string CreateToken(User user)
         {
@@ -150,7 +165,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Name, user.Name),
-                        new Claim(ClaimTypes.Email, user.Email)
+                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(tokenExpiresDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -224,12 +240,29 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
                 if (userUpdate.Email != null)
                 {
-                    user.Email = userUpdate.Email.Trim().ToLower();
+                    string newEmail = userUpdate.Email.Trim().ToLower();
+
+                    var existingUser = _context.Users.FirstOrDefault(u => u.Email == newEmail && u.Id != id);
+                    if (existingUser != null)
+                    {
+                        string message = "Email already exists for another user.";
+                        return BadRequest(new { message });
+                    }
+
+                    user.Email = newEmail;
+
+                    // Check if the updated email includes "@admin.com" and update the role
+                    user.Role = newEmail.EndsWith("@admin.com") ? "admin" : "user";
                 }
                 if (userUpdate.ImageFile != null)
                 {
                     user.ImageFile = userUpdate.ImageFile;
                 }
+                if (userUpdate.PhoneNumber != null)
+                {
+                    user.PhoneNumber = userUpdate.PhoneNumber.Trim().ToLower();
+                }
+
                 user.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
@@ -271,6 +304,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 // Trim string values
                 changePasswordRequest.CurrentPassword = changePasswordRequest.CurrentPassword.Trim();
                 changePasswordRequest.NewPassword = changePasswordRequest.NewPassword.Trim();
+                changePasswordRequest.ConfirmPassword = changePasswordRequest.ConfirmPassword.Trim();
 
                 // Retrieve user based on the authenticated user
                 int userId = id;

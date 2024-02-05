@@ -52,7 +52,7 @@ function UserProfile() {
                                 sx={{ width: 60, height: 60, marginRight: 2, borderRadius: '50%' }}
                             />
                             <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                Username: {userProfile.name}
+                                Name: {userProfile.name}
                             </Typography>
                             <Link to={`/editprofile/${user.id}`}>
                                                         <IconButton color="primary" sx={{ padding: '4px' }}>
