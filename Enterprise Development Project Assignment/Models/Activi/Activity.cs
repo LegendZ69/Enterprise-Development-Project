@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -46,5 +47,7 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         // Navigation property to represent the one-to-many relationship
         public List<Booking> Bookings { get; set; } = new List<Booking>();
+
+        public virtual ICollection<Timeslot> Timeslots { get; set; }
     }
 }

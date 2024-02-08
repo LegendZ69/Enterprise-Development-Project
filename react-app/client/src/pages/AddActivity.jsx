@@ -4,10 +4,10 @@ import { Box, Typography, TextField, Button, Grid, MenuItem } from '@mui/materia
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { DatePicker } from '@mui/x-date-pickers'; // Import the DatePicker component
+import { DatePicker, TimePicker } from '@mui/x-date-pickers'; // Import the DatePicker and TimePicker components
 import { LocalizationProvider } from '@mui/x-date-pickers'; // Import the LocalizationProvider component
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the AdapterDayjs component
-import 'dayjs/locale/en-gb'
+import 'dayjs/locale/en-gb';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function AddActivity() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState('');
+    const [timeSlots, setTimeSlots] = useState([{ startTime: '', endTime: '' }]);
 
     const formik = useFormik({
         initialValues: {
@@ -45,6 +46,7 @@ function AddActivity() {
             }
             data.title = data.title.trim();
             data.description = data.description.trim();
+            data.timeslots = timeSlots; // Add timeslots to the form data
             http.post('/activity', data)
                 .then((res) => {
                     console.log(res.data);
@@ -75,6 +77,22 @@ function AddActivity() {
                     console.log(error.response);
                 });
         }
+    };
+
+    const addTimeSlot = () => {
+        setTimeSlots([...timeSlots, { startTime: '', endTime: '' }]);
+    };
+
+    const handleTimeSlotChange = (index, field, value) => {
+        const updatedTimeSlots = [...timeSlots];
+        updatedTimeSlots[index][field] = value;
+        setTimeSlots(updatedTimeSlots);
+    };
+
+    const deleteTimeSlot = (index) => {
+        const updatedTimeSlots = [...timeSlots];
+        updatedTimeSlots.splice(index, 1);
+        setTimeSlots(updatedTimeSlots);
     };
 
     return (
@@ -144,25 +162,49 @@ function AddActivity() {
                             <MenuItem value="family">Family</MenuItem>
                         </TextField>
                         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'> 
-    <DatePicker
-        sx={{ width: '100%' }} // Adjust the width to make the container longer
-        margin="dense"
-        label="Event Date"
-        name="eventDate"
-        value={formik.values.eventDate}
-        onChange={(date) => formik.setFieldValue('eventDate', date)} 
-        onBlur={formik.handleBlur}
-        error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
-        helperText={formik.touched.eventDate && formik.errors.eventDate}
-        renderInput={(params) => 
-            <TextField 
-                {...params} 
-                placeholder=""
-                InputLabelProps={{ shrink: false }} // Prevents the label from shrinking when there's no value
-            />
-        }
-    />
-</LocalizationProvider>
+                            <DatePicker
+                                sx={{ width: '100%' }} // Adjust the width to make the container longer
+                                margin="dense"
+                                label="Event Date"
+                                name="eventDate"
+                                value={formik.values.eventDate}
+                                onChange={(date) => formik.setFieldValue('eventDate', date)} 
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
+                                helperText={formik.touched.eventDate && formik.errors.eventDate}
+                                renderInput={(params) => 
+                                    <TextField 
+                                        {...params} 
+                                        placeholder=""
+                                        InputLabelProps={{ shrink: false }} // Prevents the label from shrinking when there's no value
+                                    />
+                                }
+                            />
+                        
+
+                        {/* Time Slots */}
+                        {timeSlots.map((slot, index) => (
+                            <Grid container spacing={2} key={index}>
+                                <Grid item xs={6}>
+                                    <TimePicker
+                                        label={`Start Time Slot ${index + 1}`}
+                                        value={slot.startTime}
+                                        onChange={(value) => handleTimeSlotChange(index, 'startTime', value)}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TimePicker
+                                        label={`End Time Slot ${index + 1}`}
+                                        value={slot.endTime}
+                                        onChange={(value) => handleTimeSlotChange(index, 'endTime', value)}
+                                        renderInput={(params) => <TextField {...params} />}
+                                    />
+                                </Grid>
+                            </Grid>
+                        ))}
+                        <Button variant="outlined" onClick={addTimeSlot}>Add Time Slot</Button>
+                        </LocalizationProvider> 
 
                         <TextField
                             fullWidth

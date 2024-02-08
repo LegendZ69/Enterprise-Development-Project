@@ -5,6 +5,8 @@ using Enterprise_Development_Project_Assignment.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Newtonsoft.Json;
+using Azure.Core;
+using Enterprise_Development_Project_Assignment.Models.Activi;
 
 
 namespace Enterprise_Development_Project_Assignment.Controllers
@@ -86,18 +88,34 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _context.Activities.Add(myActivity);
             _context.SaveChanges();
 
-            Activity? newActivity = _context.Activities.Include(t => t.User)
+            foreach (var timeslotDTO in activity.Timeslots)
+            {
+                var timeslot = new Timeslot
+                {
+                    StartTime = timeslotDTO.StartTime,
+                    EndTime = timeslotDTO.EndTime,
+                    ActivityId = myActivity.Id
+                };
+
+                _context.Timeslots.Add(timeslot);
+            }
+
+            await _context.SaveChangesAsync();
+
+            Activity newActivity = _context.Activities.Include(t => t.User)
                 .FirstOrDefault(t => t.Id == myActivity.Id);
             ActivityDTO activityDTO = _mapper.Map<ActivityDTO>(newActivity);
             return Ok(activityDTO);
         }
 
-
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
         public IActionResult GetTutorial(int id)
         {
-            Activity? activity = _context.Activities.Include(a => a.User).FirstOrDefault(a => a.Id == id);
+            Activity? activity = _context.Activities
+                                            .Include(a => a.User)
+                                            .Include(a => a.Timeslots) // Include Timeslots
+                                            .FirstOrDefault(a => a.Id == id);
             if (activity == null)
             {
                 return NotFound();
@@ -105,6 +123,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             ActivityDTO data = _mapper.Map<ActivityDTO>(activity);
             return Ok(data);
         }
+
+
 
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateTutorial(int id, UpdateActivityRequest activity)

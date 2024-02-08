@@ -9,7 +9,7 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         public int Quantity { get; set; }
 
-
+        public string SelectedTimeSlot { get; set; } // Include property for selected time slot
     }
-}
+}   
 

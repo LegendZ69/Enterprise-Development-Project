@@ -1,4 +1,6 @@
-﻿using Enterprise_Development_Project_Assignment.Models;using Microsoft.EntityFrameworkCore;
+﻿using Enterprise_Development_Project_Assignment.Models;
+using Enterprise_Development_Project_Assignment.Models.Activi;
+using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment
 {
@@ -49,5 +51,7 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<Timeslot> Timeslots { get; set; }
+
     }
 }

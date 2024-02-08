@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240208142719_create")]
-    partial class create
+    [Migration("20240208155733_time")]
+    partial class time
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,30 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("Timeslots");
+                });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
@@ -398,6 +422,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
+                        .WithMany("Timeslots")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -431,6 +466,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Timeslots");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>

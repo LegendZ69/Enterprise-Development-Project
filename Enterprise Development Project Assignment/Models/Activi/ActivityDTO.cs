@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
+using System.ComponentModel.DataAnnotations;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
@@ -18,5 +19,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         public double Longitude { get; set; } 
         public int UserId { get; set; }
 		public UserBasicDTO? User { get; set; }
-	}
+        public IEnumerable<TimeslotDTO> Timeslots { get; set; }
+
+    }
 }

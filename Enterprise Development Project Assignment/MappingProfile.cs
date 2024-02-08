@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Enterprise_Development_Project_Assignment.Models;
+using Enterprise_Development_Project_Assignment.Models.Activi;
 
 namespace Enterprise_Development_Project_Assignment
 {
@@ -11,7 +12,8 @@ namespace Enterprise_Development_Project_Assignment
             CreateMap<User, UserBasicDTO>();
             CreateMap<User, UserDTO>();
             CreateMap<Booking, BookingDTO>();
-            CreateMap<AuditLog,AuditLogDTO>();  
+            CreateMap<AuditLog,AuditLogDTO>();
+            CreateMap<Timeslot, TimeslotDTO>();
         }
     }
 }
