@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,10 +20,10 @@ namespace Enterprise_Development_Project_Assignment.Models
         [MaxLength(50)]
         public string? Category { get; set; }
 
-        [Required, MaxLength(20)]
+        [MaxLength(20)]
         public string? ImageFile { get; set; }
 
-        [Column(TypeName = "date")]
+        [Required]
         public DateTime EventDate { get; set; }
 
         [MaxLength(100)]
@@ -33,6 +34,9 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         // Foreign key property
         public int UserId { get; set; }

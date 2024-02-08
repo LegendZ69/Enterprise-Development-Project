@@ -43,16 +43,21 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("EventDate")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ImageFile")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Location")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");

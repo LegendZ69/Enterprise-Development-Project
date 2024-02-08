@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Enterprise_Development_Project_Assignment.Helpers;
+using System.Net.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<AuditLogHelper>();
+builder.Services.AddHttpClient();
+
 
 builder.Services.AddSwaggerGen(options =>
 {

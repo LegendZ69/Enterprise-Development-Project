@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class del : Migration
+    public partial class create : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -154,11 +154,13 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Category = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    EventDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    EventDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
