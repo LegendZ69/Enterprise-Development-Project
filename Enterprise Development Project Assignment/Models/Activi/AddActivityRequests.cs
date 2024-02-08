@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Enterprise_Development_Project_Assignment.Models
@@ -18,6 +19,9 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string? Location { get; set; }
         
         public DateTime EventDate { get; set; }
+
+        public List<TimeslotDTO> Timeslots { get; set; }
+
 
     }
 }

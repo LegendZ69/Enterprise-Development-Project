@@ -79,8 +79,8 @@ public class BookingController : ControllerBase
             ActivityId = id,
             UserId = userId,
             BookingDate = request.BookingDate,
-            Quantity = request.Quantity
-            // Add other properties as needed
+            Quantity = request.Quantity,
+            SelectedTimeSlot = request.SelectedTimeSlot 
         };
 
         _context.Bookings.Add(booking);

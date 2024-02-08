@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class create : Migration
+    public partial class time : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -202,6 +202,27 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Timeslots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Timeslots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Timeslots_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_UserId",
                 table: "Activities",
@@ -216,6 +237,11 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 name: "IX_Bookings_UserId",
                 table: "Bookings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Timeslots_ActivityId",
+                table: "Timeslots",
+                column: "ActivityId");
         }
 
         /// <inheritdoc />
@@ -241,6 +267,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             migrationBuilder.DropTable(
                 name: "SuggestionForms");
+
+            migrationBuilder.DropTable(
+                name: "Timeslots");
 
             migrationBuilder.DropTable(
                 name: "Activities");

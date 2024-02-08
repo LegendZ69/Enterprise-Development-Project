@@ -25,6 +25,9 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int ActivityId { get; set; }
 
         public Activity Activity { get; set; }
+
+        // New property to store the selected time slot
+        public string SelectedTimeSlot { get; set; }
     }
 
     public class FutureDateAttribute : ValidationAttribute
