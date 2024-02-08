@@ -4,6 +4,11 @@ import { Box, Typography, TextField, Button, Grid, MenuItem } from '@mui/materia
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
+import { DatePicker } from '@mui/x-date-pickers'; // Import the DatePicker component
+import { LocalizationProvider } from '@mui/x-date-pickers'; // Import the LocalizationProvider component
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the AdapterDayjs component
+import 'dayjs/locale/en-gb'
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -138,19 +143,27 @@ function AddActivity() {
                             <MenuItem value="leisure">Leisure</MenuItem>
                             <MenuItem value="family">Family</MenuItem>
                         </TextField>
-                        <TextField
-                            fullWidth
-                            margin="dense"
-                            autoComplete="off"
-                            label="Event Date"
-                            name="eventDate"
-                            type="date"
-                            value={formik.values.eventDate}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
-                            helperText={formik.touched.eventDate && formik.errors.eventDate}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'> 
+    <DatePicker
+        sx={{ width: '100%' }} // Adjust the width to make the container longer
+        margin="dense"
+        label="Event Date"
+        name="eventDate"
+        value={formik.values.eventDate}
+        onChange={(date) => formik.setFieldValue('eventDate', date)} 
+        onBlur={formik.handleBlur}
+        error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
+        helperText={formik.touched.eventDate && formik.errors.eventDate}
+        renderInput={(params) => 
+            <TextField 
+                {...params} 
+                placeholder=""
+                InputLabelProps={{ shrink: false }} // Prevents the label from shrinking when there's no value
+            />
+        }
+    />
+</LocalizationProvider>
+
                         <TextField
                             fullWidth
                             margin="dense"
