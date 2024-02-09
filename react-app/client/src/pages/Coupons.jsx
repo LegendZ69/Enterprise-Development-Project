@@ -6,12 +6,15 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } 
 import http from '../http';
 import dayjs from 'dayjs';
 import global from '../global';
+import UserContext from '../contexts/UserContext';
 
 function Coupons() {
     const [couponList, setcouponList] = useState([]);
     const [search, setSearch] = useState('');
     const [couponDelete, setCouponDelete] = useState(null);
-
+    const { user } = useContext(UserContext);
+    const [userRole, setUserRole] = useState(null);
+    
     const onSearchChange = (e) => {
         setSearch(e.target.value);
     };
@@ -24,13 +27,31 @@ function Coupons() {
 
     const searchCoupons = () => {
         http.get(`/coupons?search=${search}`).then((res) => {
-            setCouponList(res.data);
+            setcouponList(res.data);
         });
     };
 
     useEffect(() => {
-        getCoupons();
-    }, []);
+        if (user) {
+            http.get(`/user/${user.id}`).then((res) => {
+                const userProfile = res.data;
+                setUserRole(userProfile.role);
+            });
+
+            getCoupons();
+        }
+    }, [user]);
+
+      
+
+
+    if (!user || user.role !== "admin") {
+        return (
+            <Typography variant="h5" sx={{ my: 2 }}>
+                Access denied. Only admins can view this page.
+            </Typography>
+        );
+    }
 
     const onSearchKeyDown = (e) => {
         if (e.key === "Enter") {

@@ -1,15 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-
+import UserContext from '../contexts/UserContext';
 
 function CouponsValid() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+
+    const [userRole, setUserRole] = useState(null);
+
+    const getUserProfile = () => {
+        if (user) {
+            http.get(`/user/${user.id}`).then((res) => {
+                const userProfile = res.data;
+                setUserRole(userProfile.role); 
+            });
+        }
+    };
+
+    useEffect(() => {
+        getUserProfile();
+    }, [user]);
+
+    if (!user || user.role !== "admin") {
+        return (
+            <Typography variant="h5" sx={{ my: 2 }}>
+                Access denied. Only admins can view this page.
+            </Typography>
+        );
+    }
 
     const [coupons, setCoupons] = useState({
             valid: "",
