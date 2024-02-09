@@ -19,14 +19,18 @@ function ChangePassword() {
         },
         validationSchema: yup.object({
             CurrentPassword: yup.string().trim().required('Current password is required'),
-            NewPassword: yup.string().trim().min(8, 'Password must be at least 8 characters').required('New password is required'),
-            ConfirmPassword: yup.string().trim().oneOf([yup.ref('NewPassword'), null], 'Passwords must match'),
+            NewPassword: yup.string().trim().min(12, 'Password must be at least 12 characters')
+            .max(50, 'Password must be at most 50 characters')
+            .required('Password is required')
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$/, "Password must include lowercase, uppercase, number, and special character"),
+            ConfirmPassword: yup.string().trim().required('Confirm password is required')
+            .oneOf([yup.ref('NewPassword')], 'Passwords must match'),
         }),
         onSubmit: (data) => {
             // Assuming that user.id is the ID of the currently logged-in user
             const url = `/user/changepassword?id=${user.id}`;
 
-            http.put(url, { CurrentPassword: data.CurrentPassword, NewPassword: data.NewPassword })
+            http.put(url, { CurrentPassword: data.CurrentPassword, NewPassword: data.NewPassword , ConfirmPassword: data.ConfirmPassword})
                 .then((res) => {
                     navigate("/profile");
                     toast.success('Password changed successfully');

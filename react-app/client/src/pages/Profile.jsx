@@ -52,7 +52,7 @@ function UserProfile() {
                                 sx={{ width: 60, height: 60, marginRight: 2, borderRadius: '50%' }}
                             />
                             <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                {userProfile.name}
+                                Name: {userProfile.name}
                             </Typography>
                             <Link to={`/editprofile/${user.id}`}>
                                                         <IconButton color="primary" sx={{ padding: '4px' }}>
@@ -61,14 +61,18 @@ function UserProfile() {
                                                     </Link>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                            <AccountCircle sx={{ mr: 1 }} />
-                            <Typography>{userProfile.email}</Typography>
+                            <Typography>Email: {userProfile.email}</Typography>
                         </Box>
-                        {/* Add other user-related information here */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                            <Typography>Role: {userProfile.role}</Typography>
+                        </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                                <Typography>Phone Number: {userProfile.phoneNumber}</Typography>
+                            </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                             <AccessTime sx={{ mr: 1 }} />
                             <Typography>
-                                {dayjs(userProfile.createdAt).format(global.datetimeFormat)}
+                                Member since {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}
                             </Typography>
                         </Box>
                         {/* Add more user-related information as needed */}

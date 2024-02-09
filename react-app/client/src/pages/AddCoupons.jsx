@@ -1,13 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid, RadioGroup, FormControl } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { Discount } from '@mui/icons-material';
+import UserContext from '../contexts/UserContext';
 
 function AddCoupons() {
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+
+    const [userRole, setUserRole] = useState(null);
+
+    const getUserProfile = () => {
+        if (user) {
+            http.get(`/user/${user.id}`).then((res) => {
+                const userProfile = res.data;
+                setUserRole(userProfile.role); 
+            });
+        }
+    };
+
+    useEffect(() => {
+        getUserProfile();
+    }, [user]);
+
+    if (!user || user.role !== "admin") {
+        return (
+            <Typography variant="h5" sx={{ my: 2 }}>
+                Access denied. Only admins can view this page.
+            </Typography>
+        );
+    }
 
     const formik = useFormik({
       initialValues: {

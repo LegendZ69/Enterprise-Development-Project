@@ -4,59 +4,82 @@ using Microsoft.AspNetCore.Authorization;
 using Enterprise_Development_Project_Assignment.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Newtonsoft.Json;
+using Azure.Core;
+using Enterprise_Development_Project_Assignment.Models.Activi;
+
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
-	[ApiController]
-	[Route("[controller]")]
-	public class ActivityController : ControllerBase
-	{
-		private readonly MyDbContext _context;
-		private readonly IMapper _mapper;
+    [ApiController]
+    [Route("[controller]")]
+    public class ActivityController : ControllerBase
+    {
+        private readonly MyDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-		public ActivityController(MyDbContext context, IMapper mapper)
-		{
-			_context = context;
-			_mapper = mapper;
-		}
+        public ActivityController(MyDbContext context, IMapper mapper, IHttpClientFactory httpClientFactory)
+        {
+            _context = context;
+            _mapper = mapper;
+            _httpClientFactory = httpClientFactory;
+        }
 
-		private int GetUserId()
-		{
-			return Convert.ToInt32(User.Claims
-			.Where(c => c.Type == ClaimTypes.NameIdentifier)
-			.Select(c => c.Value).SingleOrDefault());
-		}
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.Claims
+            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+            .Select(c => c.Value).SingleOrDefault());
+        }
 
-		[HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
-		public IActionResult GetAll(string? search)
-		{
-			IQueryable<Activity> result = _context.Activities.Include(a => a.User);
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
+        public IActionResult GetAll(string? search, DateTime? date)
+        {
+            IQueryable<Activity> result = _context.Activities.Include(a => a.User);
 
-			if (search != null)
-			{
-				result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
-			}
+            if (search != null)
+            {
+                result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
+            }
 
-			var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-			IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
-			return Ok(data);
-		}
+            if (date.HasValue)
+            {
+                // Filter activities based on the selected date
+                result = result.Where(x => x.EventDate.Date == date.Value.Date);
+            }
+
+            var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+            IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
+            return Ok(data);
+        }
 
         [HttpPost, Authorize]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
-        public IActionResult AddActivity(AddActivityRequests activity)
+        public async Task<IActionResult> AddActivity(AddActivityRequests activity)
         {
             int userId = GetUserId();
             var now = DateTime.Now;
+
+            // Use Google Maps Geocoding API to fetch latitude and longitude
+            var coordinates = await GetCoordinatesFromAddress(activity.Location);
+            if (coordinates == null)
+            {
+                return BadRequest("Invalid location.");
+            }
 
             var myActivity = new Activity()
             {
                 Title = activity.Title.Trim(),
                 Description = activity.Description.Trim(),
                 ImageFile = activity.ImageFile,
-                Price = activity.Price, // Add Price property
-                Category = activity.Category, // Add Category property
+                Price = activity.Price,
+                Category = activity.Category,
+                EventDate = activity.EventDate,
+                Location = activity.Location,
+                Latitude = coordinates.Latitude,
+                Longitude = coordinates.Longitude,
                 CreatedAt = now,
                 UpdatedAt = now,
                 UserId = userId
@@ -65,25 +88,43 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _context.Activities.Add(myActivity);
             _context.SaveChanges();
 
-            Activity? newActivity = _context.Activities.Include(t => t.User)
+            foreach (var timeslotDTO in activity.Timeslots)
+            {
+                var timeslot = new Timeslot
+                {
+                    StartTime = timeslotDTO.StartTime,
+                    EndTime = timeslotDTO.EndTime,
+                    ActivityId = myActivity.Id
+                };
+
+                _context.Timeslots.Add(timeslot);
+            }
+
+            await _context.SaveChangesAsync();
+
+            Activity newActivity = _context.Activities.Include(t => t.User)
                 .FirstOrDefault(t => t.Id == myActivity.Id);
             ActivityDTO activityDTO = _mapper.Map<ActivityDTO>(newActivity);
             return Ok(activityDTO);
         }
 
-
         [HttpGet("{id}")]
-		[ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
-		public IActionResult GetTutorial(int id)
-		{
-			Activity? activity = _context.Activities.Include(a => a.User).FirstOrDefault(a => a.Id == id);
-			if (activity == null)
-			{
-				return NotFound();
-			}
-			ActivityDTO data = _mapper.Map<ActivityDTO>(activity);
-			return Ok(data);
-		}
+        [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
+        public IActionResult GetTutorial(int id)
+        {
+            Activity? activity = _context.Activities
+                                            .Include(a => a.User)
+                                            .Include(a => a.Timeslots) // Include Timeslots
+                                            .FirstOrDefault(a => a.Id == id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+            ActivityDTO data = _mapper.Map<ActivityDTO>(activity);
+            return Ok(data);
+        }
+
+
 
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateTutorial(int id, UpdateActivityRequest activity)
@@ -112,13 +153,21 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 myActivity.ImageFile = activity.ImageFile;
             }
-            if (activity.Price != null) // Add Price property
+            if (activity.Price != null)
             {
                 myActivity.Price = activity.Price;
             }
-            if (activity.Category != null) // Add Category property
+            if (activity.Category != null)
             {
                 myActivity.Category = activity.Category;
+            }
+            if (activity.EventDate != default)
+            {
+                myActivity.EventDate = activity.EventDate;
+            }
+            if (!string.IsNullOrEmpty(activity.Location))
+            {
+                myActivity.Location = activity.Location;
             }
 
             _context.SaveChanges();
@@ -127,69 +176,22 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
 
         [HttpDelete("{id}")]
-		public IActionResult DeleteTutorial(int id)
-		{
-			var myActivity = _context.Activities.Find(id);
-			if (myActivity == null)
-			{
-				return NotFound();
-			}
-			_context.Activities.Remove(myActivity);
-			_context.SaveChanges();
-			return Ok();
-		}
+        public IActionResult DeleteTutorial(int id)
+        {
+            var myActivity = _context.Activities.Find(id);
+            if (myActivity == null)
+            {
+                return NotFound();
+            }
+            _context.Activities.Remove(myActivity);
+            _context.SaveChanges();
+            return Ok();
+        }
 
-		//[HttpPost("book/{id}"), Authorize]
-		//[ProducesResponseType(typeof(BookingDTO), StatusCodes.Status200OK)]
-		//public IActionResult BookActivity(int id, BookingActivityRequest request)
-		//{
-		//	int userId = GetUserId();
-
-		//	var existingBooking = _context.Bookings
-		//		.FirstOrDefault(b => b.ActivityId == id && b.UserId == userId);
-
-		//	if (existingBooking != null)
-		//	{
-		//		string message = "You have already booked this activity.";
-		//		return BadRequest(new { message });
-		//	}
-
-		//	var booking = new Booking
-		//	{
-		//		ActivityId = id,
-		//		UserId = userId,
-		//		BookingDate = request.BookingDate
-		//	};
-
-		//	_context.Bookings.Add(booking);
-		//	_context.SaveChanges();
-
-		//	var bookingDTO = _mapper.Map<BookingDTO>(booking);
-		//	return Ok(bookingDTO);
-		//}
-
-		//[HttpGet("book/{bookingId}"), Authorize]
-		//[ProducesResponseType(typeof(BookingDTO), StatusCodes.Status200OK)]
-		//public IActionResult GetBooking(int bookingId)
-		//{
-		//	int userId = GetUserId();
-
-		//	var booking = _context.Bookings
-		//		.Include(b => b.Activity)
-		//		.FirstOrDefault(b => b.Id == bookingId && b.UserId == userId);
-
-		//	if (booking == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	var bookingDTO = _mapper.Map<BookingDTO>(booking);
-		//	return Ok(bookingDTO);
-		//}
 
         [HttpGet("category/{category}")]
         [ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
-        public IActionResult GetActivitiesByCategory(string category, string? search)
+        public IActionResult GetActivitiesByCategory(string category, string? search, DateTime? date)
         {
             IQueryable<Activity> result = _context.Activities.Include(a => a.User);
 
@@ -203,10 +205,107 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 result = result.Where(x => x.Title.Contains(search) || x.Description.Contains(search));
             }
 
+            if (date.HasValue)
+            {
+                // Filter activities based on the selected date
+                result = result.Where(x => x.EventDate.Date == date.Value.Date);
+            }
+
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
             IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
             return Ok(data);
         }
 
+        //[HttpGet("location")]
+        //[ProducesResponseType(typeof(IEnumerable<ActivityDTO>), StatusCodes.Status200OK)]
+        //public IActionResult GetActivitiesByLocation(string location)
+        //{
+        //    IQueryable<Activity> result = _context.Activities.Include(a => a.User);
+
+        //    switch (location.ToLower())
+        //    {
+        //        case "north":
+        //            result = result.Where(x => x.Latitude > 1.49);  // Adjust latitude boundary for north
+        //            break;
+        //        case "south":
+        //            result = result.Where(x => x.Latitude < 1.12);  // Adjust latitude boundary for south
+        //            break;
+        //        case "east":
+        //            result = result.Where(x => x.Longitude > 103.43);  // Adjust longitude boundary for east
+        //            break;
+        //        case "west":
+        //            result = result.Where(x => x.Longitude < 104.13);  // Adjust longitude boundary for west
+        //            break;
+        //        default:
+        //            return BadRequest("Invalid location. Valid locations are: north, south, east, west.");
+        //    }
+
+        //    var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+        //    IEnumerable<ActivityDTO> data = list.Select(a => _mapper.Map<ActivityDTO>(a));
+        //    return Ok(data);
+        //}
+
+
+        private async Task<CoordinatesDTO?> GetCoordinatesFromAddress(string address)
+        {
+            var apiKey = "AIzaSyC2JmVltw3KPXhgDgDg5Ir5NdOeDV_TZ_M";
+            var httpClient = _httpClientFactory.CreateClient();
+
+            try
+            {
+                var response = await httpClient.GetAsync($"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={apiKey}");
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<GeocodingResponse>(content);
+
+                if (result != null && result.Results.Any())
+                {
+                    var location = result.Results.First().Geometry.Location;
+                    return new CoordinatesDTO { Latitude = location.Lat, Longitude = location.Lng };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle error
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+
+        public class GeocodingResponse
+        {
+            public GeocodingResult[] Results { get; set; }
+        }
+
+        public class GeocodingResult
+        {
+            public Geometry Geometry { get; set; }
+        }
+
+        public class Geometry
+        {
+            public Location Location { get; set; }
+        }
+
+        public class Location
+        {
+            public double Lat { get; set; }
+            public double Lng { get; set; }
+        }
+
+        public class CoordinatesDTO
+        {
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+        }
+
     }
 }
+
+
+

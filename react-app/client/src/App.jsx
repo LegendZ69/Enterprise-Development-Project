@@ -20,7 +20,12 @@ import AboutUs from './pages/AboutUs';
 import FAQs from './pages/FAQs';
 
 import Activities from './pages/Activities';
-import ActivityInfo from './pages/ActivityInfo';
+import AddActivity from './pages/AddActivity';
+import EditActivity from './pages/EditActivity'
+import ViewActivity from './pages/ViewActivity'
+import UserBookings from './pages/UserBookings';
+import ViewBooking from './pages/ViewBooking';
+
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
 import UpdateCoupons from './pages/UpdateCoupons';
@@ -38,6 +43,8 @@ import Users from './pages/Users';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
+import { Book } from '@mui/icons-material';
+import AuditLog from './pages/AuditLog';
 
 
 function App() {
@@ -77,8 +84,12 @@ function App() {
               <Link to="/coupons" ><Typography>Coupons</Typography></Link>
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
-              {user && (
+              <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
+              {user && user.role === "admin" && (
+              <>
                 <Link to="/users"><Typography>Users</Typography></Link>
+                <Link to="/auditlog"><Typography>Audit Log</Typography></Link>
+              </>
               )}
               <Box sx={{ flexGrow: 1 }}></Box>
               {user && (
@@ -115,7 +126,15 @@ function App() {
             <Route path={"/faqs"} element={<FAQs />} />
 
             <Route path={"/activities"} element={<Activities />} />
-            <Route path={"/activityInfo"} element={<ActivityInfo />} />
+            <Route path={"/addActivity"} element={<AddActivity />} />
+            <Route path={"/viewActivity/:id"} element={<ViewActivity />} />
+            <Route path={"/editActivity/:id"} element={<EditActivity />} />
+            <Route path={"/userBookings"} element={<UserBookings />} />
+            <Route path={"/viewBooking/:id"} element={<ViewBooking />} />
+
+            
+
+            
             <Route path={"/coupons"} element={<Coupons />} />
             <Route path={"/addCoupons"} element={<AddCoupons />} />
             <Route path={"/updateCoupons/:id"} element={<UpdateCoupons />} />
@@ -131,6 +150,7 @@ function App() {
             <Route path={"/profile"} element={<Profile />} />
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
+            <Route path={"/auditlog"} element ={<AuditLog/>}/>
           </Routes>
         </Container>
 

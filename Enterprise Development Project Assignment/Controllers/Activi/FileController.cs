@@ -26,8 +26,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			}
 
 			var id = Nanoid.Generate(size: 10);
-			var filename = id + Path.GetExtension(file.FileName);
-			var imagePath = Path.Combine(_environment.ContentRootPath,@"wwwroot/uploads", filename);
+            var filename = id + Path.GetExtension(file.FileName);
+            var imagePath = Path.Combine(_environment.ContentRootPath,@"wwwroot/uploads", filename);
 			using var fileStream = new FileStream(imagePath, FileMode.Create);
 			file.CopyTo(fileStream);
 			UploadResponse response = new() { Filename = filename };
