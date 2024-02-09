@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid, MenuItem } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, MenuItem, IconButton } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import http from '../http';
-import { DatePicker, TimePicker } from '@mui/x-date-pickers'; // Import the DatePicker and TimePicker components
-import { LocalizationProvider } from '@mui/x-date-pickers'; // Import the LocalizationProvider component
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the AdapterDayjs component
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import 'dayjs/locale/en-sg';
-
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 
 function AddActivity() {
-    const navigate = useNavigate();
     const [imageFile, setImageFile] = useState('');
     const [timeSlots, setTimeSlots] = useState([{ startTime: '', endTime: '' }]);
 
@@ -23,8 +20,8 @@ function AddActivity() {
             description: '',
             price: '',
             category: '',
-            eventDate: '', // new field for date
-            location: '',  // new field for location
+            eventDate: '',
+            location: '',
         },
         validationSchema: yup.object({
             title: yup.string().trim()
@@ -37,8 +34,8 @@ function AddActivity() {
                 .required('Description is required'),
             price: yup.number().min(0, 'Price must be greater than or equal to 0'),
             category: yup.string().required('Category is required'),
-            eventDate: yup.date().required('Event date is required'), // validation for date
-            location: yup.string().trim().required('Location is required'), // validation for location
+            eventDate: yup.date().required('Event date is required'),
+            location: yup.string().trim().required('Location is required'),
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -46,12 +43,8 @@ function AddActivity() {
             }
             data.title = data.title.trim();
             data.description = data.description.trim();
-            data.timeslots = timeSlots; // Add timeslots to the form data
-            http.post('/activity', data)
-                .then((res) => {
-                    console.log(res.data);
-                    navigate('/activities');
-                });
+            data.timeslots = timeSlots;
+            console.log(data);
         }
     });
 
@@ -65,17 +58,7 @@ function AddActivity() {
 
             let formData = new FormData();
             formData.append('file', file);
-            http.post('/file/upload', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-                .then((res) => {
-                    setImageFile(res.data.filename);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+            setImageFile(file);
         }
     };
 
@@ -97,7 +80,7 @@ function AddActivity() {
 
     return (
         <Box>
-            <Typography variant="h5" sx={{ my: 2 }}>
+            <Typography variant="h5" sx={{ my: 5 }}>
                 Add Activity
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit}>
@@ -135,7 +118,7 @@ function AddActivity() {
                             autoComplete="off"
                             label="Price"
                             name="price"
-                            type="number" // Assuming price is a number, adjust accordingly
+                            type="number"
                             value={formik.values.price}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -161,22 +144,22 @@ function AddActivity() {
                             <MenuItem value="leisure">Leisure</MenuItem>
                             <MenuItem value="family">Family</MenuItem>
                         </TextField>
-                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-sg'> 
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-sg'>
                             <DatePicker
-                                sx={{ width: '100%' }} // Adjust the width to make the container longer
+                                sx={{ width: '100%', marginBottom: '1rem' }}
                                 margin="dense"
                                 label="Event Date"
                                 name="eventDate"
                                 value={formik.values.eventDate}
-                                onChange={(date) => formik.setFieldValue('eventDate', date)} 
+                                onChange={(date) => formik.setFieldValue('eventDate', date)}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
                                 helperText={formik.touched.eventDate && formik.errors.eventDate}
-                                renderInput={(params) => 
-                                    <TextField 
-                                        {...params} 
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
                                         placeholder=""
-                                        InputLabelProps={{ shrink: false }} // Prevents the label from shrinking when there's no value
+                                        InputLabelProps={{ shrink: false }}
                                     />
                                 }
                             />
@@ -185,7 +168,7 @@ function AddActivity() {
                         {/* Time Slots */}
                         {timeSlots.map((slot, index) => (
                             <Grid container spacing={2} key={index}>
-                                <Grid item xs={6}>
+                                <Grid item xs={5}>
                                     <TimePicker
                                         label={`Start Time Slot ${index + 1}`}
                                         value={slot.startTime}
@@ -193,7 +176,7 @@ function AddActivity() {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={5}>
                                     <TimePicker
                                         label={`End Time Slot ${index + 1}`}
                                         value={slot.endTime}
@@ -201,10 +184,15 @@ function AddActivity() {
                                         renderInput={(params) => <TextField {...params} />}
                                     />
                                 </Grid>
+                                <Grid item xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <IconButton onClick={() => deleteTimeSlot(index)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Grid>
                             </Grid>
                         ))}
                         <Button variant="outlined" onClick={addTimeSlot}>Add Time Slot</Button>
-                        </LocalizationProvider> 
+                        </LocalizationProvider>
 
                         <TextField
                             fullWidth

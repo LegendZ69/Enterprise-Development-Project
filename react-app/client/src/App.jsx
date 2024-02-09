@@ -25,6 +25,7 @@ import EditActivity from './pages/EditActivity'
 import ViewActivity from './pages/ViewActivity'
 import UserBookings from './pages/UserBookings';
 import ViewBooking from './pages/ViewBooking';
+import ActivitiesDashboard from './pages/ActivitiesDashboard';
 
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
@@ -85,6 +86,7 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
+              <Link to="/activitiesDashboard" ><Typography>AdminActivity</Typography></Link>
               {user && user.role === "admin" && (
               <>
                 <Link to="/users"><Typography>Users</Typography></Link>
@@ -131,8 +133,7 @@ function App() {
             <Route path={"/editActivity/:id"} element={<EditActivity />} />
             <Route path={"/userBookings"} element={<UserBookings />} />
             <Route path={"/viewBooking/:id"} element={<ViewBooking />} />
-
-            
+            <Route path={"/activitiesDashboard"} element={<ActivitiesDashboard />} />
 
             
             <Route path={"/coupons"} element={<Coupons />} />
