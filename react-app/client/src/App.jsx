@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect, useContext } from 'react';
-import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box,Button } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
@@ -55,6 +55,7 @@ function App() {
     localStorage.clear();
     window.location = "/";
   };
+  
   return (
     <UserContext.Provider value={{ user, setUser }}>
     <Router>

@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button, Rating } from '@mui/material';
-import { AccessTime, Search, Clear, Edit } from '@mui/icons-material';
+import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import global from '../global';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import UserContext from '../contexts/UserContext';
 
 function DisplayRatingsAndReviews() {
     const [ratingsAndReviewsList, setRatingsAndReviewsList] = useState([]);
     const [search, setSearch] = useState('');
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
+    const { user } = useContext(UserContext);
 
     const onSearchChange = (e) => {
         setSearch(e.target.value);
@@ -73,46 +78,68 @@ function DisplayRatingsAndReviews() {
                 </Link>
             </Box>
 
-            <Grid container spacing={2}>
-                {
-                    ratingsAndReviewsList.map((ratingsAndReviews, i) => {
-                        return (
-                            <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
-                                <Card>
-                                    <CardContent>
-                                        <Box sx={{ display: 'flex' }}>
+            {
+                user && user.id === ratingsAndReviews.userId && (
+                    <Grid container spacing={2}>
+                        {
+                            ratingsAndReviewsList.map((ratingsAndReviews, i) => {
+                                return (
+                                    <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
+                                        <Card>
+                                            <CardContent>
+                                                <Box sx={{ display: 'flex' }}>
 
-                                            <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                                                {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
-                                            </Typography>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                                                        {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
+                                                    </Typography>
 
-                                            <Link to={`/editRatingsAndReviews/${ratingsAndReviews.id}`}>
-                                                <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                    <Edit />
-                                                </IconButton>
-                                            </Link>
+                                                    <Link to={`/editRatingsAndReviews/${ratingsAndReviews.id}`}>
+                                                        <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                            <Edit />
+                                                        </IconButton>
+                                                    </Link>
 
-                                        </Box>
+                                                </Box>
 
-                                        <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
-                                            <Rating value={ratingsAndReviews.rating} readOnly />
-                                            <AccessTime fontSize='small' />
-                                            <Typography variant='body2'>
-                                                {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
-                                            </Typography>
-                                        </Box>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                                    color="text.secondary">
+                                                    <AccountCircle sx={{ mr: 1 }} />
+                                                    <Typography>
+                                                        {ratingsAndReviews.user?.name}
+                                                    </Typography>
+                                                </Box>
 
-                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {ratingsAndReviews.review}
-                                        </Typography>
+                                                <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                                                    <Rating value={ratingsAndReviews.rating} readOnly />
+                                                    <AccessTime fontSize='small' />
+                                                    <Typography variant='body2'>
+                                                        {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
+                                                    </Typography>
+                                                </Box>
 
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid>
+                                                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {ratingsAndReviews.review}
+                                                </Typography>
+
+                                                {
+                                                    ratingsAndReviews.imageFile && (
+                                                        <Box className="aspect-ratio-container">
+                                                            <img alt="Reviews Photo"
+                                                                src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}>
+                                                            </img>
+                                                        </Box>
+                                                    )
+                                                }
+
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                );
+                            })
+                        }
+                    </Grid>
+                )
+            }
         </Box>
     )
 }

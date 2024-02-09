@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Rating } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import UserContext from '../contexts/UserContext';
 
 function EditRatingsAndReviews() {
-    const [value, setValue] = useState(0);
-
     const { id } = useParams();
     const navigate = useNavigate();
+    const [imageFile, setImageFile] = useState(null);
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
+    const { user } = useContext(UserContext);
+    
+    const [value, setValue] = useState(0);
 
     const [ratingsAndReviews, setRatingsAndReviews] = useState({
         bookingId: "",
@@ -19,14 +27,39 @@ function EditRatingsAndReviews() {
         firstName: "",
         lastName: "",
         rating: "",
-        review: ""
+        review: "",
+        imageFile: "" //addon
     });
 
     useEffect(() => {
         http.get(`/ratingsAndReviews/${id}`).then((res) => {
             setRatingsAndReviews(res.data);
+            setImageFile(res.data.imageFile);
         });
     }, []);
+
+    const onFileChange = (e) => {
+        let file = e.target.files[0];
+        if (file) {
+            if (file.size > 1024 * 1024) {
+                toast.error('Maximum file size is 1MB');
+                return;
+            }
+            let formData = new FormData();
+            formData.append('file', file);
+            http.put('/file/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then((res) => {
+                    setImageFile(res.data.filename);
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        }
+    };
 
     const formik = useFormik({
         initialValues: ratingsAndReviews,
@@ -60,6 +93,9 @@ function EditRatingsAndReviews() {
             data.lastName = data.lastName.trim();
             data.rating = data.rating;
             data.review = data.review.trim();
+            if (imageFile) {
+                data.imageFile = imageFile;
+            }
             http.put(`/ratingsAndReviews/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
@@ -98,103 +134,125 @@ function EditRatingsAndReviews() {
                 Edit Ratings And Reviews
             </Typography>
 
-            <Box component="form" onSubmit={formik.handleSubmit}>
+            {
+                user && (
+                    <Box>
+                        <Box component="form" onSubmit={formik.handleSubmit}>
+                            <Rating
+                                name="rating"
+                                size='large'
+                                value={formik.values.rating}
+                                onChange={(event, newValue) => {
+                                    setValue(newValue);
+                                    formik.setFieldValue('rating', newValue); // Update formik value
+                                }}
+                                fullWidth
+                                label="Rating"
+                                error={formik.touched.rating && Boolean(formik.errors.rating)}
+                                helperText={formik.touched.rating && formik.errors.rating}
+                            />
 
-                <Rating
-                    name="rating"
-                    size='large'
-                    value={formik.values.rating}
-                    onChange={(event, newValue) => {
-                        setValue(newValue);
-                        formik.setFieldValue('rating', newValue); // Update formik value
-                    }}
-                    fullWidth
-                    label="Rating"
-                    error={formik.touched.rating && Boolean(formik.errors.rating)}
-                    helperText={formik.touched.rating && formik.errors.rating}
-                />
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Email"
+                                name="email"
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
+                            />
 
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Email"
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth margin="dense" autoComplete="off"
+                                        label="First Name"
+                                        name="firstName"
+                                        value={formik.values.firstName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                        helperText={formik.touched.firstName && formik.errors.firstName}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth margin="dense" autoComplete="off"
+                                        label="Last Name"
+                                        name="lastName"
+                                        value={formik.values.lastName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                        helperText={formik.touched.lastName && formik.errors.lastName}
+                                    />
+                                </Grid>
+                            </Grid>
 
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="First Name"
-                            name="firstName"
-                            value={formik.values.firstName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                            helperText={formik.touched.firstName && formik.errors.firstName}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Last Name"
-                            name="lastName"
-                            value={formik.values.lastName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                            helperText={formik.touched.lastName && formik.errors.lastName}
-                        />
-                    </Grid>
-                </Grid>
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                multiline minRows={2}
+                                label="Review"
+                                name="review"
+                                value={formik.values.review}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.review && Boolean(formik.errors.review)}
+                                helperText={formik.touched.review && formik.errors.review}
+                            />
 
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline minRows={2}
-                    label="Review"
-                    name="review"
-                    value={formik.values.review}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.review && Boolean(formik.errors.review)}
-                    helperText={formik.touched.review && formik.errors.review}
-                />
+                            <Box sx={{ textAlign: 'center', mt: 2 }} >
+                                <Button variant="contained" component="label">
+                                    Upload Image
+                                    <input hidden accept="image/*" multiple type="file" onChange={onFileChange} />
+                                </Button>
+                            </Box>
 
-                <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" type="submit">
-                        Update
-                    </Button>
-                    <Button variant="contained" sx={{ ml: 2 }} color="error"
-                        onClick={handleOpen}>
-                        Delete
-                    </Button>
-                </Box>
-            </Box>
+                            {
+                                imageFile && (
+                                    <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
+                                        <img alt="Update Reviews Photo"
+                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
+                                        </img>
+                                    </Box>
+                                )
+                            }
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    Delete Ratings And Reviews
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this ratings and reviews?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="inherit"
-                        onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="error"
-                        onClick={deleteRatingsAndReviews}>
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                            <Box sx={{ mt: 2 }}>
+                                <Button variant="contained" type="submit">
+                                    Update
+                                </Button>
+                                <Button variant="contained" sx={{ ml: 2 }} color="error"
+                                    onClick={handleOpen}>
+                                    Delete
+                                </Button>
+                            </Box>
+                        </Box>
+
+                        <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>
+                                Delete Ratings And Reviews
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Are you sure you want to delete this ratings and reviews?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button variant="contained" color="inherit"
+                                    onClick={handleClose}>
+                                    Cancel
+                                </Button>
+                                <Button variant="contained" color="error"
+                                    onClick={deleteRatingsAndReviews}>
+                                    Delete
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </Box>
+                )
+            }
         </Box>
     )
 }

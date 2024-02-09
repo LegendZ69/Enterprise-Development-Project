@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
-import { AccessTime, Search, Clear, Edit } from '@mui/icons-material';
+import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import global from '../global';
+import UserContext from '../contexts/UserContext';
 
 function DisplayFeedbackForm() {
     const [feedbackFormList, setFeedbackFormList] = useState([]);
     const [search, setSearch] = useState('');
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
+    const { user } = useContext(UserContext);
 
     const onSearchChange = (e) => {
         setSearch(e.target.value);
@@ -72,55 +77,68 @@ function DisplayFeedbackForm() {
                 </Link>
             </Box>
 
-            <Grid container spacing={2}>
-                {
-                    feedbackFormList.map((feedbackForm, i) => {
-                        return (
-                            <Grid item xs={12} md={6} lg={4} key={feedbackForm.id}>
-                                <Card>
-                                    <CardContent>
+            {
+                user && user.id === feedbackForm.userId && (
 
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                                                {feedbackForm.topic}
-                                            </Typography>
+                    <Grid container spacing={2}>
+                        {
+                            feedbackFormList.map((feedbackForm, i) => {
+                                return (
+                                    <Grid item xs={12} md={6} lg={4} key={feedbackForm.id}>
+                                        <Card>
+                                            <CardContent>
 
-                                            <Link to={`/editFeedbackForm/${feedbackForm.id}`}>
-                                                <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                    <Edit />
-                                                </IconButton>
-                                            </Link>
-                                        </Box>
+                                                <Box sx={{ display: 'flex' }}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                                                        {feedbackForm.topic}
+                                                    </Typography>
 
-                                        <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
-                                            <Typography variant='body2' sx={{ mr: 1 }}>
-                                                {feedbackForm.email}
-                                            </Typography>
+                                                    <Link to={`/editFeedbackForm/${feedbackForm.id}`}>
+                                                        <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                            <Edit />
+                                                        </IconButton>
+                                                    </Link>
+                                                </Box>
 
-                                            <AccessTime fontSize='small' />
-                                            <Typography variant='body2'>
-                                                {dayjs(feedbackForm.createdAt).format(global.datetimeFormat)}
-                                            </Typography>
-                                        </Box>
+                                                <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                                                    <Typography variant='body2' sx={{ mr: 1 }}>
+                                                        {feedbackForm.email}
+                                                    </Typography>
 
-                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {feedbackForm.message}
-                                        </Typography>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                                        color="text.secondary">
+                                                        <AccountCircle sx={{ mr: 1 }} />
+                                                        <Typography>
+                                                            {feedbackForm.user?.name}
+                                                        </Typography>
+                                                    </Box>
 
-                                        <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
-                                            Staff Remarks:
-                                        </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {feedbackForm.staffRemark}
-                                        </Typography>
+                                                    <AccessTime fontSize='small' />
+                                                    <Typography variant='body2'>
+                                                        {dayjs(feedbackForm.createdAt).format(global.datetimeFormat)}
+                                                    </Typography>
+                                                </Box>
 
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid>
+                                                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {feedbackForm.message}
+                                                </Typography>
+
+                                                <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
+                                                    Staff Remarks:
+                                                </Typography>
+                                                <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {feedbackForm.staffRemark}
+                                                </Typography>
+
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                );
+                            })
+                        }
+                    </Grid>
+                )
+            }
         </Box>
     )
 }

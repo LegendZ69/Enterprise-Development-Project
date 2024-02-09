@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
-import { AccessTime, Search, Clear, Edit } from '@mui/icons-material';
+import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
 import http from '../http';
 import dayjs from 'dayjs';
 import global from '../global';
+import UserContext from '../contexts/UserContext';
 
 function DisplaySuggestionForm() {
     const [suggestionFormList, setSuggestionFormList] = useState([]);
     const [search, setSearch] = useState('');
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
+    const { user } = useContext(UserContext);
 
     const onSearchChange = (e) => {
         setSearch(e.target.value);
@@ -72,62 +77,75 @@ function DisplaySuggestionForm() {
                 </Link>
             </Box>
 
-            <Grid container spacing={2}>
-                {
-                    suggestionFormList.map((suggestionForm, i) => {
-                        return (
-                            <Grid item xs={12} md={6} lg={4} key={suggestionForm.id}>
-                                <Card>
-                                    <CardContent>
+            {
+                user && user.id === suggestionForm.userId && (
 
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                                                {suggestionForm.activityName} - {suggestionForm.activityType}
-                                            </Typography>
+                    <Grid container spacing={2}>
+                        {
+                            suggestionFormList.map((suggestionForm, i) => {
+                                return (
+                                    <Grid item xs={12} md={6} lg={4} key={suggestionForm.id}>
+                                        <Card>
+                                            <CardContent>
 
-                                            <Link to={`/editSuggestionForm/${suggestionForm.id}`}>
-                                                <IconButton color="primary" sx={{ padding: '4px' }}>
-                                                    <Edit />
-                                                </IconButton>
-                                            </Link>
-                                        </Box>
+                                                <Box sx={{ display: 'flex' }}>
+                                                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                                                        {suggestionForm.activityName} - {suggestionForm.activityType}
+                                                    </Typography>
 
-                                        <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
-                                            <Typography variant='body2' sx={{ mr: 1 }}>
-                                                {suggestionForm.email}
-                                            </Typography>
+                                                    <Link to={`/editSuggestionForm/${suggestionForm.id}`}>
+                                                        <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                            <Edit />
+                                                        </IconButton>
+                                                    </Link>
+                                                </Box>
 
-                                            <AccessTime fontSize='small' />
-                                            <Typography variant='body2'>
-                                                {dayjs(suggestionForm.createdAt).format(global.datetimeFormat)}
-                                            </Typography>
-                                        </Box>
+                                                <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                                                    <Typography variant='body2' sx={{ mr: 1 }}>
+                                                        {suggestionForm.email}
+                                                    </Typography>
 
-                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {suggestionForm.activityDescription}
-                                        </Typography>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                                        color="text.secondary">
+                                                        <AccountCircle sx={{ mr: 1 }} />
+                                                        <Typography>
+                                                            {suggestionForm.user?.name}
+                                                        </Typography>
+                                                    </Box>
 
-                                        <Typography variant='body3' sx={{ whiteSpace: 'pre-wrap', fontWeight: 'bold' }}>
-                                            Reason:
-                                        </Typography>
-                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {suggestionForm.activityReason}
-                                        </Typography>
+                                                    <AccessTime fontSize='small' />
+                                                    <Typography variant='body2'>
+                                                        {dayjs(suggestionForm.createdAt).format(global.datetimeFormat)}
+                                                    </Typography>
+                                                </Box>
 
-                                        <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
-                                            Staff Remarks:
-                                        </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {suggestionForm.staffRemark}
-                                        </Typography>
+                                                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {suggestionForm.activityDescription}
+                                                </Typography>
+
+                                                <Typography variant='body3' sx={{ whiteSpace: 'pre-wrap', fontWeight: 'bold' }}>
+                                                    Reason:
+                                                </Typography>
+                                                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {suggestionForm.activityReason}
+                                                </Typography>
+
+                                                <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
+                                                    Staff Remarks:
+                                                </Typography>
+                                                <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                                    {suggestionForm.staffRemark}
+                                                </Typography>
                                         
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })
-                }
-            </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                );
+                            })
+                        }
+                    </Grid>
+                )
+            }
         </Box>
     )
 }

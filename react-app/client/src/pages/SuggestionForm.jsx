@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,13 +8,13 @@ import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Sele
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 // import StaffContext from '../contexts/StaffContext';
-// import UserContext from '../contexts/UserContext';
+import UserContext from '../contexts/UserContext';
 
 function SuggestionForm() {
     const navigate = useNavigate();
 
     //add form as user/staff
-    // const { staff } = useContext(StaffContext);
+    // const { setStaff } = useContext(StaffContext);
     // const { user } = useContext(UserContext);
 
     const formik = useFormik({

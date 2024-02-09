@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,6 +7,7 @@ import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Sele
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
+import UserContext from '../contexts/UserContext';
 
 function FeedbackForm() {
     const navigate = useNavigate();
@@ -41,7 +42,7 @@ function FeedbackForm() {
         //         },
 
         initialValues: {
-            // email: user.email, //merge with user.id
+            //email: user.email, //merge with user.id
             email: "", //delete this after
             firstName: "",
             lastName: "",
