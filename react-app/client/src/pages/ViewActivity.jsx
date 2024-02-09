@@ -10,7 +10,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers'; 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; 
 import dayjs from 'dayjs';
-import 'dayjs/locale/en-gb';
+import 'dayjs/locale/en-sg';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,6 +23,8 @@ function ViewActivity() {
   const [quantity, setQuantity] = useState(1);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [timeSlotsList, setTimeSlotsList] = useState([]);
+  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
+
 
   useEffect(() => {
     http.get(`/activity/${id}`)
@@ -41,6 +43,51 @@ function ViewActivity() {
         console.error('Error fetching activity:', error.message);
       });
   }, [id]);
+
+  window.initMap = () => {
+   
+    console.log('Function');
+    const map = new window.google.maps.Map(document.getElementById('map'), {
+      center: { lat: parseFloat(activity.latitude), lng: parseFloat(activity.longitude) },
+      zoom: 15,
+    });
+
+    new window.google.maps.Marker({
+      position: { lat: parseFloat(activity.latitude), lng: parseFloat(activity.longitude) },
+      map,
+      title: activity.title,
+    });
+  
+};
+
+
+// new code
+useEffect(() => {
+if (activity && !googleScriptLoaded) {
+  // Load Google Maps API script
+  const googleMapsScript = document.createElement('script');
+  googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBKhaM1vsmsMJEd0-8F9u4-typ3ABA3eKw&libraries=places&callback=initMap`; // Replace YOUR_API_KEY with your actual API key
+  googleMapsScript.onload = () => {
+    console.log('Google Maps API script loaded successfully');
+    setGoogleScriptLoaded(true);
+  };
+  googleMapsScript.onerror = () => {
+    console.error('Error loading Google Maps API script');
+  };
+  window.document.body.appendChild(googleMapsScript);
+}
+}, [activity, googleScriptLoaded]);
+
+
+
+useEffect(() => {
+if (googleScriptLoaded && activity) {
+  // Call the initMap function once the Google Maps API script has been loaded
+  console.log('Called');
+
+  window.initMap();
+}
+}, [googleScriptLoaded, activity]);
 
   const handleBookingDateChange = (date) => {
     setBookingDate(date);
@@ -137,6 +184,11 @@ function ViewActivity() {
         </CardContent>
       </Card>
 
+      {/* Location Map */}
+      <Box sx={{ mt: 2 }}>
+        <div id="map" style={{ width: '100%', height: '400px', borderRadius: '8px' }}></div>
+      </Box>
+
       {/* Price and Booking Section */}
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
         <Card sx={{ width: '300px', marginRight: '16px' }}>
@@ -156,7 +208,7 @@ function ViewActivity() {
             />
 
             {/* Booking Date Picker */}
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-sg'>
                             <DatePicker
                                 sx={{ width: '100%' }}
                                 margin="dense"

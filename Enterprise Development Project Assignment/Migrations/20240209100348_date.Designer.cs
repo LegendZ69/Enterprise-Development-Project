@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240208155733_time")]
-    partial class time
+    [Migration("20240209100348_date")]
+    partial class date
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("EventDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("ImageFile")
                         .HasMaxLength(20)
@@ -145,6 +145,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("SelectedTimeSlot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");

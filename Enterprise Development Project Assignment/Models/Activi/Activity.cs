@@ -25,6 +25,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string? ImageFile { get; set; }
 
         [Required]
+        [Column(TypeName = "date")]
         public DateTime EventDate { get; set; }
 
         [MaxLength(100)]

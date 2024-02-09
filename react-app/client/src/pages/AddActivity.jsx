@@ -7,7 +7,7 @@ import http from '../http';
 import { DatePicker, TimePicker } from '@mui/x-date-pickers'; // Import the DatePicker and TimePicker components
 import { LocalizationProvider } from '@mui/x-date-pickers'; // Import the LocalizationProvider component
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the AdapterDayjs component
-import 'dayjs/locale/en-gb';
+import 'dayjs/locale/en-sg';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -161,7 +161,7 @@ function AddActivity() {
                             <MenuItem value="leisure">Leisure</MenuItem>
                             <MenuItem value="family">Family</MenuItem>
                         </TextField>
-                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-gb'> 
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-sg'> 
                             <DatePicker
                                 sx={{ width: '100%' }} // Adjust the width to make the container longer
                                 margin="dense"
