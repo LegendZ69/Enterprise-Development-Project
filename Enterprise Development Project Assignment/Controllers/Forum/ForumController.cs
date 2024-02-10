@@ -50,7 +50,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
         // PUT: api/Thread/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateThread(string id, ThreadModel thread)
+        public async Task<IActionResult> UpdateThread(int id, ThreadModel thread)
         {
             if (id != thread.Id)
             {
