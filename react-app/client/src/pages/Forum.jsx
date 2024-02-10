@@ -1,16 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import http from '../http'; // Ensure this points to your correct http service
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import http from '../http';
+import UserContext from '../contexts/UserContext';
 
 function ThreadList() {
   const [threads, setThreads] = useState([]);
   const [error, setError] = useState(null);
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: 'numeric', month: 'numeric', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+    };
+    return new Date(dateString).toLocaleString('en-US', options);
+  };
 
   useEffect(() => {
     const fetchThreads = async () => {
       try {
-        const response = await http.get("/Thread"); // Ensure this endpoint is correct
-        setThreads(response.data); // Adjust according to your data structure
+        const response = await http.get("/Thread");
+        setThreads(response.data);
       } catch (error) {
         console.error('Failed to fetch threads:', error);
         setError('Failed to load threads. Please try again later.');
@@ -19,9 +30,18 @@ function ThreadList() {
     fetchThreads();
   }, []);
 
+  const handleCreateThread = () => {
+    navigate('/CreateThread');
+  };
+
   // Styling
   const styles = {
-    // Container style remains the same
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '20px',
+    },
     threadCard: {
       background: '#FFF',
       borderRadius: '8px',
@@ -39,22 +59,37 @@ function ThreadList() {
       fontSize: '18px',
       fontWeight: 'bold',
       marginBottom: '8px',
-      display: 'block', // Makes the whole area clickable
-    },
-    threadMeta: {
-      fontSize: '14px',
-      color: '#666',
-      fontStyle: 'italic',
+      display: 'block',
     },
     threadDescription: {
-      marginTop: '10px',
-      fontSize: '16px',
+      fontSize: '14px', // Smaller than the title
       color: '#444',
+      marginTop: '5px', // Adjusted spacing
+    },
+    threadMeta: {
+      fontSize: '12px',
+      color: '#666',
+      fontStyle: 'italic',
+      marginTop: '10px',
     },
     errorMessage: {
       color: 'red',
       textAlign: 'center',
-    }
+    },
+    createButton: {
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      padding: '10px 15px',
+      cursor: 'pointer',
+      fontSize: '1rem',
+    },
+    container: {
+      maxWidth: '960px',
+      margin: '0 auto',
+      padding: '20px',
+    },
   };
 
   if (error) {
@@ -63,7 +98,14 @@ function ThreadList() {
 
   return (
     <div style={styles.container}>
-      <h1>Forum Threads</h1>
+      <div style={styles.header}>
+        <h1>Forum Threads</h1>
+        {user && (
+          <button onClick={handleCreateThread} style={styles.createButton}>
+            Create New Thread
+          </button>
+        )}
+      </div>
       {threads.length > 0 ? (
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           {threads.map((thread) => (
@@ -71,10 +113,12 @@ function ThreadList() {
               <Link to={`/thread/${thread.id}`} style={styles.threadTitle}>
                 {thread.title}
               </Link>
-              <div style={styles.threadMeta}>
-                Posted by {thread.createdBy} on {new Date(thread.createdAt).toLocaleDateString()}
+              <div style={styles.threadDescription}>
+                {thread.description}
               </div>
-              <div style={styles.threadDescription}>{thread.description}</div>
+              <div style={styles.threadMeta}>
+                Posted by {thread.createdBy} on {formatDate(thread.createdDate)}
+              </div>
             </li>
           ))}
         </ul>
