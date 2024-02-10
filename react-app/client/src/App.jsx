@@ -49,7 +49,7 @@ import AuditLog from './pages/AuditLog';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
-
+import ThreadDetail  from './pages/Thread';
 
 
 function App() {
@@ -159,6 +159,7 @@ function App() {
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
             <Route path={"/Forum"} element ={<ThreadList/>}/>
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>
+            <Route path={"/Thread/:threadId"} element={<ThreadDetail />} />
           </Routes>
         </Container>
 

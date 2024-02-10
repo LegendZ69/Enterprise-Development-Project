@@ -26,7 +26,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
         // GET: api/Thread/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ThreadModel>> GetThread(string id)
+        public async Task<ActionResult<ThreadModel>> GetThread(int id)
         {
             var thread = await _context.Threads.FindAsync(id);
 
@@ -80,7 +80,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
         // DELETE: api/Thread/5 (Optional)
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteThread(string id)
+        public async Task<IActionResult> DeleteThread(int id)
         {
             var thread = await _context.Threads.FindAsync(id);
             if (thread == null)

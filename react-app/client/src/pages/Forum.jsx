@@ -16,23 +16,47 @@ function ThreadList() {
     };
     return new Date(dateString).toLocaleString('en-US', options);
   };
-
-  useEffect(() => {
-    const fetchThreads = async () => {
-      try {
-        const response = await http.get("/Thread");
-        setThreads(response.data);
-      } catch (error) {
-        console.error('Failed to fetch threads:', error);
-        setError('Failed to load threads. Please try again later.');
-      }
-    };
-    fetchThreads();
-  }, []);
-
+  const fetchThreads = async () => {
+    try {
+      const response = await http.get("/Thread");
+      setThreads(response.data);
+    } catch (error) {
+      console.error('Failed to fetch threads:', error);
+      setError('Failed to load threads. Please try again later.');
+    }
+  };
   const handleCreateThread = () => {
     navigate('/CreateThread');
   };
+  const handleDeleteThread = async (threadId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this thread?");
+    if (!isConfirmed) {
+      console.log('Deletion canceled by user.'); // Log cancellation
+      return; // Stop if the user cancels
+    }
+
+    try {
+      console.log(`Attempting to delete thread with ID: ${threadId}`); // Log attempt
+      const response = await http.delete(`/Thread/${threadId}`);
+      console.log('Deletion response:', response); // Log response
+      if (response) {
+        alert('Thread deleted successfully');
+        fetchThreads(); // Re-fetch threads to update the list
+      }
+    } catch (error) {
+      console.error('Error deleting thread:', error);
+      alert('Error deleting thread');
+    }
+};
+
+  useEffect(() => {
+    
+    
+    fetchThreads();
+  }, []);
+
+  
+  
 
   // Styling
   const styles = {
@@ -90,6 +114,18 @@ function ThreadList() {
       margin: '0 auto',
       padding: '20px',
     },
+    deleteButton: {
+      marginLeft: 'auto', // Pushes the button to the right side
+      backgroundColor: 'red', // Red fill
+      color: 'white', // White text color for contrast
+      border: '2px solid black', // Black outline for emphasis
+      borderRadius: '5px',
+      padding: '5px 10px',
+      cursor: 'pointer',
+      fontSize: '0.9rem',
+    },
+    // Add more styles as needed
+    
   };
 
   if (error) {
@@ -101,21 +137,24 @@ function ThreadList() {
       <div style={styles.header}>
         <h1>Forum Threads</h1>
         {user && (
-          <button onClick={handleCreateThread} style={styles.createButton}>
-            Create New Thread
-          </button>
+          <button onClick={handleCreateThread} style={styles.createButton}>Create New Thread</button>
         )}
       </div>
       {threads.length > 0 ? (
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           {threads.map((thread) => (
             <li key={thread.id} style={styles.threadCard}>
-              <Link to={`/thread/${thread.id}`} style={styles.threadTitle}>
-                {thread.title}
-              </Link>
-              <div style={styles.threadDescription}>
-                {thread.description}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Link to={`/Thread/${thread.id}`} style={styles.threadTitle}>{thread.title}</Link>
+                {user && user.id === thread.createdByUserId && (
+                  <button onClick={() =>(handleDeleteThread(thread.id))}
+                    style={styles.deleteButton}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
+              <div style={styles.threadDescription}>{thread.description}</div>
               <div style={styles.threadMeta}>
                 Posted by {thread.createdBy} on {formatDate(thread.createdDate)}
               </div>
