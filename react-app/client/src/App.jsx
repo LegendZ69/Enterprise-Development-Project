@@ -47,6 +47,10 @@ import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
 
+import ThreadList from './pages/Forum';
+
+
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -87,6 +91,7 @@ function App() {
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
               <Link to="/activitiesDashboard" ><Typography>AdminActivity</Typography></Link>
+              <Link to ="/Forum"><Typography>Forums</Typography></Link>
               {user && user.role === "admin" && (
               <>
                 <Link to="/users"><Typography>Users</Typography></Link>
@@ -152,6 +157,7 @@ function App() {
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
+            <Route path={"/Forum"} element ={<ThreadList/>}/>
           </Routes>
         </Container>
 
