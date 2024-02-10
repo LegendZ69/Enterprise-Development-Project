@@ -48,7 +48,7 @@ import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
 
 import ThreadList from './pages/Forum';
-
+import CreateThread from './pages/CreateThread'
 
 
 
@@ -158,6 +158,7 @@ function App() {
             <Route path={"/changepassword"} element={<ChangePassword />} />
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
             <Route path={"/Forum"} element ={<ThreadList/>}/>
+            <Route path={"/CreateThread"} element ={<CreateThread/>}/>
           </Routes>
         </Container>
 
