@@ -330,6 +330,36 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("RatingsAndReviews");
                 });
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ReplyModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ThreadId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Replies");
+                });
+
+>>>>>>> parent of 7dadaac (completed the forum feature)
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
                 {
                     b.Property<int>("Id")
@@ -378,6 +408,37 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("SuggestionForms");
                 });
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ThreadModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Threads");
+                });
+
+>>>>>>> parent of 7dadaac (completed the forum feature)
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>
                 {
                     b.Property<int>("Id")

@@ -47,6 +47,13 @@ import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
 
+<<<<<<< HEAD
+=======
+import ThreadList from './pages/Forum';
+import CreateThread from './pages/CreateThread'
+
+
+>>>>>>> parent of 7dadaac (completed the forum feature)
 
 function App() {
   const [user, setUser] = useState(null);
@@ -152,6 +159,11 @@ function App() {
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
+<<<<<<< HEAD
+=======
+            <Route path={"/Forum"} element ={<ThreadList/>}/>
+            <Route path={"/CreateThread"} element ={<CreateThread/>}/>
+>>>>>>> parent of 7dadaac (completed the forum feature)
           </Routes>
         </Container>
 
