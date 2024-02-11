@@ -232,7 +232,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CreditCard");
                 });
@@ -460,6 +465,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

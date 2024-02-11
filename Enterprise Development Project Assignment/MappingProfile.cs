@@ -15,6 +15,7 @@ namespace Enterprise_Development_Project_Assignment
             CreateMap<AuditLog,AuditLogDTO>();
             CreateMap<Timeslot, TimeslotDTO>();
 			CreateMap<Coupons, CouponsDTO>();
+			CreateMap<CreditCard, CreditCardDTO>();
 		}
     }
 }

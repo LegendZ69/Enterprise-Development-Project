@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240209100348_date")]
-    partial class date
+    [Migration("20240211130834_Stuff")]
+    partial class Stuff
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,7 +235,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CreditCard");
                 });
@@ -463,6 +468,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
