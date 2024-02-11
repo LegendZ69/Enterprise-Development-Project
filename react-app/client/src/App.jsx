@@ -49,6 +49,7 @@ import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
 import ResetPassword from './pages/ResetPassword';
 import ForgetPassword from './pages/ForgetPassword';
+import ReactivateAccount from './pages/ReactivateAccount';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -195,6 +196,8 @@ function App() {
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
             <Route path={"/resetpassword"} element ={<ResetPassword/>}/>
             <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
+            <Route path={"/reactivateaccount"} element ={<ReactivateAccount/>}/>
+
 
 
             <Route path={"/Forum"} element ={<ThreadList/>}/>

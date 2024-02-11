@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Switch from '@mui/material/Switch';
 
 function EditProfile() {
     const { id } = useParams();
@@ -20,6 +21,7 @@ function EditProfile() {
 
     const [loading, setLoading] = useState(true);
     const [imageFile, setImageFile] = useState(null);
+    const [userStatus, setUserStatus] = useState('activated'); // Initially set to 'activated'
 
     useEffect(() => {
         http.get(`/user/${id}`).then((res) => {
@@ -53,6 +55,7 @@ function EditProfile() {
             data.name = data.name.trim();
             data.email = data.email.trim();
             data.phoneNumber = data.phoneNumber.trim();
+            data.status = userStatus; // Set user status
             // Check if the email is updated
             const isEmailUpdated = data.email !== user.email;
 
@@ -62,35 +65,22 @@ function EditProfile() {
                     
                     if(isEmailUpdated){
                         logout()
-                    }else{
-
-                    navigate("/profile");
+                    } else {
+                        if (userStatus === 'deactivated') {
+                            logout(); // Logout if status is 'deactivated'
+                        } else {
+                            navigate("/profile");
+                        }
                     }
                 });
         }
     });
 
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
     const logout = () => {
         localStorage.clear();
         window.location = "/";
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const deleteUser = () => {
-        http.delete(`/user/${id}`)
-            .then((res) => {
-                console.log(res.data);
-                logout();
-            });
-    }
     const onFileChange = (e) => {
         let file = e.target.files[0];
         if (file) {
@@ -155,6 +145,16 @@ function EditProfile() {
                                     error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                                     helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
                                 />
+                                {/* Add switch below the phone number */}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                        <Typography variant="body1">Status:</Typography>
+                                        <Switch
+                                            checked={userStatus === 'activated'}
+                                            onChange={() => setUserStatus(userStatus === 'activated' ? 'deactivated' : 'activated')}
+                                            inputProps={{ 'aria-label': 'toggle user status' }}
+                                        />
+                                        {userStatus === 'activated' ? 'Activated' : 'Deactivated'}
+                                    </Box>
                                 {/* Add additional fields as needed */}
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
@@ -180,34 +180,10 @@ function EditProfile() {
                             <Button variant="contained" type="submit">
                                 Update
                             </Button>
-                            <Button variant="contained" sx={{ ml: 2 }} color="error"
-                                onClick={handleOpen}>
-                                Delete
-                            </Button>
                         </Box>
                     </Box>
                 )
             }
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>
-                    Delete Tutorial
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this tutorial?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="inherit"
-                        onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="error"
-                        onClick={deleteUser}>
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
 
             <ToastContainer />
         </Box>
