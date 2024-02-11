@@ -67,7 +67,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("EventDate")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ImageFile")
                         .HasMaxLength(20)
