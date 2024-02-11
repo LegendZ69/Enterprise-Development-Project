@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240211150432_working")]
-    partial class working
+    [Migration("20240211152911_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,12 +235,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("CreditCard");
                 });
@@ -352,39 +347,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("RatingsAndReviews");
                 });
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ReplyModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ThreadId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Votes")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Replies");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
                 {
                     b.Property<int>("Id")
@@ -438,40 +400,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("SuggestionForms");
                 });
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ThreadModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Votes")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Threads");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -501,9 +429,15 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -558,17 +492,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
-                {
-                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
-                        .WithMany("CreditCards")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -614,8 +537,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("Bookings");
-
-                    b.Navigation("CreditCards");
 
                     b.Navigation("FeedbackForms");
 

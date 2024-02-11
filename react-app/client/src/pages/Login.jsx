@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -74,6 +74,11 @@ function Login() {
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={formik.touched.password && formik.errors.password}
                 />
+                <Box sx={{ textAlign: 'left', mt: 1 }}>
+                    <Link component="button" variant="body2" onClick={() => navigate('/forgetpassword')}>
+                        Forgot password?
+                    </Link>
+                </Box>
                 <Button fullWidth variant="contained" sx={{ mt: 2 }}
                     type="submit">
                     Login

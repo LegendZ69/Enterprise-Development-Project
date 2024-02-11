@@ -7,6 +7,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Enterprise_Development_Project_Assignment.Helpers;
+using System.Net.Mail;
+using System.Net;
+using System.Security.Cryptography;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -190,7 +193,125 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             return token;
         }
-        [HttpGet("users")]
+
+        private string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
+
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(ForgetPasswordRequest request)
+        {
+            try
+            {
+                request.Email = request.Email.Trim().ToLower();
+                string message = "User Not Found.";
+                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                if (foundUser == null)
+                {
+                    // Log failed forget password attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Forget Password: User not found").Wait();
+                    return BadRequest(new { message });
+                }
+
+                // Generate a random token
+                string resetToken = CreateRandomToken();
+
+                // Set the PasswordResetToken and ResetTokenExpires for the found user
+                foundUser.PasswordResetToken = resetToken;
+                foundUser.ResetTokenExpires = DateTime.Now.AddMinutes(5);
+
+                // Save changes to the database
+                _context.SaveChanges();
+                // Send email with reset link
+                SendResetPasswordEmail(foundUser.Email, resetToken);
+                // Log the successful forget password attempt
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Password reset token generated").Wait();
+
+                return Ok("You may now reset your password");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(ResetPasswordRequest request)
+        {
+            try
+            {
+                var foundUser = _context.Users.FirstOrDefault(x => x.PasswordResetToken == request.Token);
+                if (foundUser == null|| foundUser.ResetTokenExpires < DateTime.Now)
+                {
+                    return BadRequest("Invalid Token");
+                }
+
+                // Verify the current password
+                bool currentPasswordVerified = BCrypt.Net.BCrypt.Verify(request.NewPassword, foundUser.Password);
+                if (currentPasswordVerified)
+                {
+                    string message = "New password cannot be same as old password.";
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), $"Failed Reset Password: {message}").Wait();
+                    return BadRequest(new { message });
+                }
+
+                // Update the password with the new one
+                foundUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                foundUser.UpdatedAt = DateTime.Now;
+
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Reset Password").Wait();
+                // Save changes to the database
+                _context.SaveChanges();
+
+
+                return Ok("Password resetted");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error");
+                return StatusCode(500);
+            }
+        }
+
+
+        private void SendResetPasswordEmail(string userEmail, string resetToken)
+        {
+            try
+            {
+                string siteUrl = _configuration["AppSettings:SiteUrl"];
+                string resetUrl = $"http://localhost:3000/resetpassword?token={resetToken}";
+
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+
+                mail.From = new MailAddress("your_email@gmail.com");
+                mail.To.Add(userEmail);
+                mail.Subject = "Reset Your Password";
+                mail.Body = $"Click the link below to reset your password:\n{resetUrl}";
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new System.Net.NetworkCredential("ouchueyangschool@gmail.com", "ddzq bazy zmlu nzsy\r\n");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+            }
+        }
+
+
+
+
+
+
+
+
+    [HttpGet("users")]
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAllUsers(string? search)
         {
@@ -290,7 +411,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 _logger.LogError(ex, "Error when updating user");
                 return StatusCode(500);
             }
-        }
+        }   
         [HttpDelete("{deleteid}/{deleterid}"), Authorize]
         public IActionResult DeleteUser(int deleteid, int deleterid)
         {
