@@ -480,6 +480,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<DateTime?>("Deactivefully")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -509,6 +512,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

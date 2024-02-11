@@ -39,7 +39,10 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         public string Role { get; set; } = string.Empty;
 
-       
+        public string Status {  get; set; } = string.Empty;
+        [Column(TypeName = "datetime")]
+        public DateTime? Deactivefully { get; set; }
+
 
         //// Navigation property to represent the one-to-many relationship
         [JsonIgnore]

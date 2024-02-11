@@ -68,6 +68,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     UpdatedAt = now,
                     Role = role,
                     PhoneNumber =request.PhoneNumber,
+                    Status = "activated"
                 };
 
                 // Add user
@@ -110,6 +111,39 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     // Log failed login attempt
                     _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Login: Wrong Password").Wait();
                     return BadRequest(new { message });
+                }
+
+                // Check if the account is activated
+                if (foundUser.Status.ToLower() != "activated")
+                {
+                    // Check if the account is deactivated
+                    if (foundUser.Status.ToLower() == "deactivated")
+                    {
+                        // Check if the deactivation period is over
+                        if (foundUser.Deactivefully.HasValue && foundUser.Deactivefully.Value <= DateTime.Now)
+                        {
+                            // Delete the account
+                            _context.Users.Remove(foundUser);
+                            _context.SaveChanges();
+
+                            // Log account deletion
+                            _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Deleted account due to deactivation period expiration").Wait();
+
+                            return BadRequest(new { message = "Your account has been deleted due to inactivity. Please register again." });
+                        }
+                        else
+                        {
+                            // Account is deactivated but not yet expired, ask user if they want to reactivate
+                            // You can implement a logic to handle user reactivation here
+                            // For now, returning a message asking the user to contact support or something similar
+                            return BadRequest(new { message = "Your account is deactivated. Please contact support to reactivate." });
+                        }
+                    }
+                    else
+                    {
+                        // Account is neither activated nor deactivated
+                        return BadRequest(new { message = "Your account is not activated. Please contact support for assistance." });
+                    }
                 }
 
                 // Log successful login
@@ -387,8 +421,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                     user.Email = newEmail;
 
-                    // Check if the updated email includes "@admin.com" and update the role
-                    user.Role = newEmail.EndsWith("@admin.com") ? "admin" : "user";
                 }
                 if (userUpdate.ImageFile != null)
                 {
@@ -397,6 +429,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 if (userUpdate.PhoneNumber != null)
                 {
                     user.PhoneNumber = userUpdate.PhoneNumber.Trim().ToLower();
+                }
+                if (userUpdate.Status != null)
+                {
+                    user.Status = userUpdate.Status.Trim().ToLower();
+                    if (user.Status == "deactivated")
+                    {
+                        user.Deactivefully = DateTime.Now.AddDays(5);
+                    }
                 }
 
                 user.UpdatedAt = DateTime.Now;
@@ -411,7 +451,73 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 _logger.LogError(ex, "Error when updating user");
                 return StatusCode(500);
             }
-        }   
+        }
+
+
+
+        [HttpPost("reactivate-account")]
+        public IActionResult ReactivateAccount(ReactivateRequest request)
+        {
+            try
+            {
+                // Trim string values
+                request.Email = request.Email.Trim().ToLower();
+                request.Password = request.Password.Trim();
+
+                // Check if the user exists
+                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                if (foundUser == null)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Reactivation: User not found").Wait();
+                    return BadRequest("User not found");
+                }
+
+                // Check if the user is deactivated
+                if (foundUser.Status.ToLower() != "deactivated")
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: User is not deactivated").Wait();
+                    return BadRequest("User is not deactivated");
+                }
+
+                // Check if the deactivation period is over
+                if (foundUser.Deactivefully.HasValue && foundUser.Deactivefully.Value < DateTime.Now)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: Deactivation period is over").Wait();
+                    return BadRequest("Deactivation period is over");
+                }
+
+                // Verify the password
+                bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
+                if (!verified)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: Incorrect password").Wait();
+                    return BadRequest("Incorrect password");
+                }
+
+                // Reactivate the account
+                foundUser.Status = "activated";
+                foundUser.Deactivefully = null; // Reset deactivation period
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                // Log successful reactivation
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User account reactivated").Wait();
+
+                return Ok("Account reactivated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when reactivating account");
+                return StatusCode(500);
+            }
+        }
+
+
         [HttpDelete("{deleteid}/{deleterid}"), Authorize]
         public IActionResult DeleteUser(int deleteid, int deleterid)
         {
@@ -553,7 +659,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                         Password = passwordHash,
                         CreatedAt = now,
                         UpdatedAt = now,
-                        Role = role
+                        Role = role,
+                        Status = "activated",
                     };
 
                     // Add user
