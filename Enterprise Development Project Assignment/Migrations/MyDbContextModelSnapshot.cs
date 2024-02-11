@@ -330,36 +330,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("RatingsAndReviews");
                 });
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ReplyModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ThreadId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Replies");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
                 {
                     b.Property<int>("Id")
@@ -406,37 +376,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SuggestionForms");
-                });
-
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.ThreadModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Threads");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>

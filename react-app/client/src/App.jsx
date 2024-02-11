@@ -25,7 +25,6 @@ import EditActivity from './pages/EditActivity'
 import ViewActivity from './pages/ViewActivity'
 import UserBookings from './pages/UserBookings';
 import ViewBooking from './pages/ViewBooking';
-import ActivitiesDashboard from './pages/ActivitiesDashboard';
 
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
@@ -46,10 +45,6 @@ import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
-
-import ThreadList from './pages/Forum';
-import CreateThread from './pages/CreateThread'
-import ThreadDetail  from './pages/Thread';
 
 
 function App() {
@@ -90,8 +85,6 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
-              <Link to="/activitiesDashboard" ><Typography>AdminActivity</Typography></Link>
-              <Link to ="/Forum"><Typography>Forums</Typography></Link>
               {user && user.role === "admin" && (
               <>
                 <Link to="/users"><Typography>Users</Typography></Link>
@@ -138,7 +131,8 @@ function App() {
             <Route path={"/editActivity/:id"} element={<EditActivity />} />
             <Route path={"/userBookings"} element={<UserBookings />} />
             <Route path={"/viewBooking/:id"} element={<ViewBooking />} />
-            <Route path={"/activitiesDashboard"} element={<ActivitiesDashboard />} />
+
+            
 
             
             <Route path={"/coupons"} element={<Coupons />} />
@@ -157,9 +151,6 @@ function App() {
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
-            <Route path={"/Forum"} element ={<ThreadList/>}/>
-            <Route path={"/CreateThread"} element ={<CreateThread/>}/>
-            <Route path={"/Thread/:threadId"} element={<ThreadDetail />} />
           </Routes>
         </Container>
 

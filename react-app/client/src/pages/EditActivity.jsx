@@ -16,9 +16,7 @@ function EditActivity() {
         title: "",
         description: "",
         price: "", 
-        category: "",
-        eventDate: "", // New field for event date
-        location: "",  // New field for location
+        category: "" 
     });
     const [imageFile, setImageFile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -44,9 +42,7 @@ function EditActivity() {
                 .max(500, 'Description must be at most 500 characters')
                 .required('Description is required'),
             price: yup.number().min(0, 'Price must be greater than or equal to 0'),
-            category: yup.string().required('Category is required'),
-            eventDate: yup.date().required('Event date is required'), // New validation for event date
-            location: yup.string().trim().required('Location is required'), // New validation for location
+            category: yup.string().required('Category is required')
         }),
         onSubmit: (data) => {
             if (imageFile) {
@@ -57,7 +53,7 @@ function EditActivity() {
             http.put(`/activity/${id}`, data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/activitiesDashboard");
+                    navigate("/activities");
                 });
         }
     });
@@ -167,31 +163,6 @@ function EditActivity() {
                                     <MenuItem value="leisure">Leisure</MenuItem>
                                     <MenuItem value="family">Family</MenuItem>
                                 </TextField>
-                                <TextField
-                                    fullWidth
-                                    margin="dense"
-                                    autoComplete="off"
-                                    label="Event Date"
-                                    name="eventDate"
-                                    type="date"
-                                    value={formik.values.eventDate}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.eventDate && Boolean(formik.errors.eventDate)}
-                                    helperText={formik.touched.eventDate && formik.errors.eventDate}
-                                />
-                                <TextField
-                                    fullWidth
-                                    margin="dense"
-                                    autoComplete="off"
-                                    label="Location"
-                                    name="location"
-                                    value={formik.values.location}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.location && Boolean(formik.errors.location)}
-                                    helperText={formik.touched.location && formik.errors.location}
-                                />
                             </Grid>
                             <Grid item xs={12} md={6} lg={4}>
                                 <Box sx={{ textAlign: 'center', mt: 2 }} >

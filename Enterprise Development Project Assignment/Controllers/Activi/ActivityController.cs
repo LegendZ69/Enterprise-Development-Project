@@ -176,22 +176,16 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteActivity(int id)
+        public IActionResult DeleteTutorial(int id)
         {
-            var activity = _context.Activities.Include(a => a.Bookings).FirstOrDefault(a => a.Id == id);
-            if (activity == null)
+            var myActivity = _context.Activities.Find(id);
+            if (myActivity == null)
             {
-                return NotFound(); // Activity not found
+                return NotFound();
             }
-
-            // Delete related bookings
-            _context.Bookings.RemoveRange(activity.Bookings);
-
-            // Remove activity
-            _context.Activities.Remove(activity);
+            _context.Activities.Remove(myActivity);
             _context.SaveChanges();
-
-            return NoContent(); // Successfully deleted
+            return Ok();
         }
 
 
