@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { Box, Typography, CircularProgress, Button, TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper } from '@mui/material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import http from '../http';
 
 function BookingsDashboard() {
@@ -11,10 +13,10 @@ function BookingsDashboard() {
 
     useEffect(() => {
         fetchAllBookings();
-    }, []);
+    }, [currentPage]); // Include currentPage in the dependency array
 
     const fetchAllBookings = () => {
-        http.get('/booking/adminBookings')
+        http.get(`/booking/adminBookings?page=${currentPage}&pageSize=${bookingsPerPage}`)
             .then((response) => {
                 setBookings(response.data);
                 setLoading(false);
@@ -26,15 +28,27 @@ function BookingsDashboard() {
             });
     };
 
-    // Calculate the index of the last booking to display
-    const indexOfLastBooking = currentPage * bookingsPerPage;
-    // Calculate the index of the first booking to display
-    const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
-    // Slice the bookings array to get the bookings for the current page
-    const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
-    // Change page
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const handleNextPage = () => {
+        if (currentPage < Math.ceil(bookings.length / bookingsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const deleteBooking = (id) => {
+        http.delete(`/booking/${id}`)
+            .then(() => {
+                fetchAllBookings();
+            })
+            .catch((error) => {
+                console.error('Error deleting booking:', error.message);
+            });
+    };
 
     if (loading) {
         return <CircularProgress />;
@@ -53,35 +67,40 @@ function BookingsDashboard() {
             <Typography variant="h5" sx={{ mb: 2 }}>
                 Bookings Dashboard
             </Typography>
-            {currentBookings.map((booking) => (
-                <Box key={booking.id} sx={{ mb: 4, border: '1px solid #ccc', padding: '16px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                    <Box>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Activity: {booking.activityTitle}
-                        </Typography>
-                        <Typography variant="body1" sx={{ mb: 2 }}>
-                            Date Booked: {new Date(booking.bookingDate).toLocaleDateString()}
-                        </Typography>
-                        {booking.price && (
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                Total Price: ${booking.price}
-                            </Typography>
-                        )}
-                    </Box>
-                    <Box>
-                        <Button variant="outlined" color="error" onClick={() => deleteBooking(booking.id)}>
-                            Delete
-                        </Button>
-                    </Box>
-                </Box>
-            ))}
-            {/* Pagination */}  
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Booking ID</TableCell>
+                            <TableCell>Activity ID</TableCell>
+                            <TableCell>User ID</TableCell>
+                            <TableCell>User Name</TableCell>
+                            <TableCell>Activity Name</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {bookings.map((booking) => (
+                            <TableRow key={booking.id}>
+                                <TableCell>{booking.id}</TableCell>
+                                <TableCell>{booking.activityId}</TableCell>
+                                <TableCell>{booking.activityTitle}</TableCell>
+                                <TableCell>{booking.userId}</TableCell>
+                                <TableCell>{booking.user.name}</TableCell>
+                                <TableCell>
+                                    <Button onClick={() => deleteBooking(booking.id)}>
+                                        <DeleteIcon />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                {[...Array(Math.ceil(bookings.length / bookingsPerPage)).keys()].map((number) => (
-                    <Button key={number + 1} onClick={() => paginate(number + 1)} variant="outlined" sx={{ mx: 1 }}>
-                        {number + 1}
-                    </Button>
-                ))}
+                <Button disabled={currentPage === 1} onClick={handlePreviousPage}>Previous</Button>
+                <Button disabled={currentPage === Math.ceil(bookings.length / bookingsPerPage)} onClick={handleNextPage}>Next</Button>
             </Box>
         </Box>
     );
