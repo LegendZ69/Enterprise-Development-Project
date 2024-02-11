@@ -1,9 +1,9 @@
-﻿using Enterprise_Development_Project_Assignment.Models;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
 using System.ComponentModel.DataAnnotations;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
-    public class ActivityDTO
+	public class ActivityDTO
 	{
 		public int Id { get; set; }
 		public string? Title { get; set; }

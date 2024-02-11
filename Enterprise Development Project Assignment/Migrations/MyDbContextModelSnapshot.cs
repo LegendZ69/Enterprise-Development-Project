@@ -316,6 +316,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
+<<<<<<< HEAD
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -348,6 +349,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ThreadId")
+=======
+>>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d
                         .HasColumnType("int");
 
                     b.Property<int>("Votes")
@@ -355,7 +358,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Replies");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RatingsAndReviews");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
@@ -402,6 +407,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
+<<<<<<< HEAD
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -440,9 +446,15 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<int>("Votes")
                         .HasColumnType("int");
 
+=======
+                        .HasColumnType("int");
+
+>>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d
                     b.HasKey("Id");
 
-                    b.ToTable("Threads");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SuggestionForms");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
@@ -588,6 +600,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
@@ -599,6 +612,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("Activity");
                 });
 
+=======
+>>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");

@@ -10,7 +10,7 @@ import UserContext from '../contexts/UserContext';
 function AddCreditCard() {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
-    
+
     if (!user) {
         return (
             <Typography variant="h5" sx={{ my: 2 }}>

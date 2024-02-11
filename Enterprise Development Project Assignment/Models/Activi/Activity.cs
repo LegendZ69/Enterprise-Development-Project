@@ -1,4 +1,4 @@
-﻿using Enterprise_Development_Project_Assignment.Models;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -51,8 +51,7 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         public virtual ICollection<Timeslot> Timeslots { get; set; }
 
-        // Navigation property to represent the one-to-many relationship (each activity has many reviews)
         /* [JsonIgnore]
-         public List<RatingsAndReviews>? RatingsAndReviews { get; set; }*/
+       public List<RatingsAndReviews>? RatingsAndReviews { get; set; }*/
     }
 }

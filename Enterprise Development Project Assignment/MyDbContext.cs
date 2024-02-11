@@ -1,4 +1,8 @@
 ﻿using Enterprise_Development_Project_Assignment.Models;
+<<<<<<< HEAD
+=======
+using Enterprise_Development_Project_Assignment.Models.Activi;
+>>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d
 using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment
@@ -51,9 +55,12 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Timeslot> Timeslots { get; set; }
+<<<<<<< HEAD
 		public DbSet<ThreadModel> Threads { get; set; }
 		public DbSet<ReplyModel> Replies { get; set; }
        
+=======
+>>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d
 
     }
 }

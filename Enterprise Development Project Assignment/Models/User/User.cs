@@ -46,7 +46,6 @@ namespace Enterprise_Development_Project_Assignment.Models
         public List<RatingsAndReviews>? RatingsAndReviews { get; set; }
 
         public List<CreditCard>? CreditCards { get; set; }
-
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
        
