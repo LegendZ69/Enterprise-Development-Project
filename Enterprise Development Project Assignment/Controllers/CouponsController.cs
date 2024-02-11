@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Enterprise_Development_Project_Assignment.Models;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -19,17 +18,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<CouponsDTO>), StatusCodes.Status200OK)]
-		public IActionResult GetAll()
+        public IActionResult GetAll()
         {
             IQueryable<Coupons> result = _context.Coupons;
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-			IEnumerable<CouponsDTO> data = list.Select(t => _mapper.Map<CouponsDTO>(t));
-			return Ok(list);
+            return Ok(list);
         }
         [HttpPost]
-		[ProducesResponseType(typeof(CouponsDTO), StatusCodes.Status200OK)]
-		public IActionResult AddCoupon(AddCouponsRequests coupons)
+        public IActionResult AddCoupon(Coupons coupons)
         {
             var now = DateTime.Now;
 
@@ -52,10 +48,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             };
             _context.Coupons.Add(myCoupon);
             _context.SaveChanges();
-			Coupons? newCoupon = _context.Coupons.FirstOrDefault(t => t.Id == myCoupon.Id);
-			CouponsDTO couponsDTO = _mapper.Map<CouponsDTO>(newCoupon);
-			return Ok(couponsDTO);
-
+            return Ok(myCoupon);
         }
 
         [HttpPut("{id}")]
