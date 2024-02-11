@@ -51,6 +51,10 @@ import AuditLog from './pages/AuditLog';
 =======
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of 7dadaac (completed the forum feature)
 
 
 >>>>>>> parent of 7dadaac (completed the forum feature)
@@ -163,6 +167,9 @@ function App() {
 =======
             <Route path={"/Forum"} element ={<ThreadList/>}/>
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>
+<<<<<<< HEAD
+>>>>>>> parent of 7dadaac (completed the forum feature)
+=======
 >>>>>>> parent of 7dadaac (completed the forum feature)
           </Routes>
         </Container>
