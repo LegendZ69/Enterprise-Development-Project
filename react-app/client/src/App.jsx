@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect, useContext } from 'react';
-import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button,MenuItem, Menu, Link as MuiLink } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
@@ -55,6 +55,7 @@ import CreateThread from './pages/CreateThread'
 import ThreadDetail  from './pages/Thread';
 function App() {
   const [user, setUser] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
@@ -69,6 +70,13 @@ function App() {
     window.location = "/";
   };
   
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <UserContext.Provider value={{ user, setUser }}>
     <Router>
@@ -91,13 +99,37 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
-              <Link to="/activitiesDashboard" ><Typography>AdminActivity</Typography></Link>
-              <Link to="/bookingsDashboard" ><Typography>AdminBookings</Typography></Link>
+      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
               {user && user.role === "admin" && (
               <>
-                <Link to="/users"><Typography>Users</Typography></Link>
-                <Link to="/auditlog"><Typography>Audit Log</Typography></Link>
+                <Button
+                  onClick={handleMenuOpen}
+                  style={{
+                    fontFamily: 'inherit',
+                    fontSize: 'inherit',
+                    fontWeight: 'inherit',
+                    textTransform: 'none', // Prevent uppercase transformation
+                    textDecoration: 'none', // Remove underline
+                    color: 'inherit', // Inherit color
+                    padding: 0, // Remove default padding
+                    margin: '0 8px', // Add some margin for spacing
+                    background: 'none', // Remove background
+                    border: 'none', // Remove border
+                    cursor: 'pointer', // Change cursor to indicate it's clickable
+                  }}
+                >Admin Privileges</Button>
+                <Menu
+                  id="admin-menu"
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem component={Link} to="/activitiesDashboard" onClick={handleMenuClose}>AdminActivity</MenuItem>
+                  <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>AdminBookings</MenuItem>
+                  <MenuItem component={Link} to="/users" onClick={handleMenuClose}>Users</MenuItem>
+                  <MenuItem component={Link} to="/auditlog" onClick={handleMenuClose}>Audit Log</MenuItem>
+                </Menu>
               </>
               )}
               <Box sx={{ flexGrow: 1 }}></Box>
