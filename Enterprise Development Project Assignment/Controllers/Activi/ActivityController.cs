@@ -55,12 +55,19 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             return Ok(data);
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddActivity(AddActivityRequests activity)
         {
             int userId = GetUserId();
             var now = DateTime.Now;
+
+            if (!User.IsInRole("admin"))
+            {
+  
+                return Forbid("You do not have permission to perform this action.");
+            }
 
             // Use Google Maps Geocoding API to fetch latitude and longitude
             var coordinates = await GetCoordinatesFromAddress(activity.Location);
@@ -126,7 +133,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
 
 
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public IActionResult UpdateTutorial(int id, UpdateActivityRequest activity)
         {
             var myActivity = _context.Activities.Find(id);
@@ -176,6 +184,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteActivity(int id)
         {
             var activity = _context.Activities.Include(a => a.Bookings).FirstOrDefault(a => a.Id == id);
