@@ -26,6 +26,7 @@ import ViewActivity from './pages/ViewActivity'
 import UserBookings from './pages/UserBookings';
 import ViewBooking from './pages/ViewBooking';
 import ActivitiesDashboard from './pages/ActivitiesDashboard';
+import BookingsDashboard from './pages/BookingsDashboard';
 
 import Coupons from './pages/Coupons';
 import AddCoupons from './pages/AddCoupons';
@@ -89,6 +90,7 @@ function App() {
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
               <Link to="/activitiesDashboard" ><Typography>AdminActivity</Typography></Link>
+              <Link to="/bookingsDashboard" ><Typography>AdminBookings</Typography></Link>
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
               {user && user.role === "admin" && (
               <>
@@ -137,6 +139,8 @@ function App() {
             <Route path={"/userBookings"} element={<UserBookings />} />
             <Route path={"/viewBooking/:id"} element={<ViewBooking />} />
             <Route path={"/activitiesDashboard"} element={<ActivitiesDashboard />} />
+            <Route path={"/bookingsDashboard"} element={<BookingsDashboard />} />
+
 
             
             <Route path={"/coupons"} element={<Coupons />} />
