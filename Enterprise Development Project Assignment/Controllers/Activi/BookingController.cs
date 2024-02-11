@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Enterprise_Development_Project_Assignment.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System;
-using System.Linq;
 using Enterprise_Development_Project_Assignment;
 using System.Net.Mail;
 using System.Net;
