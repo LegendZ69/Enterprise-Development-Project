@@ -18,6 +18,8 @@ namespace Enterprise_Development_Project_Assignment
             CreateMap<FeedbackForm, FeedbackFormDTO>();
             CreateMap<SuggestionForm, SuggestionFormDTO>();
             CreateMap<RatingsAndReviews, RatingsAndReviewsDTO>();
+
+            CreateMap<Coupons, CouponsDTO>();
         }
     }
 }
