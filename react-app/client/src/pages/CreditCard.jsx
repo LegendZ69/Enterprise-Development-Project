@@ -11,7 +11,7 @@ function CreditCard() {
     const [creditcardList, setcreditcardList] = useState([]);
     const [creditcardDelete, setcreditcardDelete] = useState(null);
     const { user } = useContext(UserContext);
-    
+
     const getCreditCard = () => {
         http.get('/creditcard').then((res) => {
             setcreditcardList(res.data);
@@ -36,48 +36,52 @@ function CreditCard() {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Box sx={{ flexGrow: 1 }} />
-                <Link to="/addCreditCard" style={{ textDecoration: 'none' }}>
-                    <Button variant='contained'>
-                        Add credit card
-                    </Button>
-                </Link>
+                {creditcardList.filter((creditcard) => creditcard.userId === user.id).length === 0 && (
+                    <Link to="/addCreditCard" style={{ textDecoration: 'none' }}>
+                        <Button variant='contained'>
+                            Add credit card
+                        </Button>
+                    </Link>
+                )}
             </Box>
             <Grid container spacing={2}>
-                {creditcardList.map((creditcard) => (
-                    <Grid item xs={12} md={6} lg={4} key={creditcard.id}>
-                        <Card>
-                            <CardContent>
+                {creditcardList
+                    .filter((creditcard) => creditcard.userId === user.id) // Filter credit cards for the current user
+                    .map((creditcard) => (
+                        <Grid item xs={12} md={6} lg={4} key={creditcard.id}>
+                            <Card>
+                                <CardContent>
 
-                                <Box sx={{ display: 'flex', mb: 1 }}>
-                                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                        Credit Card
+                                    <Box sx={{ display: 'flex', mb: 1 }}>
+                                        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                                            Credit Card
+                                        </Typography>
+                                        <Link to={`/updateCreditCard/${creditcard.id}`}>
+                                            <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                <Edit />
+                                            </IconButton>
+                                        </Link>
+                                    </Box>
+                                    <Typography>
+                                        Card number: {creditcard.cardNumber}
                                     </Typography>
-                                    <Link to={`/updateCreditCard/${creditcard.id}`}>
-                                        <IconButton color="primary" sx={{ padding: '4px' }}>
-                                            <Edit />
-                                        </IconButton>
-                                    </Link>
-                                </Box>
-                                <Typography>
-                                    Card number: {creditcard.cardNumber}
-                                </Typography>
-                                <Typography>
-                                    First name: {creditcard.firstName}
-                                </Typography>
-                                <Typography>
-                                    Last name: {creditcard.lastName}
-                                </Typography>
-                                <Typography>
-                                    City: {creditcard.city}
-                                </Typography>
-                                <Typography>
-                                    Address: {creditcard.address}
-                                </Typography>
+                                    <Typography>
+                                        First name: {creditcard.firstName}
+                                    </Typography>
+                                    <Typography>
+                                        Last name: {creditcard.lastName}
+                                    </Typography>
+                                    <Typography>
+                                        City: {creditcard.city}
+                                    </Typography>
+                                    <Typography>
+                                        Address: {creditcard.address}
+                                    </Typography>
 
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
             </Grid>
         </Box>
     );
