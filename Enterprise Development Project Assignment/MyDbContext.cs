@@ -1,5 +1,5 @@
 ﻿using Enterprise_Development_Project_Assignment.Models;
-using Enterprise_Development_Project_Assignment.Models.Forum;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment

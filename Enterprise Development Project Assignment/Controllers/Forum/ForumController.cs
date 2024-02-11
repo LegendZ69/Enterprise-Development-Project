@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Enterprise_Development_Project_Assignment.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using Enterprise_Development_Project_Assignment.Helpers;
-using Enterprise_Development_Project_Assignment.Models.Forum;
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
     [Route("[controller]")]
