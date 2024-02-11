@@ -1,24 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import UserContext from '../contexts/UserContext';
+
 
 function UpdateCreditCard() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user } = useContext(UserContext);
-    
-    if (!user) {
-        return (
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Access denied. Only users can view this page.
-            </Typography>
-        );
-    }
     const [creditCard, setCreditCard] = useState({
         cardNumber: "",
         firstName: "",
