@@ -50,9 +50,5 @@ namespace Enterprise_Development_Project_Assignment.Models
         public List<Booking> Bookings { get; set; } = new List<Booking>();
 
         public virtual ICollection<Timeslot> Timeslots { get; set; }
-
-        // Navigation property to represent the one-to-many relationship (each activity has many reviews)
-        /* [JsonIgnore]
-         public List<RatingsAndReviews>? RatingsAndReviews { get; set; }*/
     }
 }

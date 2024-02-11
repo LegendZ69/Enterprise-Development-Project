@@ -1,6 +1,5 @@
 ﻿using Enterprise_Development_Project_Assignment.Models;
 using Enterprise_Development_Project_Assignment.Models.Activi;
-using Enterprise_Development_Project_Assignment.Models.Coupon;
 using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment
@@ -53,6 +52,9 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<Timeslot> Timeslots { get; set; }
+        public DbSet<ThreadModel> Threads { get; set; }
+        public DbSet<ReplyModel> Replies { get; set; }
+
 
     }
 }
