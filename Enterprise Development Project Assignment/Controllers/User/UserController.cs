@@ -50,7 +50,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
 
                 // Determine user role based on email
-                string role = request.Email.EndsWith("@admin.com") ? "admin" : "user";
+                string role = request.Email.Equals("test@admin.com", StringComparison.OrdinalIgnoreCase) ? "admin" : "user";
+
 
 
                 // Create user object
@@ -376,34 +377,34 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
-
-        [HttpPost("popualteadminaccs"), Authorize]
-        public IActionResult PopulateAdminAccs()
+        [HttpPost("populateadminaccs"), Authorize]
+        public IActionResult PopulateAdminAccs(int numberOfAccounts)
         {
             try
             {
                 // Check if the authenticated user has the "admin" role
                 var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                if (roleClaim == null || roleClaim.Value.ToLower() != "admin")
+                if (roleClaim == null || !roleClaim.Value.ToLower().Equals("admin"))
                 {
                     return StatusCode(403, new { error = "You do not have authorization to perform this action." });
                 }
 
-                // Define a list of test admin accounts
-                var adminAccounts = new List<RegisterRequest>
-        {
-            new RegisterRequest { Name = "Admin1", Email = "admin1@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin2", Email = "admin2@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin3", Email = "admin3@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin4", Email = "admin4@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin5", Email = "admin5@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin6", Email = "admin6@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin7", Email = "admin7@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin8", Email = "admin8@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin9", Email = "admin9@admin.com", Password = "Admin@1234567" },
+                // Define a list to hold the admin accounts
+                var adminAccounts = new List<RegisterRequest>();
 
-            // Add more admin accounts as needed
-        };
+                // Determine the starting index for the new admin accounts
+                int startIndex = _context.Users.Count(u => u.Role.ToLower() == "admin") + 1;
+
+                // Generate the specified number of admin accounts starting from the next index
+                for (int i = startIndex; i < startIndex + numberOfAccounts; i++)
+                {
+                    string email = $"admin{i}@admin.com";
+                    string name = $"Admin{i}";
+                    string password = "Admin@1234567"; // You may want to generate unique passwords
+
+                    // Add the admin account to the list
+                    adminAccounts.Add(new RegisterRequest { Name = name, Email = email, Password = password });
+                }
 
                 foreach (var adminAccount in adminAccounts)
                 {
@@ -440,7 +441,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 // Log the user activity
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                _auditLogHelper.LogUserActivityAsync(userId, "Populated Admin Accounts").Wait();
+                _auditLogHelper.LogUserActivityAsync(userId, $"Populated {numberOfAccounts} Admin Accounts").Wait();
 
                 // Save changes after adding all admin accounts
                 _context.SaveChanges();
@@ -453,6 +454,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
+
 
 
 
