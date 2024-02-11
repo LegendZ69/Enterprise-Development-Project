@@ -47,6 +47,8 @@ import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
+import ResetPassword from './pages/ResetPassword';
+import ForgetPassword from './pages/ForgetPassword';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -159,6 +161,9 @@ function App() {
             <Route path={"/editprofile/:id"} element={< EditProfile />} />
             <Route path={"/changepassword"} element={<ChangePassword />} />
             <Route path={"/auditlog"} element ={<AuditLog/>}/>
+            <Route path={"/resetpassword"} element ={<ResetPassword/>}/>
+            <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
+
 
             <Route path={"/Forum"} element ={<ThreadList/>}/>
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>

@@ -33,12 +33,16 @@ namespace Enterprise_Development_Project_Assignment.Models
 		public DateTime UpdatedAt { get; set; }
         [RegularExpression(@"^\d{8}$", ErrorMessage = "Phone number must be 8 digits.")]
         public string PhoneNumber { get; set; } = string.Empty;
+        public string? PasswordResetToken { get; set; } = string.Empty;
+        [Column(TypeName = "datetime")]
+        public DateTime? ResetTokenExpires { get; set; }
 
-		public string Role { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
 
-		
-		//// Navigation property to represent the one-to-many relationship
-		[JsonIgnore]
+       
+
+        //// Navigation property to represent the one-to-many relationship
+        [JsonIgnore]
 		public List<Activity>? Activities { get; set; }
 
         public List<FeedbackForm>? FeedbackForms { get; set; }
