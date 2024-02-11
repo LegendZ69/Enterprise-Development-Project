@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Enterprise_Development_Project_Assignment.Models;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -7,92 +12,188 @@ namespace Enterprise_Development_Project_Assignment.Controllers
     [Route("[controller]")]
     public class FeedbackFormController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private int GetUserId()
+        {
+            return Convert.ToInt32(User.Claims
+                .Where(c => c.Type == ClaimTypes.NameIdentifier)
+                .Select(c => c.Value).SingleOrDefault());
+        }
 
-        public FeedbackFormController(MyDbContext context)
+        private readonly MyDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger<FeedbackFormController> _logger;
+
+        public FeedbackFormController(MyDbContext context, IMapper mapper, ILogger<FeedbackFormController> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<FeedbackFormDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search)
         {
-            IQueryable<FeedbackForm> result = _context.FeedbackForms;
-            if (search != null)
+            try
             {
-                result = result.Where(x => x.Email.Contains(search)
-                || x.FirstName.Contains(search)
-                || x.LastName.Contains(search)
-                || x.Topic.Contains(search)
-                || x.Message.Contains(search)
-                );
+                IQueryable<FeedbackForm> result = _context.FeedbackForms.Include(t => t.User); //to be able to get user item
+                if (search != null)
+                {
+                    result = result.Where(x => x.Email.Contains(search)
+                    || x.FirstName.Contains(search)
+                    || x.LastName.Contains(search)
+                    || x.Topic.Contains(search)
+                    || x.Message.Contains(search)
+                    );
+                }
+                var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+                IEnumerable<FeedbackFormDTO> data = list.Select(t => _mapper.Map<FeedbackFormDTO>(t));
+                return Ok(list);
             }
-            var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-            return Ok(list);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when get all feedback forms");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(FeedbackFormDTO), StatusCodes.Status200OK)]
         public IActionResult GetFeedbackForm(int id)
         {
-            FeedbackForm? FeedbackForm = _context.FeedbackForms.Find(id);
-            if (FeedbackForm == null)
+            try
             {
-                return NotFound();
+                FeedbackForm? feedbackForm = _context.FeedbackForms.Include(t => t.User).FirstOrDefault(t => t.Id == id);
+                if (feedbackForm == null)
+                {
+                    return NotFound();
+                }
+                FeedbackFormDTO data = _mapper.Map<FeedbackFormDTO>(feedbackForm);
+                return Ok(data);
             }
-            return Ok(FeedbackForm);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when get id feedback form");
+                return StatusCode(500);
+            }
         }
 
+        /*[HttpPost, Authorize]*/ //only authorised user can add / bind form to userid
         [HttpPost]
-        public IActionResult AddFeedbackForm(FeedbackForm FeedbackForm)
+        [ProducesResponseType(typeof(FeedbackForm), StatusCodes.Status200OK)]
+        public IActionResult AddFeedbackForm(AddFeedbackRequest FeedbackForm)
         {
-            var now = DateTime.Now;
-            var myFeedbackForm = new FeedbackForm()
+            try
             {
-                //only can trim string
-                Email = FeedbackForm.Email.Trim().ToLower(),
-                FirstName = FeedbackForm.FirstName.Trim(),
-                LastName = FeedbackForm.LastName.Trim(),
-                Topic = FeedbackForm.Topic,
-                Message = FeedbackForm.Message.Trim(),
-                CreatedAt = now,
-                UpdatedAt = now
-            };
+                int userId = GetUserId();
+                var now = DateTime.Now;
+                var myFeedbackForm = new FeedbackForm()
+                {
+                    //only can trim string
+                    Email = FeedbackForm.Email.Trim().ToLower(),
+                    FirstName = FeedbackForm.FirstName.Trim(),
+                    LastName = FeedbackForm.LastName.Trim(),
+                    Topic = FeedbackForm.Topic,
+                    Message = FeedbackForm.Message.Trim(),
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    UserId = userId
+                };
 
-            _context.FeedbackForms.Add(myFeedbackForm);
-            _context.SaveChanges();
-            return Ok(myFeedbackForm);
-        }
+                _context.FeedbackForms.Add(myFeedbackForm);
+                _context.SaveChanges();
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateFeedbackForm(int id, FeedbackForm FeedbackForm)
-        {
-            var myFeedbackForm = _context.FeedbackForms.Find(id);
-            if (myFeedbackForm == null)
-            {
-                return NotFound();
+                FeedbackForm? newFeedbackForm = _context.FeedbackForms.Include(t => t.User)
+                    .FirstOrDefault(t => t.Id == myFeedbackForm.Id);
+                FeedbackFormDTO feedbackFormDTO = _mapper.Map<FeedbackFormDTO>(newFeedbackForm);
+                return Ok(feedbackFormDTO);
             }
-            myFeedbackForm.Email = FeedbackForm.Email.Trim().ToLower();
-            myFeedbackForm.FirstName = FeedbackForm.FirstName.Trim();
-            myFeedbackForm.LastName = FeedbackForm.LastName.Trim();
-            myFeedbackForm.Topic = FeedbackForm.Topic;
-            myFeedbackForm.Message = FeedbackForm.Message.Trim();
-            myFeedbackForm.StaffRemark = FeedbackForm.StaffRemark.Trim();
-            myFeedbackForm.UpdatedAt = DateTime.Now;
-            _context.SaveChanges();
-            return Ok();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when post feedback form");
+                return StatusCode(500);
+            }
         }
 
-        [HttpDelete("{id}")]
+        [HttpPut("{id}"), Authorize]
+        public IActionResult UpdateFeedbackForm(int id, UpdateFeedbackRequest feedbackForm)
+        {
+            try
+            {
+                var myFeedbackForm = _context.FeedbackForms.Find(id);
+                if (myFeedbackForm == null)
+                {
+                    return NotFound();
+                }
+
+                int userId = GetUserId();
+                if (myFeedbackForm.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                if (feedbackForm.Email != null)
+                {
+                    myFeedbackForm.Email = feedbackForm.Email.Trim().ToLower();
+                }
+                if (feedbackForm.FirstName != null)
+                {
+                    myFeedbackForm.FirstName = feedbackForm.FirstName.Trim();
+                }
+                if (feedbackForm.LastName != null)
+                {
+                    myFeedbackForm.LastName = feedbackForm.LastName.Trim();
+                }
+                if (feedbackForm.Topic != null)
+                {
+                    myFeedbackForm.Topic = feedbackForm.Topic.Trim();
+                }
+                if (feedbackForm.Message != null)
+                {
+                    myFeedbackForm.Message = feedbackForm.Message.Trim();
+                }
+                if (feedbackForm.StaffRemark != null)
+                {
+                    myFeedbackForm.StaffRemark = feedbackForm.StaffRemark.Trim();
+                }
+                myFeedbackForm.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when put id feedback form");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteFeedbackForm(int id)
         {
-            var myFeedbackForm = _context.FeedbackForms.Find(id);
-            if (myFeedbackForm == null)
+            try
             {
-                return NotFound();
+                var myFeedbackForm = _context.FeedbackForms.Find(id);
+                if (myFeedbackForm == null)
+                {
+                    return NotFound();
+                }
+
+                int userId = GetUserId();
+                if (myFeedbackForm.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                _context.FeedbackForms.Remove(myFeedbackForm);
+                _context.SaveChanges();
+                return Ok();
             }
-            _context.FeedbackForms.Remove(myFeedbackForm);
-            _context.SaveChanges();
-            return Ok();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when delete id feedback form");
+                return StatusCode(500);
+            }
         }
     }
 }

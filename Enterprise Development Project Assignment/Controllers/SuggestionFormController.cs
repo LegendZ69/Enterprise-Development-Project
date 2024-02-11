@@ -5,6 +5,7 @@ using Enterprise_Development_Project_Assignment.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -12,154 +13,189 @@ namespace Enterprise_Development_Project_Assignment.Controllers
     [Route("[controller]")]
     public class SuggestionFormController : ControllerBase
     {
-        //comment to avoid build error
-        /*private int GetUserId()
+        private int GetUserId()
         {
             return Convert.ToInt32(User.Claims
-            .Where(c => c.Type == ClaimTypes.NameIdentifier)
-            .Select(c => c.Value).SingleOrDefault());
-        }*/
+                .Where(c => c.Type == ClaimTypes.NameIdentifier)
+                .Select(c => c.Value).SingleOrDefault());
+        }
 
         private readonly MyDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger<SuggestionFormController> _logger;
 
-        public SuggestionFormController(MyDbContext context)
+
+        public SuggestionFormController(MyDbContext context, IMapper mapper, ILogger<SuggestionFormController> logger)
         {
             _context = context;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<SuggestionFormDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search)
         {
-            //to include user object
-            /*IQueryable<SuggestionForm> result = _context.SuggestionForms.Include(t => t.User);*/
-            IQueryable<SuggestionForm> result = _context.SuggestionForms; //delete this when combine
-            if (search != null)
+            try
             {
-                result = result.Where(x => x.Email.Contains(search)
-                || x.ActivityName.Contains(search)
-/*                || x.ActivityType.Contains(search)
-*/                || x.ActivityDescription.Contains(search)
-                || x.ActivityReason.Contains(search)
-                );
-            }
-            var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-            //combine with user
-            /*var data = list.Select(t => new
-            {
-                t.Id,
-                t.Email,
-                t.ActivityName,
-                t.ActivityType,
-                t.ActivityDescription,
-                t.ActivityReason,
-                t.CreatedAt,
-                t.UpdatedAt,
-                t.UserId,
-                User = new
+                IQueryable<SuggestionForm> result = _context.SuggestionForms.Include(t => t.User); //to include user object
+                if (search != null)
                 {
-                    t.User?.Name //return form data + user name only
+                    result = result.Where(x => x.Email.Contains(search)
+                    || x.ActivityName.Contains(search)
+    /*                || x.ActivityType.Contains(search)
+    */                || x.ActivityDescription.Contains(search)
+                    || x.ActivityReason.Contains(search)
+                    );
                 }
-            });*/
-
-            return Ok(list); //change list to data when combine
+                var list = result.OrderByDescending(x => x.CreatedAt).ToList();
+                IEnumerable<SuggestionFormDTO> data = list.Select(t => _mapper.Map<SuggestionFormDTO>(t));
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when get all suggestion forms");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(SuggestionFormDTO), StatusCodes.Status200OK)]
         public IActionResult GetSuggestionForm(int id)
         {
-            /*            SuggestionForm? suggestionForm = _context.SuggestionForms.Include(t => t.User).FirstOrDefault(t => t.Id == id);*/
-            SuggestionForm? suggestionForm = _context.SuggestionForms.Find(id);
-            if (suggestionForm == null)
+            try
             {
-                return NotFound();
-            }
-            /*var data = new
-            {
-                tutorial.Id,
-                tutorial.Title,
-                tutorial.Description,
-                tutorial.CreatedAt,
-                tutorial.UpdatedAt,
-                tutorial.UserId,
-                User = new
+                SuggestionForm? suggestionForm = _context.SuggestionForms.Include(t => t.User).FirstOrDefault(t => t.Id == id);
+                if (suggestionForm == null)
                 {
-                    tutorial.User?.Name
+                    return NotFound();
                 }
-            };*/
-            return Ok(suggestionForm);
+                SuggestionFormDTO data = _mapper.Map<SuggestionFormDTO>(suggestionForm);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when get id suggestion form");
+                return StatusCode(500);
+            }
         }
 
         /*[HttpPost, Authorize]*/ //only authorised user can add / bind form to userid
         [HttpPost]
-        public IActionResult AddSuggestionForm(SuggestionForm suggestionForm)
+        [ProducesResponseType(typeof(SuggestionFormDTO), StatusCodes.Status200OK)]
+        public IActionResult AddSuggestionForm(AddSuggestionRequest suggestionForm)
         {
-/*            int userId = GetUserId();*/
-            var now = DateTime.Now;
-            var mySuggestionForm = new SuggestionForm()
+            try
             {
-                //only can trim string
-                Email = suggestionForm.Email.Trim().ToLower(),
-                ActivityName = suggestionForm.ActivityName.Trim(),
-                ActivityType = suggestionForm.ActivityType,
-                ActivityDescription = suggestionForm.ActivityDescription.Trim(),
-                ActivityReason = suggestionForm.ActivityReason.Trim(),
-                CreatedAt = now,
-                UpdatedAt = now
-/*                UserId = userId */
-            };
+                int userId = GetUserId();
+                var now = DateTime.Now;
+                var mySuggestionForm = new SuggestionForm()
+                {
+                    //only can trim string
+                    Email = suggestionForm.Email.Trim().ToLower(),
+                    ActivityName = suggestionForm.ActivityName.Trim(),
+                    ActivityType = suggestionForm.ActivityType,
+                    ActivityDescription = suggestionForm.ActivityDescription.Trim(),
+                    ActivityReason = suggestionForm.ActivityReason.Trim(),
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    UserId = userId
+                };
 
-            _context.SuggestionForms.Add(mySuggestionForm);
-            _context.SaveChanges();
-            return Ok(mySuggestionForm);
-        }
+                _context.SuggestionForms.Add(mySuggestionForm);
+                _context.SaveChanges();
 
-        /*[HttpPut("{id}"), Authorize]*/ //only authorised user can edit
-        [HttpPut("{id}")]
-        public IActionResult UpdateSuggestionForm(int id, SuggestionForm suggestionForm)
-        {
-            var mySuggestionForm = _context.SuggestionForms.Find(id);
-            if (mySuggestionForm == null)
-            {
-                return NotFound();
+                SuggestionForm? newSuggestionForm = _context.SuggestionForms.Include(t => t.User)
+                    .FirstOrDefault(t => t.Id == mySuggestionForm.Id);
+                SuggestionFormDTO suggestionFormDTO = _mapper.Map<SuggestionFormDTO>(newSuggestionForm);
+                return Ok(suggestionFormDTO);
             }
-
-            //think can put in GetAll to display their own form
-            /*int userId = GetUserId();
-            if (mySuggestionForm.UserId != userId)
+            catch (Exception ex)
             {
-                return Forbid(); //prevent edit if userid bound to form not match userid who want to edit
-            }*/
-
-            mySuggestionForm.Email = suggestionForm.Email.Trim().ToLower();
-            mySuggestionForm.ActivityName = suggestionForm.ActivityName.Trim();
-            mySuggestionForm.ActivityType = suggestionForm.ActivityType;
-            mySuggestionForm.ActivityDescription = suggestionForm.ActivityDescription.Trim();
-            mySuggestionForm.ActivityReason = suggestionForm.ActivityReason.Trim();
-            mySuggestionForm.StaffRemark = suggestionForm.StaffRemark.Trim();
-            mySuggestionForm.UpdatedAt = DateTime.Now;
-            _context.SaveChanges();
-            return Ok();
+                _logger.LogError(ex, "Error when post suggestion form");
+                return StatusCode(500);
+            }
         }
 
-        /*[HttpDelete("{id}"), Authorize]*/ //only authorised user can delete
-        [HttpDelete("{id}")]
+        [HttpPut("{id}"), Authorize] //only authorised user can edit
+        public IActionResult UpdateSuggestionForm(int id, UpdateSuggestionRequest suggestionForm)
+        {
+            try
+            {
+                var mySuggestionForm = _context.SuggestionForms.Find(id);
+                if (mySuggestionForm == null)
+                {
+                    return NotFound();
+                }
+
+                int userId = GetUserId();
+                if (mySuggestionForm.UserId != userId)
+                {
+                    return Forbid(); //prevent edit if userid bound to form not match userid who want to edit
+                }
+
+                if (suggestionForm.Email != null)
+                {
+                    mySuggestionForm.Email = suggestionForm.Email.Trim().ToLower();
+                }
+                if (suggestionForm.ActivityName != null)
+                {
+                    mySuggestionForm.ActivityName = suggestionForm.ActivityName.Trim();
+                }
+                if (suggestionForm.ActivityType != null)
+                {
+                    mySuggestionForm.ActivityType = suggestionForm.ActivityType.Trim();
+                }
+                if (suggestionForm.ActivityDescription != null)
+                {
+                    mySuggestionForm.ActivityDescription = suggestionForm.ActivityDescription.Trim();
+                }
+                if (suggestionForm.ActivityReason != null)
+                {
+                    mySuggestionForm.ActivityReason = suggestionForm.ActivityReason.Trim();
+                }
+                if (suggestionForm.StaffRemark != null)
+                {
+                    mySuggestionForm.StaffRemark = suggestionForm.StaffRemark.Trim();
+                }
+                mySuggestionForm.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when put id suggestion form");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteSuggestionForm(int id)
         {
-            var mySuggestionForm = _context.SuggestionForms.Find(id);
-            if (mySuggestionForm == null)
+            try
             {
-                return NotFound();
+                var mySuggestionForm = _context.SuggestionForms.Find(id);
+                if (mySuggestionForm == null)
+                {
+                    return NotFound();
+                }
+
+                int userId = GetUserId();
+                if (mySuggestionForm.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                _context.SuggestionForms.Remove(mySuggestionForm);
+                _context.SaveChanges();
+                return Ok();
             }
-
-            /*int userId = GetUserId();
-            if (mySuggestionForm.UserId != userId)
+            catch (Exception ex)
             {
-                return Forbid(); //prevent edit if userid bound to form not match userid who want to edit
-            }*/
-
-            _context.SuggestionForms.Remove(mySuggestionForm);
-            _context.SaveChanges();
-            return Ok();
+                _logger.LogError(ex, "Error when delete id suggestion form");
+                return StatusCode(500);
+            }
         }
     }
 }

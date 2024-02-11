@@ -14,8 +14,12 @@ namespace Enterprise_Development_Project_Assignment
             CreateMap<Booking, BookingDTO>();
             CreateMap<AuditLog,AuditLogDTO>();
             CreateMap<Timeslot, TimeslotDTO>();
-			CreateMap<Coupons, CouponsDTO>();
-			CreateMap<CreditCard, CreditCardDTO>();
-		}
+
+            CreateMap<FeedbackForm, FeedbackFormDTO>();
+            CreateMap<SuggestionForm, SuggestionFormDTO>();
+            CreateMap<RatingsAndReviews, RatingsAndReviewsDTO>();
+
+            CreateMap<Coupons, CouponsDTO>();
+        }
     }
 }

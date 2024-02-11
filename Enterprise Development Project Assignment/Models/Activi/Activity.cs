@@ -50,5 +50,8 @@ namespace Enterprise_Development_Project_Assignment.Models
         public List<Booking> Bookings { get; set; } = new List<Booking>();
 
         public virtual ICollection<Timeslot> Timeslots { get; set; }
+
+        /* [JsonIgnore]
+       public List<RatingsAndReviews>? RatingsAndReviews { get; set; }*/
     }
 }
