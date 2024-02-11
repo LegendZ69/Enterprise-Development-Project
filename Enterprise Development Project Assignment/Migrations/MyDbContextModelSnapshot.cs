@@ -232,7 +232,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CreditCard");
                 });
@@ -525,6 +530,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("CreditCards")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
@@ -537,6 +553,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("Bookings");
+
+                    b.Navigation("CreditCards");
                 });
 #pragma warning restore 612, 618
         }

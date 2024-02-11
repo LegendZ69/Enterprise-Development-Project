@@ -41,7 +41,7 @@ namespace Enterprise_Development_Project_Assignment.Models
 		[JsonIgnore]
 		public List<Activity>? Activities { get; set; }
 
-
+        public List<CreditCard>? CreditCards { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
        

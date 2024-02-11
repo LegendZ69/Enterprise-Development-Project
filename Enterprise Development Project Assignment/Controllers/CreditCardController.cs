@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Enterprise_Development_Project_Assignment.Models;
 using AutoMapper;
+using System.Security.Claims;
+
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
     [ApiController]
@@ -16,18 +18,30 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _configuration = configuration;
             _mapper = mapper;
         }
-        [HttpGet]
-        public IActionResult GetAll()
+		private int GetUserId()
+		{
+
+			return Convert.ToInt32(User.Claims
+			.Where(c => c.Type == ClaimTypes.NameIdentifier)
+			.Select(c => c.Value).SingleOrDefault());
+		}
+		[HttpGet]
+		[ProducesResponseType(typeof(IEnumerable<CreditCardDTO>), StatusCodes.Status200OK)]
+		public IActionResult GetAll()
         {
             IQueryable<CreditCard> result = _context.CreditCard;
             var list = result.OrderByDescending(x => x.CreatedAt).ToList();
-            return Ok(list);
+            IEnumerable<CreditCardDTO> data = list.Select(t => _mapper.Map<CreditCardDTO>(t));
+
+			return Ok(list);
         }
 
         [HttpPost]
-        public IActionResult AddCreditCard(CreditCard creditCard)
+		[ProducesResponseType(typeof(CreditCardDTO), StatusCodes.Status200OK)]
+		public IActionResult AddCreditCard(AddCreditCardRequest creditCard)
         {
-            var now = DateTime.Now;
+			int userId = GetUserId();
+			var now = DateTime.Now;
 
             var myCreditCard = new CreditCard()
             {
@@ -38,10 +52,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 Address = creditCard.Address,
                 CreatedAt = now,
                 UpdatedAt = now,
-            };
+				UserId = userId
+			};
             _context.CreditCard.Add(myCreditCard);
             _context.SaveChanges();
-            return Ok(myCreditCard);
+			CreditCard? newCreditCard = _context.CreditCard.FirstOrDefault(t => t.Id == myCreditCard.Id);
+			CreditCardDTO creditCardDTO = _mapper.Map<CreditCardDTO>(newCreditCard);
+			return Ok(creditCardDTO);
+
         }
         [HttpPut("{id}")]
         public IActionResult UpdateCreditCard(int id, UpdateCreditCard creditCard)
