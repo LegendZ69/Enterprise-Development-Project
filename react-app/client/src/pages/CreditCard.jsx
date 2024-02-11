@@ -3,27 +3,16 @@ import { Link } from 'react-router-dom';
 import { Box, Typography, Grid, Card, CardContent, Input, IconButton, Button } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 import http from '../http';
-import UserContext from '../contexts/UserContext';
-
-
 
 function CreditCard() {
     const [creditcardList, setcreditcardList] = useState([]);
     const [creditcardDelete, setcreditcardDelete] = useState(null);
-    const { user } = useContext(UserContext);
-    
+
     const getCreditCard = () => {
         http.get('/creditcard').then((res) => {
             setcreditcardList(res.data);
         });
     };
-    if (!user) {
-        return (
-            <Typography variant="h5" sx={{ my: 2 }}>
-                Access denied. Only users can view this page.
-            </Typography>
-        );
-    }
 
     useEffect(() => {
         getCreditCard();

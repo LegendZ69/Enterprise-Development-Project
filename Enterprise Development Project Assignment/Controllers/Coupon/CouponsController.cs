@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Enterprise_Development_Project_Assignment.Models;
+using Enterprise_Development_Project_Assignment.Models.Coupon;
 
 namespace Enterprise_Development_Project_Assignment.Controllers.Coupon
 {
