@@ -35,8 +35,5 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
-		public int UserId { get; set; }
-		// Change User property to reference User entity
-		public User? User { get; set; }
-	}
+    }
 }
