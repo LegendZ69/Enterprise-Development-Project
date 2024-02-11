@@ -1,19 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
-    public class FeedbackForm
+    public class AddFeedbackRequest
     {
-        public int Id { get; set; } //FormId
-
-        //FK property
-        public int UserId { get; set; }
-
-        // Navigation property to represent the one-to-many relationship
-        public User? User { get; set; }
-
         [Required, EmailAddress, MaxLength(100)]
         public string Email { get; set; } = string.Empty;
 
@@ -31,13 +21,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         [Required, MinLength(3), MaxLength(200)]
         public string Message { get; set; } = string.Empty;
 
-        [MaxLength(200)]
-        public string StaffRemark { get; set; } = string.Empty;
-
-        [Column(TypeName = "datetime")]
-        public DateTime CreatedAt { get; set; }
-
-        [Column(TypeName = "datetime")]
-        public DateTime UpdatedAt { get; set; }
+        /*[MaxLength(200)]
+        public string StaffRemark { get; set; } = string.Empty;*/
     }
 }
