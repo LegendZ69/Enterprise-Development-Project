@@ -93,5 +93,39 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             return NoContent();
         }
+        [HttpPost("{id}/upvote")]
+        public async Task<IActionResult> UpvoteThread(int id)
+        {
+            var thread = await _context.Threads.FindAsync(id);
+
+            if (thread == null)
+            {
+                return NotFound();
+            }
+
+            thread.Votes += 1; // Increment the vote count
+            await _context.SaveChangesAsync();
+
+            return Ok(thread); // Or return NoContent(); based on your API design
+        }
+        [HttpPost("{id}/downvote")]
+        public async Task<IActionResult> DownvoteThread(int id)
+        {
+            var thread = await _context.Threads.FindAsync(id);
+            if (thread == null)
+            {
+                return NotFound();
+            }
+
+            thread.Votes -= 1; // Decrement the vote count
+            await _context.SaveChangesAsync();
+
+            return Ok(thread); // Or return NoContent(); based on your API design
+        }
+
+       
+
+
+
     }
 }

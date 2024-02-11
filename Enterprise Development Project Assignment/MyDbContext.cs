@@ -1,5 +1,4 @@
 ﻿using Enterprise_Development_Project_Assignment.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Enterprise_Development_Project_Assignment
@@ -54,6 +53,7 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<Timeslot> Timeslots { get; set; }
 		public DbSet<ThreadModel> Threads { get; set; }
 		public DbSet<ReplyModel> Replies { get; set; }
+       
 
-	}
+    }
 }

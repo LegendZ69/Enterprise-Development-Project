@@ -22,30 +22,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("Timeslots");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Property<int>("Id")
@@ -285,7 +261,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FeedbackForms");
                 });
@@ -311,6 +292,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ImageFile")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -330,7 +315,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("RatingsAndReviews");
                 });
@@ -358,6 +348,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ThreadId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Votes")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -408,7 +401,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SuggestionForms");
                 });
@@ -439,9 +437,36 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Votes")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Threads");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("Timeslots");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>
@@ -489,17 +514,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
-                {
-                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
-                        .WithMany("Timeslots")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
-                });
-
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -541,6 +555,50 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("FeedbackForms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("RatingsAndReviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("SuggestionForms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
+                        .WithMany("Timeslots")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
@@ -555,6 +613,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("CreditCards");
+
+                    b.Navigation("FeedbackForms");
+
+                    b.Navigation("RatingsAndReviews");
+
+                    b.Navigation("SuggestionForms");
                 });
 #pragma warning restore 612, 618
         }

@@ -61,7 +61,7 @@ function CreateThread() {
     }
 
     try {
-      const response = await http.post('/Thread', { title, description, createdBy: user.name ,createdByUserId: user.id});
+      const response = await http.post('/Thread', { title, description,Votes:0, createdBy: user.name ,createdByUserId: user.id});
       if (response.status === 201) {
         alert('Thread created successfully!');
         navigate('/Forum'); // Adjust as needed
