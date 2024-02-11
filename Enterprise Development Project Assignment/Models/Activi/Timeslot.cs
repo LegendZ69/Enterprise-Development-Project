@@ -1,4 +1,4 @@
-﻿namespace Enterprise_Development_Project_Assignment.Models.Activi
+﻿namespace Enterprise_Development_Project_Assignment.Models
 {
     public class Timeslot
     {

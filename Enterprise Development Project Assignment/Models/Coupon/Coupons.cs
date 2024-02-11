@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Enterprise_Development_Project_Assignment.Models
+namespace Enterprise_Development_Project_Assignment.Models.Coupon
 {
     public class Coupons
     {
@@ -29,5 +29,5 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
-	}
+    }
 }

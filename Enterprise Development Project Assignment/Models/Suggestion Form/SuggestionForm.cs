@@ -10,10 +10,10 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Id { get; set; }
 
         //FK property
-/*        public int UserId { get; set; }
-*/
+        public int UserId { get; set; }
+
         // Navigation property to represent the one-to-many relationship
-        /*        public User? User { get; set; } */
+        public User? User { get; set; }
 
         [Required, EmailAddress, MaxLength(100)]
         public string Email { get; set; } = string.Empty;
@@ -38,9 +38,5 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
-
-        // Navigation property to represent the one-to-many relationship, add in User class
-        /*        [JsonIgnore]
-                  public List<SuggestionForm>? SuggestionForms { get; set; } */
     }
 }
