@@ -1,4 +1,4 @@
-﻿using Enterprise_Development_Project_Assignment.Models.Activi;
+﻿using Enterprise_Development_Project_Assignment.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

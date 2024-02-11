@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid, RadioGroup, FormControl } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-
 import { Discount } from '@mui/icons-material';
+import UserContext from '../contexts/UserContext';
+
 function AddCreditCard() {
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+    
+    if (!user) {
+        return (
+            <Typography variant="h5" sx={{ my: 2 }}>
+                Access denied. Only users can view this page.
+            </Typography>
+        );
+    }
 
     const formik = useFormik({
         initialValues: {
