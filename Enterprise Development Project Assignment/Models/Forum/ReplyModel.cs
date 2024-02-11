@@ -2,11 +2,11 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Enterprise_Development_Project_Assignment.Models
+namespace Enterprise_Development_Project_Assignment.Models.Forum
 {
     public class ReplyModel
     {
-       
+
         public int Id { get; set; }
         public string Content { get; set; }
         public int ThreadId { get; set; } // Reference to the thread ID

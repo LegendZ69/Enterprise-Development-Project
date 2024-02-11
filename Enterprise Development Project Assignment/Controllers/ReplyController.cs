@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Enterprise_Development_Project_Assignment.Models;
 using System.Threading.Tasks;
 using Enterprise_Development_Project_Assignment;
+using Enterprise_Development_Project_Assignment.Models.Forum;
 
 [Route("[controller]")]
 [ApiController]

@@ -1,9 +1,9 @@
-﻿using Enterprise_Development_Project_Assignment.Models.Upload;
+﻿using Enterprise_Development_Project_Assignment.Models.Activi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NanoidDotNet;
 
-namespace Enterprise_Development_Project_Assignment.Controllers.File
+namespace Enterprise_Development_Project_Assignment.Controllers.Activi
 {
     [Route("[controller]")]
     [ApiController]

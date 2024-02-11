@@ -2,7 +2,7 @@
 using AutoMapper;
 using Enterprise_Development_Project_Assignment.Models;
 
-namespace Enterprise_Development_Project_Assignment.Controllers.Coupon
+namespace Enterprise_Development_Project_Assignment.Controllers
 {
     [ApiController]
     [Route("[controller]")]
