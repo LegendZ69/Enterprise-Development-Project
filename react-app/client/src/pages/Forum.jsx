@@ -23,6 +23,7 @@ function ThreadList() {
   const fetchThreads = async () => {
     try {
       const response = await http.get("/Thread");
+      console.log(response)
       const threadsWithReplies = await Promise.all(response.data.map(async (thread) => {
         try {
           const repliesResponse = await http.get(`/Reply/${thread.id}`);

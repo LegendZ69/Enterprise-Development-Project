@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class Stuff : Migration
+    public partial class working : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,6 +43,42 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Coupons", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Replies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Votes = table.Column<int>(type: "int", nullable: false),
+                    ThreadId = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Replies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Threads",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Votes = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Threads", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -316,7 +352,13 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 name: "RatingsAndReviews");
 
             migrationBuilder.DropTable(
+                name: "Replies");
+
+            migrationBuilder.DropTable(
                 name: "SuggestionForms");
+
+            migrationBuilder.DropTable(
+                name: "Threads");
 
             migrationBuilder.DropTable(
                 name: "Timeslots");

@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.7",
     "@mui/x-date-pickers": "^6.11.0",
+    "all": "^0.0.0",
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",

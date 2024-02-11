@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211141230_forum.Designer.cs
-    [Migration("20240211141230_forum")]
-    partial class forum
-=======
-    [Migration("20240211131955_Stuff")]
-    partial class Stuff
->>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d:Enterprise Development Project Assignment/Migrations/20240211131955_Stuff.Designer.cs
+    [Migration("20240211150432_working")]
+    partial class working
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,6 +24,30 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("Timeslots");
+                });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
@@ -324,7 +343,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
-<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211141230_forum.Designer.cs
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -357,8 +375,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ThreadId")
-=======
->>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d:Enterprise Development Project Assignment/Migrations/20240211131955_Stuff.Designer.cs
                         .HasColumnType("int");
 
                     b.Property<int>("Votes")
@@ -366,9 +382,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RatingsAndReviews");
+                    b.ToTable("Replies");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
@@ -415,7 +429,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<int>("UserId")
-<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211141230_forum.Designer.cs
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -454,39 +467,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<int>("Votes")
                         .HasColumnType("int");
 
-=======
-                        .HasColumnType("int");
-
->>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d:Enterprise Development Project Assignment/Migrations/20240211131955_Stuff.Designer.cs
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SuggestionForms");
-                });
-
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("Timeslots");
+                    b.ToTable("Threads");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.User", b =>
@@ -532,6 +515,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activi.Timeslot", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
+                        .WithMany("Timeslots")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
@@ -608,20 +602,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211141230_forum.Designer.cs
-            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Timeslot", b =>
-                {
-                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
-                        .WithMany("Timeslots")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
-                });
-
-=======
->>>>>>> 996700f66978f818110a0f1aff0e16a4afc5c09d:Enterprise Development Project Assignment/Migrations/20240211131955_Stuff.Designer.cs
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
