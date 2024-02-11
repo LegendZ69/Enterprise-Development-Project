@@ -8,17 +8,11 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Id { get; set; }
 
         //FK property
-        public int UserId { get; set; }
+        /* public int BookingId { get; set; }*/
 
         // Navigation property to represent the one-to-many relationship
-        public User? User { get; set; }
+        /*        public Booking? Booking { get; set; } */
 
-        //FK property
-/*        public int ActivityId { get; set; }
-*/
-        // Navigation property to represent the one-to-many relationship
-/*        public Activity? Activity { get; set; }
-*/
         /*[Column(TypeName = "datetime")]
         public DateTime BookingDate { get; set; }*/
 
@@ -42,13 +36,14 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         public int Like { get; set; }
 
-        [MaxLength(20)]
-        public string? ImageFile { get; set; }
-
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime UpdatedAt { get; set; }
+
+        // Navigation property to represent the one-to-many relationship, add in Booking class
+/*      [JsonIgnore]
+        public List<FeedbackForm>? FeedbackForms { get; set; } */
     }
 }
