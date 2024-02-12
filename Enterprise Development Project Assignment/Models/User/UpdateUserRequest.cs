@@ -18,6 +18,8 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string? ImageFile { get; set; }
 
         public string Status { get; set; } = string.Empty;
+        public bool TwoFactorEnabled { get; set; } = false;
+
 
     }
 }
