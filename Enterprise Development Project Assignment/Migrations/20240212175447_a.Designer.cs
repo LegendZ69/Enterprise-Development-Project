@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240212173622_a")]
+    [Migration("20240212175447_a")]
     partial class a
     {
         /// <inheritdoc />
@@ -295,6 +295,36 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("FeedbackForms");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
@@ -609,6 +639,17 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Payment", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
@@ -662,6 +703,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("CreditCards");
 
                     b.Navigation("FeedbackForms");
+
+                    b.Navigation("Payments");
 
                     b.Navigation("RatingsAndReviews");
 

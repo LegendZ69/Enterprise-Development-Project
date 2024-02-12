@@ -110,41 +110,7 @@ function App() {
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
               
-              {user && user.role === "admin" && (
-              <>
-                <Button
-                  onClick={handleMenuOpen}
-                  style={{
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit',
-                    fontWeight: 'inherit',
-                    textTransform: 'none', // Prevent uppercase transformation
-                    textDecoration: 'none', // Remove underline
-                    color: 'inherit', // Inherit color
-                    padding: 0, // Remove default padding
-                    margin: '0 8px', // Add some margin for spacing
-                    background: 'none', // Remove background
-                    border: 'none', // Remove border
-                    cursor: 'pointer', // Change cursor to indicate it's clickable
-                  }}
-                >Admin Privileges</Button>
-                <Menu
-                  id="admin-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem component={Link} to="/activitiesDashboard" onClick={handleMenuClose}>AdminActivity</MenuItem>
-                  <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>AdminBookings</MenuItem>
-                  <MenuItem component={Link} to="/users" onClick={handleMenuClose}>Users</MenuItem>
-                      <MenuItem component={Link} to="/auditlog" onClick={handleMenuClose}>Audit Log</MenuItem>
-                      <MenuItem component={Link} to="/displayFeedbackForm" onClick={handleMenuClose}>Feedback Forms</MenuItem>
-                      <MenuItem component={Link} to="/displaySuggestionForm" onClick={handleMenuClose}>Suggestion Forms</MenuItem>
-                      <MenuItem component={Link} to="/displayRatingsAndReviews" onClick={handleMenuClose}>Ratings and Reviews</MenuItem>
-
-                </Menu>
-              </>
-              )}
+              
               <Box sx={{ flexGrow: 1 }}></Box>
               {user && userProfile && (
 
