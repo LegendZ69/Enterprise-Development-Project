@@ -161,7 +161,7 @@ function EditProfile() {
                                         {userStatus === 'activated' ? 'Activated' : 'Deactivated'}
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                                        <Typography variant="body1">Two-Factor Authentication:</Typography>
+                                        <Typography variant="body1">Two-Factor Authentication (Email):</Typography>
                                         <Switch
                                             checked={twoFactorEnabled}
                                             onChange={() => setTwoFactorEnabled(!twoFactorEnabled)}

@@ -186,6 +186,20 @@ function Users() {
                                        User Id: {user.id}
                                     </Typography>
                                 </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                    color="text.secondary">
+                                    
+                                    <Typography>
+                                       Role: {user.role}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                    color="text.secondary">
+                                    
+                                    <Typography>
+                                       User Status: {user.status}
+                                    </Typography>
+                                </Box>
                                 {/* Display additional user information here */}
                             </CardContent>
                         </Card>
