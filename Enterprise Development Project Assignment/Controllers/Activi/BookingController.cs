@@ -116,9 +116,14 @@ public class BookingController : ControllerBase
 
         var bookingDTO = _mapper.Map<BookingDTO>(booking);
         bookingDTO.ActivityTitle = booking.Activity.Title;
+        bookingDTO.ActivityImage = booking.Activity.ImageFile; 
+        bookingDTO.SelectedTimeSlot = booking.SelectedTimeSlot;
+        bookingDTO.Price = booking.Activity.Price;
 
         return Ok(bookingDTO);
     }
+
+
 
     [HttpGet("userBookings"), Authorize]
     [ProducesResponseType(typeof(List<BookingDTO>), StatusCodes.Status200OK)]
