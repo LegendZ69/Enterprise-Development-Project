@@ -114,9 +114,7 @@ function App() {
               <Link to="/faqs" ><Typography>FAQs</Typography></Link>
               <Link to="/coupons" ><Typography>Coupons</Typography></Link>
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
-              <Link to="/checkout" ><Typography>Checkout</Typography></Link>
-              <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
-      
+              <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
               {user && user.role === "admin" && (
               <>
