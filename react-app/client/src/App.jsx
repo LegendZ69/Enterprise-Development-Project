@@ -54,6 +54,7 @@ import UserContext from './contexts/UserContext';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import Cart from './pages/Cart';
 import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
@@ -116,6 +117,7 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
+              <Link to="/cart"><Typography>Cart</Typography></Link>
               {user && user.role === "admin" && (
               <>
                 <Button
@@ -231,7 +233,7 @@ function App() {
             <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
             <Route path={"/reactivateaccount"} element ={<ReactivateAccount/>}/>
             <Route path={"/verify"} element ={<Verify/>}/>
-
+            <Route path={"/cart"} element ={<Cart/>} />
 
 
             <Route path={"/Forum"} element ={<ThreadList/>}/>

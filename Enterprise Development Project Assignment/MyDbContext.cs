@@ -73,7 +73,7 @@ namespace Enterprise_Development_Project_Assignment
         public DbSet<Timeslot> Timeslots { get; set; }
 		public DbSet<ThreadModel> Threads { get; set; }
 		public DbSet<ReplyModel> Replies { get; set; }
-       
+        public DbSet<Payment> Payments { get; set; }
 
 
     }

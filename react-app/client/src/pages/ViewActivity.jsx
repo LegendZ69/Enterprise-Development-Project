@@ -119,6 +119,7 @@ if (googleScriptLoaded && activity) {
   };
 
   const handleAddToCartClick = () => {
+    console.log(activity.price)
     const requestData = {
       bookingDate: bookingDate.toISOString().split('T')[0],
       quantity: quantity,
@@ -130,6 +131,7 @@ if (googleScriptLoaded && activity) {
         const newBookingId = res.data.id;
         console.log('Booking successful:', res.data);
         toast.success('Activity added to cart');
+        
       })
       .catch((error) => {
         console.error('Booking failed:', error.message);

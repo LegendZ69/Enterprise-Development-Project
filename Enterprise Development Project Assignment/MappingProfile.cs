@@ -23,6 +23,7 @@ namespace Enterprise_Development_Project_Assignment
 
             CreateMap<Coupons, CouponsDTO>();
             CreateMap<CreditCard, CreditCardDTO>();
+            CreateMap<Payment, PaymentDTO>();
         }
     }
 }
