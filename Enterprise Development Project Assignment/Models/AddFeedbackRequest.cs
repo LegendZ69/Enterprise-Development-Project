@@ -20,8 +20,5 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [Required, MinLength(3), MaxLength(200)]
         public string Message { get; set; } = string.Empty;
-
-        /*[MaxLength(200)]
-        public string StaffRemark { get; set; } = string.Empty;*/
     }
 }

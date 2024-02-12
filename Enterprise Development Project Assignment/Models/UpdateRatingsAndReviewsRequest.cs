@@ -24,5 +24,8 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         [MaxLength(20)]
         public string? ImageFile { get; set; }
+
+        [MaxLength(200)]
+        public string? StaffRemark { get; set; } = string.Empty;
     }
 }

@@ -14,7 +14,7 @@
 
         public string ActivityReason { get; set; } = string.Empty;
 
-        public string StaffRemark { get; set; } = string.Empty;
+        public string? StaffRemark { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
