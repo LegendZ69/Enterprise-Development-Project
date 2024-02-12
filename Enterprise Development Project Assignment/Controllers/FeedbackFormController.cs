@@ -124,7 +124,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id}"), Authorize(Roles = "user")]
         public IActionResult UpdateFeedbackForm(int id, UpdateFeedbackRequest feedbackForm)
         {
             try
@@ -161,10 +161,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 {
                     myFeedbackForm.Message = feedbackForm.Message.Trim();
                 }
-                if (feedbackForm.StaffRemark != null)
-                {
-                    myFeedbackForm.StaffRemark = feedbackForm.StaffRemark.Trim();
-                }
                 myFeedbackForm.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
@@ -177,7 +173,34 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpDelete("{id}"), Authorize]
+        [HttpPut("admin/{id}"), Authorize(Roles = "admin")]
+        public IActionResult UpdateFeedbackFormAdmin(int id, UpdateFeedbackRequest feedbackForm)
+        {
+            try
+            {
+                var myFeedbackForm = _context.FeedbackForms.Find(id);
+                if (myFeedbackForm == null)
+                {
+                    return NotFound();
+                }
+
+                if (feedbackForm.StaffRemark != null)
+                {
+                    myFeedbackForm.StaffRemark = feedbackForm.StaffRemark.Trim();
+                }
+                myFeedbackForm.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when put id feedback form ADMIN");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "user")]
         public IActionResult DeleteFeedbackForm(int id)
         {
             try
@@ -201,6 +224,28 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when delete id feedback form");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("admin/{id}"), Authorize(Roles = "admin")]
+        public IActionResult DeleteFeedbackFormAdmin(int id)
+        {
+            try
+            {
+                var myFeedbackForm = _context.FeedbackForms.Find(id);
+                if (myFeedbackForm == null)
+                {
+                    return NotFound();
+                }
+
+                _context.FeedbackForms.Remove(myFeedbackForm);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when delete id feedback form ADMIN");
                 return StatusCode(500);
             }
         }

@@ -21,8 +21,6 @@ namespace Enterprise_Development_Project_Assignment.Models
         [Required, MinLength(3), MaxLength(100)]
         public string Review { get; set; } = string.Empty;
 
-        public int Like { get; set; }
-
         [MaxLength(20)]
         public string? ImageFile { get; set; }
     }

@@ -12,7 +12,8 @@ namespace Enterprise_Development_Project_Assignment.Models
         public int Quantity { get; set; }
         public string ActivityTitle { get; set; }
         public decimal? Price { get; set; }
-        public string SelectedTimeSlot { get; set; } 
+        public string SelectedTimeSlot { get; set; }
+        public string ActivityImage { get; set; } 
     }
 }
 

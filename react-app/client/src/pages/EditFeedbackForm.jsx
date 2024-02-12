@@ -41,16 +41,37 @@ function EditFeedbackForm() {
             data.lastName = data.lastName.trim();
             data.topic = data.topic;
             data.message = data.message.trim();
-            http.put(`/feedbackForm/${id}`, data)
-                .then((res) => {
-                    console.log(res.data);
-                    navigate("/displayFeedbackForm");
-                })
-                .catch(function (err) {
-                    console.log(err.response);
-                });
+
+            if (user.role == "user") {
+                http.put(`/feedbackForm/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/displayFeedbackForm");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            } else if (user.role == "admin") {
+                http.put(`/feedbackForm/admin/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/adminDisplayFeedbackForm");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            }
         }
     });
+
+    const submitStaffRemark = (remark) => {
+        formik.setValues({
+            ...formik.values,
+            staffRemark: remark
+        });
+
+        formik.handleSubmit();
+    };
 
     const [open, setOpen] = useState(false);
 
@@ -63,14 +84,26 @@ function EditFeedbackForm() {
     };
 
     const deleteFeedbackForm = () => {
-        http.delete(`/feedbackForm/${id}`)
-            .then((res) => {
-                console.log(res.data);
-                navigate("/displayFeedbackForm");
-            })
-            .catch(function (err) {
-                console.log(err.response);
-            });
+        if (user.role == "user") {
+            http.delete(`/feedbackForm/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/displayFeedbackForm");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        }
+        else if (user.role == "admin") {
+            http.delete(`/feedbackForm/admin/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/adminDisplayFeedbackForm");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        }
     }
 
     return (

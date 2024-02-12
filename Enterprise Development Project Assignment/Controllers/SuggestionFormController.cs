@@ -115,7 +115,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpPut("{id}"), Authorize] //only authorised user can edit
+        [HttpPut("{id}"), Authorize(Roles = "user")] //only user can edit
         public IActionResult UpdateSuggestionForm(int id, UpdateSuggestionRequest suggestionForm)
         {
             try
@@ -129,7 +129,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 int userId = GetUserId();
                 if (mySuggestionForm.UserId != userId)
                 {
-                    return Forbid(); //prevent edit if userid bound to form not match userid who want to edit
+                    return Forbid();
                 }
 
                 if (suggestionForm.Email != null)
@@ -152,10 +152,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 {
                     mySuggestionForm.ActivityReason = suggestionForm.ActivityReason.Trim();
                 }
-                if (suggestionForm.StaffRemark != null)
-                {
-                    mySuggestionForm.StaffRemark = suggestionForm.StaffRemark.Trim();
-                }
                 mySuggestionForm.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
@@ -168,12 +164,40 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpDelete("{id}"), Authorize]
+        [HttpPut("admin/{id}"), Authorize(Roles = "admin")] //only admin can edit
+        public IActionResult UpdateSuggestionFormAdmin(int id, UpdateSuggestionRequest suggestionForm)
+        {
+            try
+            {
+                var mySuggestionForm = _context.SuggestionForms.Find(id);
+                if (mySuggestionForm == null)
+                {
+                    return NotFound();
+                }
+
+                if (suggestionForm.StaffRemark != null)
+                {
+                    mySuggestionForm.StaffRemark = suggestionForm.StaffRemark.Trim();
+                }
+                mySuggestionForm.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when put id suggestion form ADMIN");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "user")]
         public IActionResult DeleteSuggestionForm(int id)
         {
             try
             {
                 var mySuggestionForm = _context.SuggestionForms.Find(id);
+                var role = _context.Users.Find(id);
                 if (mySuggestionForm == null)
                 {
                     return NotFound();
@@ -192,6 +216,29 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when delete id suggestion form");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("admin/{id}"), Authorize(Roles = "admin")]
+        public IActionResult DeleteSuggestionFormAdmin(int id)
+        {
+            try
+            {
+                var mySuggestionForm = _context.SuggestionForms.Find(id);
+                var role = _context.Users.Find(id);
+                if (mySuggestionForm == null)
+                {
+                    return NotFound();
+                }
+
+                _context.SuggestionForms.Remove(mySuggestionForm);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when delete id suggestion form ADMIN");
                 return StatusCode(500);
             }
         }

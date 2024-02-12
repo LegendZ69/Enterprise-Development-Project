@@ -10,20 +10,14 @@ import Home from './pages/Home';
 import SuggestionForm from './pages/SuggestionForm';
 import DisplaySuggestionForm from './pages/DisplaySuggestionForm';
 import EditSuggestionForm from './pages/EditSuggestionForm';
-import AdminDisplaySuggestionForm from './pages/AdminDisplaySuggestionForm';
-import AdminEditSuggestionForm from './pages/AdminEditSuggestionForm';
 
 import FeedbackForm from './pages/FeedbackForm';
 import DisplayFeedbackForm from './pages/DisplayFeedbackForm';
 import EditFeedbackForm from './pages/EditFeedbackForm';
-import AdminDisplayFeedbackForm from './pages/AdminDisplayFeedbackForm';
-import AdminEditFeedbackForm from './pages/AdminEditFeedbackForm';
 
 import RatingsAndReviews from './pages/RatingsAndReviews';
 import DisplayRatingsAndReviews from './pages/DisplayRatingsAndReviews';
 import EditRatingsAndReviews from './pages/EditRatingsAndReviews';
-import AdminDisplayRatingsAndReviews from './pages/AdminDisplayRatingsAndReviews';
-import AdminEditRatingsAndReviews from './pages/AdminEditRatingsAndReviews';
 
 import FormSuccess from './pages/FormSuccess';
 import AboutUs from './pages/AboutUs';
@@ -54,7 +48,6 @@ import UserContext from './contexts/UserContext';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
-import Cart from './pages/Cart';
 import ChangePassword from './pages/ChangePassword';
 import { Book } from '@mui/icons-material';
 import AuditLog from './pages/AuditLog';
@@ -117,7 +110,6 @@ function App() {
               <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
-              <Link to="/cart"><Typography>Cart</Typography></Link>
               {user && user.role === "admin" && (
               <>
                 <Button
@@ -146,9 +138,9 @@ function App() {
                   <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>AdminBookings</MenuItem>
                   <MenuItem component={Link} to="/users" onClick={handleMenuClose}>Users</MenuItem>
                       <MenuItem component={Link} to="/auditlog" onClick={handleMenuClose}>Audit Log</MenuItem>
-                      <MenuItem component={Link} to="/adminDisplayFeedbackForm" onClick={handleMenuClose}>Feedback Form</MenuItem>
-                      <MenuItem component={Link} to="/adminDisplaySuggestionForm" onClick={handleMenuClose}>Suggestion Form</MenuItem>
-                      <MenuItem component={Link} to="/adminDisplayRatingsAndReviews" onClick={handleMenuClose}>Ratings and Reviews</MenuItem>
+                      <MenuItem component={Link} to="/displayFeedbackForm" onClick={handleMenuClose}>Feedback Forms</MenuItem>
+                      <MenuItem component={Link} to="/displaySuggestionForm" onClick={handleMenuClose}>Suggestion Forms</MenuItem>
+                      <MenuItem component={Link} to="/displayRatingsAndReviews" onClick={handleMenuClose}>Ratings and Reviews</MenuItem>
 
                 </Menu>
               </>
@@ -182,21 +174,14 @@ function App() {
             <Route path={"/suggestionForm"} element={<SuggestionForm />} />
             <Route path={"/displaySuggestionForm"} element={<DisplaySuggestionForm />} />
               <Route path={"/editSuggestionForm/:id"} element={<EditSuggestionForm />} />
-              <Route path={"/adminDisplaySuggestionForm"} element={<AdminDisplaySuggestionForm />} />
-              <Route path={"/adminEditSuggestionForm"} element={<AdminEditSuggestionForm />} />
-
 
               <Route path={"/feedbackForm"} element={<FeedbackForm />} />              
             <Route path={"/displayFeedbackForm"} element={<DisplayFeedbackForm />} />
               <Route path={"/editFeedbackForm/:id"} element={<EditFeedbackForm />} />
-              <Route path={"/adminDisplayFeedbackForm"} element={<AdminDisplayFeedbackForm />} />
-              <Route path={"/adminEditFeedbackForm"} element={<AdminEditFeedbackForm />} />
 
             <Route path={"/ratingsAndReviews"} element={<RatingsAndReviews />} />
             <Route path={"/displayRatingsAndReviews"} element={<DisplayRatingsAndReviews />} />
               <Route path={"/editRatingsAndReviews/:id"} element={<EditRatingsAndReviews />} />
-              <Route path={"/adminDisplayRatingsAndReviews"} element={<AdminDisplayRatingsAndReviews />} />
-              <Route path={"/adminEditRatingsAndReviews"} element={<AdminEditRatingsAndReviews />} />
 
             <Route path={"/formSuccess"} element={<FormSuccess />} />
             <Route path={"/aboutUs"} element={<AboutUs />} />
@@ -211,8 +196,6 @@ function App() {
             <Route path={"/activitiesDashboard"} element={<ActivitiesDashboard />} />
             <Route path={"/bookingsDashboard"} element={<BookingsDashboard />} />
 
-
-            
             <Route path={"/coupons"} element={<Coupons />} />
             <Route path={"/addCoupons"} element={<AddCoupons />} />
             <Route path={"/updateCoupons/:id"} element={<UpdateCoupons />} />
@@ -233,8 +216,6 @@ function App() {
             <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
             <Route path={"/reactivateaccount"} element ={<ReactivateAccount/>}/>
             <Route path={"/verify"} element ={<Verify/>}/>
-            <Route path={"/cart"} element ={<Cart/>} />
-
 
             <Route path={"/Forum"} element ={<ThreadList/>}/>
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>

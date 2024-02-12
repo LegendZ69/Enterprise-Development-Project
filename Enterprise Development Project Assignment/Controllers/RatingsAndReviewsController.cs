@@ -126,52 +126,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-
-        /*[HttpPost, Authorize]
-        [ProducesResponseType(typeof(RatingsAndReviewsDTO), StatusCodes.Status200OK)]
-        public IActionResult AddRatingsAndReviews(AddRatingsAndReviewsRequest ratingsAndReviews)
-        {
-            try
-            {
-                //var bookingId = _context.Activities.Find(id);
-                int userId = GetUserId();
-                var now = DateTime.Now;
-                var myRatingsAndReviews = new RatingsAndReviews()
-                {
-                    //only can trim string
-                    *//*                BookingId = RatingsAndReviews.BookingId,
-                    */                /*BookingDate = RatingsAndReviews.BookingDate,*//*
-                    Email = ratingsAndReviews.Email.Trim().ToLower(),
-                    FirstName = ratingsAndReviews.FirstName.Trim(),
-                    LastName = ratingsAndReviews.LastName.Trim(),
-                    Rating = ratingsAndReviews.Rating,
-                    Review = ratingsAndReviews.Review.Trim(),
-                    ImageFile = ratingsAndReviews.ImageFile,
-                    CreatedAt = now,
-                    UpdatedAt = now,
-                    UserId = userId,
-                };
-
-                _context.RatingsAndReviews.Add(myRatingsAndReviews);
-                _context.SaveChanges();
-
-                RatingsAndReviews? newRatingsAndReviews = _context.RatingsAndReviews.Include(t => t.User)
-                    .Include(a => a.Activity)
-                    .Include(b => b.Booking)
-                    .FirstOrDefault(t => t.Id == myRatingsAndReviews.Id);
-                RatingsAndReviewsDTO ratingsAndReviewsDTO = _mapper.Map<RatingsAndReviewsDTO>(newRatingsAndReviews);
-                return Ok(ratingsAndReviewsDTO);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when post rating and review");
-                return StatusCode(500);
-            }
-        }*/
-
-
-
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id}"), Authorize(Roles = "user")]
         public IActionResult UpdateRatingsAndReviews(int id, UpdateRatingsAndReviewsRequest ratingsAndReviews)
         {
             try
@@ -216,10 +171,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 {
                     myRatingsAndReviews.Review = ratingsAndReviews.Review.Trim();
                 }
-                if (ratingsAndReviews.Like != null)
-                {
-                    myRatingsAndReviews.Like = ratingsAndReviews.Like;
-                }
                 if (ratingsAndReviews.ImageFile != null)
                 {
                     myRatingsAndReviews.ImageFile = ratingsAndReviews.ImageFile;
@@ -236,7 +187,34 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpDelete("{id}"), Authorize]
+        [HttpPut("admin/{id}"), Authorize(Roles = "admin")]
+        public IActionResult UpdateRatingsAndReviewsAdmin(int id, UpdateRatingsAndReviewsRequest ratingsAndReviews)
+        {
+            try
+            {
+                var myRatingsAndReviews = _context.RatingsAndReviews.Find(id);
+                if (myRatingsAndReviews == null)
+                {
+                    return NotFound();
+                }
+
+                if (ratingsAndReviews.StaffRemark != null)
+                {
+                    myRatingsAndReviews.StaffRemark = ratingsAndReviews.StaffRemark.Trim();
+                }
+                myRatingsAndReviews.UpdatedAt = DateTime.Now;
+
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when put id rating and review ADMIN");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("{id}"), Authorize(Roles = "user")]
         public IActionResult DeleteRatingsAndReviews(int id)
         {
             try
@@ -260,6 +238,28 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when delete id rating and review");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("admin/{id}"), Authorize(Roles = "admin")]
+        public IActionResult DeleteRatingsAndReviewsAdmin(int id)
+        {
+            try
+            {
+                var myRatingsAndReviews = _context.RatingsAndReviews.Find(id);
+                if (myRatingsAndReviews == null)
+                {
+                    return NotFound();
+                }
+
+                _context.RatingsAndReviews.Remove(myRatingsAndReviews);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when delete id rating and review ADMIN");
                 return StatusCode(500);
             }
         }

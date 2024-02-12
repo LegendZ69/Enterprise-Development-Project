@@ -32,7 +32,7 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string Message { get; set; } = string.Empty;
 
         [MaxLength(200)]
-        public string StaffRemark { get; set; } = string.Empty;
+        public string? StaffRemark { get; set; } = string.Empty;
 
         [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }

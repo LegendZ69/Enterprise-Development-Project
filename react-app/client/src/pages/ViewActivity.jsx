@@ -278,18 +278,19 @@ if (googleScriptLoaded && activity) {
 
             {/* Time Slot Dropdown */}
             <TextField
-              select
-              label="Select Time Slot"
-              value={selectedTimeSlot || ''}
-              onChange={handleTimeSlotChange}
-              sx={{ width: '100%', mb: 2 }}
-            >
-              {timeSlotsList.map((slot, index) => (
-                <MenuItem key={index} value={slot.startTime + '-' + slot.endTime}>
-                  {slot.startTime} - {slot.endTime}
-                </MenuItem>
-              ))}
-            </TextField>
+  select
+  label="Select Time Slot"
+  value={selectedTimeSlot || ''}
+  onChange={handleTimeSlotChange}
+  sx={{ width: '100%', mb: 2 }}
+>
+  {timeSlotsList.map((slot, index) => (
+    <MenuItem key={index} value={slot.startTime + '-' + slot.endTime}>
+      {dayjs(slot.startTime).format('HH:mm')} - {dayjs(slot.endTime).format('HH:mm')}
+    </MenuItem>
+  ))}
+</TextField>
+
 
             {/* Buttons Container */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>

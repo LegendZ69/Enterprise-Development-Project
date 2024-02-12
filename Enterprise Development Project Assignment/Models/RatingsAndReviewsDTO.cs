@@ -14,9 +14,9 @@
 
         public string Review { get; set; } = string.Empty;
 
-        public int Like { get; set; }
-
         public string? ImageFile { get; set; }
+
+        public string? StaffRemark { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; }
 
