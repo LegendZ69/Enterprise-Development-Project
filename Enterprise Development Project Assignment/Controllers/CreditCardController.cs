@@ -2,6 +2,8 @@
 using Enterprise_Development_Project_Assignment.Models;
 using AutoMapper;
 using System.Security.Claims;
+using Enterprise_Development_Project_Assignment.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -12,11 +14,16 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 		private readonly MyDbContext _context;
 		private readonly IConfiguration _configuration;
 		private readonly IMapper _mapper;
-		public CreditCardController(MyDbContext context, IConfiguration configuration, IMapper mapper)
+		private readonly ILogger<UserController> _logger;
+		private readonly AuditLogHelper _auditLogHelper;
+		public CreditCardController(MyDbContext context, IConfiguration configuration, IMapper mapper, ILogger<UserController> logger, AuditLogHelper auditLogHelper)
 		{
 			_context = context;
 			_configuration = configuration;
 			_mapper = mapper;
+			_logger = logger;
+			_auditLogHelper = auditLogHelper;
+
 		}
 		private int GetUserId()
 		{
@@ -54,8 +61,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 				UpdatedAt = now,
 				UserId = userId
 			};
+			_auditLogHelper.LogUserActivityAsync(GetUserId().ToString(), "User created credit card").Wait();
 			_context.CreditCard.Add(myCreditCard);
 			_context.SaveChanges();
+			
 			CreditCard? newCreditCard = _context.CreditCard.FirstOrDefault(t => t.Id == myCreditCard.Id);
 			CreditCardDTO creditCardDTO = _mapper.Map<CreditCardDTO>(newCreditCard);
 			return Ok(creditCardDTO);
@@ -89,6 +98,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			{
 				myCreditCard.Address = creditCard.Address.Trim();
 			}
+			_auditLogHelper.LogUserActivityAsync(GetUserId().ToString(), "User updated credit card").Wait();
 			_context.SaveChanges();
 			return Ok();
 
@@ -102,6 +112,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			{
 				return NotFound();
 			}
+			_auditLogHelper.LogUserActivityAsync(GetUserId().ToString(), "User deleted credit card").Wait();
 			_context.CreditCard.Remove(myCreditCard);
 			_context.SaveChanges();
 			return Ok();

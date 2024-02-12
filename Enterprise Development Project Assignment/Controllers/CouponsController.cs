@@ -2,6 +2,8 @@
 using Enterprise_Development_Project_Assignment.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Enterprise_Development_Project_Assignment.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -12,11 +14,16 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 		private readonly MyDbContext _context;
 		private readonly IConfiguration _configuration;
 		private readonly IMapper _mapper;
-		public CouponsController(MyDbContext context, IConfiguration configuration, IMapper mapper)
+		private readonly ILogger<UserController> _logger;
+		private readonly AuditLogHelper _auditLogHelper;
+		public CouponsController(MyDbContext context, IConfiguration configuration, IMapper mapper, ILogger<UserController> logger, AuditLogHelper auditLogHelper)
 		{
 			_context = context;
 			_configuration = configuration;
 			_mapper = mapper;
+			_logger = logger;
+			_auditLogHelper = auditLogHelper;
+
 		}
 		[HttpGet]
 		[ProducesResponseType(typeof(IEnumerable<CouponsDTO>), StatusCodes.Status200OK)]
@@ -52,6 +59,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 			};
 			_context.Coupons.Add(myCoupon);
 			_context.SaveChanges();
+			
 			Coupons? newCoupon = _context.Coupons.FirstOrDefault(t => t.Id == myCoupon.Id);
 			CouponsDTO couponsDTO = _mapper.Map<CouponsDTO>(newCoupon);
 			return Ok(couponsDTO);

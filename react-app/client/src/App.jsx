@@ -56,6 +56,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import ReactivateAccount from './pages/ReactivateAccount';
 import Verify from './pages/Verify';
 import Cart from './pages/Cart';
+import CheckoutSuccess from './pages/CheckoutSuccess';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -188,6 +189,7 @@ function App() {
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>
             <Route path={"/Thread/:threadId"} element={<ThreadDetail />} />
             <Route path={"/cart"} element ={<Cart/>} />
+            <Route path="/checkoutsuccess" element ={<CheckoutSuccess/>} />
           </Routes>
         </Container>
 
