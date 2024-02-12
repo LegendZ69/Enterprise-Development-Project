@@ -113,6 +113,27 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     return BadRequest(new { message });
                 }
 
+                // Check if two-factor authentication is enabled
+                if (foundUser.TwoFactorEnabled)
+                {
+                    // Generate a random verification code
+                    string verificationCode = GenerateVerificationCode();
+
+                    // Save the verification code in the database
+                    foundUser.VerificationCode = verificationCode;
+                    _context.SaveChanges();
+
+                    // Send the verification code to the user's email
+                    SendVerificationCodeByEmail(foundUser.Email, verificationCode);
+
+                    // Log sent verification code 
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Sent Verification Code").Wait();
+
+                    // Return a response indicating that verification is required
+                    return BadRequest(new { message = "Verification code sent. Please verify your identity." });
+                }
+
+
                 // Check if the account is activated
                 if (foundUser.Status.ToLower() != "activated")
                 {
@@ -160,6 +181,80 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
+
+        private string GenerateVerificationCode()
+        {
+            // Generate a random 6-digit verification code
+            Random random = new Random();
+            return random.Next(100000, 999999).ToString();
+        }
+
+        private void SendVerificationCodeByEmail(string userEmail, string verificationcode)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+
+                mail.From = new MailAddress("your_email@gmail.com");
+                mail.To.Add(userEmail);
+                mail.Subject = "Verify Email";
+                mail.Body = $"Your verification code is {verificationcode}";
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new System.Net.NetworkCredential("ouchueyangschool@gmail.com", "ddzq bazy zmlu nzsy\r\n");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+            }
+        }
+
+        [HttpPost("verify")]
+        public IActionResult Verify(VerifyRequest request)
+        {
+            try
+            {
+                // Trim string values
+                request.Email = request.Email.Trim().ToLower();
+                request.VerificationCode = request.VerificationCode.Trim();
+
+                // Check if the user exists and verification code matches
+                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email && x.VerificationCode == request.VerificationCode);
+                if (foundUser == null)
+                {
+                    // Log failed verification attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Verification: Invalid verification code").Wait();
+                    return BadRequest("Invalid verification code or user not found.");
+                }
+
+                // Clear verification code
+                foundUser.VerificationCode = "";
+                _context.SaveChanges();
+
+                // Log successful login
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User logged in successfully with verification code").Wait();
+
+                // Generate JWT token
+                string accessToken = CreateToken(foundUser);
+
+                // Return the token to the client
+                return Ok(new { accessToken });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when verifying user");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
+
+
+
         [HttpGet("auth"), Authorize]
         [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
         public IActionResult Auth()
@@ -345,7 +440,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
 
 
-    [HttpGet("users")]
+        [HttpGet("users")]
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAllUsers(string? search)
         {
@@ -438,6 +533,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                         user.Deactivefully = DateTime.Now.AddDays(5);
                     }
                 }
+                if (userUpdate.TwoFactorEnabled != null)
+                {
+                    user.TwoFactorEnabled = userUpdate.TwoFactorEnabled;
+                }
+
 
                 user.UpdatedAt = DateTime.Now;
 

@@ -151,14 +151,14 @@ function Activities() {
       </Stack>
 
       <Container sx={{ py: 8, maxWidth: 'md' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-
+        {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+         
           {user && (
             <Link to="/addActivity" style={{ textDecoration: "none" }}>
               <Button variant="contained">Add</Button>
             </Link>
           )}
-        </Box>
+        </Box>  */}
 
         <Grid container spacing={4}>
           {activitiesList.map((activity) => (
@@ -183,17 +183,17 @@ function Activities() {
                       }`}
                   />
                 )}
-                <CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="h6" className="card-title">
-                    {activity.title}
-                    {user && user.id === activity.userId && (
-                      <Link to={`/editActivity/${activity.id}`}>
-                        <IconButton color="primary" sx={{ padding: '4px' }}>
-                          <Edit />
-                        </IconButton>
-                      </Link>
-                    )}
-                  </Typography>
+<CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+  <Typography variant="h6" className="card-title">
+    {activity.title}
+    {/* {user && user.id === activity.userId && (
+      <Link to={`/editActivity/${activity.id}`}>
+        <IconButton color="primary" sx={{ padding: '4px' }}>
+          <Edit />
+        </IconButton>
+      </Link>
+    )} */}
+  </Typography>
 
                   <div className="card-details" sx={{ flexGrow: 1 }}>
                     <Typography color="textSecondary" sx={{ marginBottom: 1 }}>

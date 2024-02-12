@@ -7,6 +7,9 @@ using AutoMapper;
 using Enterprise_Development_Project_Assignment;
 using System.Net.Mail;
 using System.Net;
+using Enterprise_Development_Project_Assignment.Controllers;
+using Enterprise_Development_Project_Assignment.Helpers;
+using System.Diagnostics;
 
 [ApiController]
 [Route("[controller]")]
@@ -14,11 +17,16 @@ public class BookingController : ControllerBase
 {
     private readonly MyDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<UserController> _logger;
+    private readonly AuditLogHelper _auditLogHelper;
 
-    public BookingController(MyDbContext context, IMapper mapper)
+    public BookingController(MyDbContext context, IMapper mapper,
+        ILogger<UserController> logger, AuditLogHelper auditLogHelper)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
+        _auditLogHelper = auditLogHelper;
     }
 
     private int GetUserId()
@@ -78,8 +86,10 @@ public class BookingController : ControllerBase
             UserId = userId,
             BookingDate = request.BookingDate,
             Quantity = request.Quantity,
-            SelectedTimeSlot = request.SelectedTimeSlot 
+            SelectedTimeSlot = request.SelectedTimeSlot
         };
+
+        _auditLogHelper.LogUserActivityAsync(booking.UserId.ToString(), "User booked an activity").Wait();
 
         _context.Bookings.Add(booking);
         _context.SaveChanges();
@@ -160,6 +170,26 @@ public class BookingController : ControllerBase
 
         return Ok(adminBookingDTOs);
     }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult DeleteBooking(int id)
+    {
+        var booking = _context.Bookings.FirstOrDefault(b => b.Id == id);
+
+        if (booking == null)
+        {
+            return NotFound();
+        }
+
+        _context.Bookings.Remove(booking);
+        _context.SaveChanges();
+
+        return NoContent();
+    }
+
 
     private void SendBookingConfirmationEmail(string userEmail, string activityTitle, DateTime bookingDate)
     {

@@ -4,16 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using Enterprise_Development_Project_Assignment.Models;
 using System.Threading.Tasks;
 using Enterprise_Development_Project_Assignment;
+using Enterprise_Development_Project_Assignment.Controllers;
+using Enterprise_Development_Project_Assignment.Helpers;
 
 [Route("[controller]")]
 [ApiController]
 public class ReplyController : ControllerBase
 {
     private readonly MyDbContext _context;
+    private readonly ILogger<ThreadController> _logger; // Make sure the logger type matches the current controller
+    private readonly AuditLogHelper _auditLogHelper;
 
-    public ReplyController(MyDbContext context)
+    public ReplyController(MyDbContext context, ILogger<ThreadController> logger, AuditLogHelper auditLogHelper)
     {
         _context = context;
+        _logger = logger;
+        _auditLogHelper = auditLogHelper;
     }
 
     // GET: api/Reply/{threadId}
@@ -35,7 +41,8 @@ public class ReplyController : ControllerBase
         {
             _context.Replies.Add(reply);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetRepliesForThread), new { id = reply.ThreadId }, reply);
+            _auditLogHelper.LogUserActivityAsync(reply.CreatedByUserId.ToString(), $"User id: {reply.CreatedByUserId.ToString()} posted a a reply {reply.Content}").Wait();
+            return CreatedAtAction(nameof(GetRepliesForThread), new { threadId = reply.ThreadId }, reply);
         }
         catch (Exception ex)
         {
@@ -54,7 +61,7 @@ public class ReplyController : ControllerBase
 
         _context.Replies.Remove(reply);
         await _context.SaveChangesAsync();
-
+        _auditLogHelper.LogUserActivityAsync(reply.CreatedByUserId.ToString(), $"User id: {reply.CreatedByUserId.ToString()} deleted a reply:  {reply.Content}").Wait();
         return NoContent(); // Indicates successful deletion without sending back data
     }
 

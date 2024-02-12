@@ -7,6 +7,7 @@ using AutoMapper;
 using Newtonsoft.Json;
 using Azure.Core;
 using Enterprise_Development_Project_Assignment.Models.Activi;
+using Enterprise_Development_Project_Assignment.Helpers;
 
 
 namespace Enterprise_Development_Project_Assignment.Controllers
@@ -18,12 +19,18 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly MyDbContext _context;
         private readonly IMapper _mapper;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<UserController> _logger;
+        private readonly AuditLogHelper _auditLogHelper;
 
-        public ActivityController(MyDbContext context, IMapper mapper, IHttpClientFactory httpClientFactory)
+
+        public ActivityController(MyDbContext context, IMapper mapper, IHttpClientFactory httpClientFactory,
+            ILogger<UserController> logger, AuditLogHelper auditLogHelper)
         {
             _context = context;
             _mapper = mapper;
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
 
         private int GetUserId()
@@ -65,7 +72,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             if (!User.IsInRole("admin"))
             {
-  
                 return Forbid("You do not have permission to perform this action.");
             }
 
@@ -75,6 +81,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 return BadRequest("Invalid location.");
             }
+
+            // Add 1 day to the event date
+            activity.EventDate = activity.EventDate.AddDays(1);
 
             var myActivity = new Activity()
             {
@@ -107,13 +116,16 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 _context.Timeslots.Add(timeslot);
             }
 
+            _auditLogHelper.LogUserActivityAsync(myActivity.UserId.ToString(), "Admin created activity").Wait();
+
+
             await _context.SaveChangesAsync();
 
-            Activity newActivity = _context.Activities.Include(t => t.User)
-                .FirstOrDefault(t => t.Id == myActivity.Id);
+            Activity newActivity = _context.Activities.Include(t => t.User).FirstOrDefault(t => t.Id == myActivity.Id);
             ActivityDTO activityDTO = _mapper.Map<ActivityDTO>(newActivity);
             return Ok(activityDTO);
         }
+
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
@@ -178,6 +190,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 myActivity.Location = activity.Location;
             }
 
+            _auditLogHelper.LogUserActivityAsync(myActivity.UserId.ToString(), "Admin updated activity").Wait();
+
             _context.SaveChanges();
             return Ok();
         }
@@ -195,12 +209,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             // Delete related bookings
             _context.Bookings.RemoveRange(activity.Bookings);
+            
+
 
             // Remove activity
             _context.Activities.Remove(activity);
             _context.SaveChanges();
 
-            return NoContent(); // Successfully deleted
+            return NoContent(); 
         }
 
 

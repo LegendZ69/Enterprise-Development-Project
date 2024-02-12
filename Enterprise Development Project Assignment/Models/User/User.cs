@@ -42,6 +42,8 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string Status {  get; set; } = string.Empty;
         [Column(TypeName = "datetime")]
         public DateTime? Deactivefully { get; set; }
+        public bool TwoFactorEnabled { get; set; } = false;
+        public string VerificationCode {  get; set; } = string.Empty;
 
 
         //// Navigation property to represent the one-to-many relationship

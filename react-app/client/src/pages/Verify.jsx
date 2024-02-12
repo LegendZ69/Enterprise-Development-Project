@@ -5,44 +5,34 @@ import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-function ReactivateAccount() {
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate(); // Initialize useNavigate
-
+function Verify() {
     const formik = useFormik({
         initialValues: {
             email: "",
-            password: ""
+            verificationCode: ""
         },
         validationSchema: yup.object({
             email: yup.string().trim()
                 .email('Enter a valid email')
                 .max(50, 'Email must be at most 50 characters')
                 .required('Email is required'),
-            password: yup.string().trim()
-                .min(8, 'Password must be at least 8 characters')
-                .max(50, 'Password must be at most 50 characters')
-                .required('Password is required')
+            verificationCode: yup.string().trim()
+                .min(6, 'Verification code must be 6 characters')
+                .max(6, 'Verification code must be 6 characters')
+                .required('Verification code is required')
         }),
         onSubmit: (data) => {
-            setLoading(true);
-            data.email = data.email.trim().toLowerCase();
-            data.password = data.password.trim();
-            http.post("/user/reactivate-account", data)
-                .then(() => {
-                    toast.success("Account reactivated successfully");
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 3000); // 10 seconds delay
-                })
-                .catch((err) => {
-                    toast.error(err.response.data);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+            http.post("/user/verify", data)
+            .then((res) => {
+                // Store the JWT token in local storage
+                localStorage.setItem("accessToken", res.data.accessToken);
+                // Redirect the user to the dashboard or any other page
+                window.location.href = "/";
+            })
+            .catch((err) => {
+                toast.error(`${err.response.data}`);
+            });
         }
     });
 
@@ -54,7 +44,7 @@ function ReactivateAccount() {
             alignItems: 'center'
         }}>
             <Typography variant="h5" sx={{ my: 2 }}>
-                Reactivate Account
+                Verify Email
             </Typography>
             <Box component="form" sx={{ maxWidth: '500px' }}
                 onSubmit={formik.handleSubmit}>
@@ -70,17 +60,18 @@ function ReactivateAccount() {
                 />
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
-                    label="Password"
-                    name="password" type="password"
-                    value={formik.values.password}
+                    label="Verification Code"
+                    name="verificationCode"
+                    type="text"
+                    value={formik.values.verificationCode}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
+                    error={formik.touched.verificationCode && Boolean(formik.errors.verificationCode)}
+                    helperText={formik.touched.verificationCode && formik.errors.verificationCode}
                 />
                 <Button fullWidth variant="contained" sx={{ mt: 2 }}
-                    type="submit" disabled={loading}>
-                    {loading ? 'Loading...' : 'Reactivate Account'}
+                    type="submit">
+                    Verify
                 </Button>
             </Box>
 
@@ -89,4 +80,4 @@ function ReactivateAccount() {
     );
 }
 
-export default ReactivateAccount;
+export default Verify;

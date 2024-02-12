@@ -17,5 +17,6 @@ namespace Enterprise_Development_Project_Assignment.Models
         public string Status { get; set; } = string.Empty;
         [Column(TypeName = "datetime")]
         public DateTime? Deactivefully { get; set; }
+        public bool TwoFactorEnabled { get; set; }
     }
 }

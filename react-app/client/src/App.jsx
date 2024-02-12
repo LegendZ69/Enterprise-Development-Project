@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect, useContext } from 'react';
-import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button,MenuItem, Menu, Link as MuiLink } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button,MenuItem, Menu, Link as MuiLink,Avatar } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
@@ -60,6 +60,7 @@ import AuditLog from './pages/AuditLog';
 import ResetPassword from './pages/ResetPassword';
 import ForgetPassword from './pages/ForgetPassword';
 import ReactivateAccount from './pages/ReactivateAccount';
+import Verify from './pages/Verify';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -67,6 +68,7 @@ import ThreadDetail  from './pages/Thread';
 function App() {
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
@@ -74,7 +76,15 @@ function App() {
         setUser(res.data.user);
       });
     }
-  }, []);
+    getUserProfile();
+  }, [user]);
+  const getUserProfile = () => {
+    if (user) {
+        http.get(`/user/${user.id}`).then((res) => {
+            setUserProfile(res.data);
+        });
+    }
+};
 
   const logout = () => {
     localStorage.clear();
@@ -95,7 +105,7 @@ function App() {
         <AppBar position="static" className='AppBar'>
           <Container>
             <Toolbar disableGutters={true}>
-              <Link to="/">
+              <Link to="/activities">
                 <img src={Logo} alt="logo" width={100} />
               </Link>
               <Link to="/activities"><Typography>Activities</Typography></Link>
@@ -144,9 +154,13 @@ function App() {
               </>
               )}
               <Box sx={{ flexGrow: 1 }}></Box>
-              {user && (
+              {user && userProfile && (
                 <>
-                  <Link to="/profile"><Typography>{user.name}</Typography></Link>
+                  <Link to="/profile"><Avatar
+                  alt="Profile Picture"
+                  src={`${import.meta.env.VITE_FILE_BASE_URL}${userProfile.imageFile}`}
+                  sx={{ width: 50, height: 50, borderRadius: '50%' }}
+                /></Link>
                   <Button onClick={logout}><Typography>Logout</Typography></Button>
                 </>
               )
@@ -218,6 +232,7 @@ function App() {
             <Route path={"/resetpassword"} element ={<ResetPassword/>}/>
             <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
             <Route path={"/reactivateaccount"} element ={<ReactivateAccount/>}/>
+            <Route path={"/verify"} element ={<Verify/>}/>
 
 
 

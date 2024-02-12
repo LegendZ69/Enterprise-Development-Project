@@ -37,8 +37,18 @@ function Login() {
                     navigate("/");
                 })
                 .catch(function (err) {
-                    toast.error(`${err.response.data.message}`);
+                    if (err.response.data.message === "Verification code sent. Please verify your identity.") {
+                        // Display error message
+                        toast.error("Verification code sent. Please verify your identity.");
+                        // Redirect to the verify page
+                        setTimeout(() => {
+                            navigate("/verify");
+                        }, 3000); // 10 seconds delay
+                    } else {
+                        toast.error(`${err.response.data.message}`);
+                    }
                 });
+                
         }
     });
 
