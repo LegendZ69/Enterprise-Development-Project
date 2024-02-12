@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -14,7 +14,7 @@ function FeedbackForm() {
 
     //add form as user/staff
     // const { staff } = useContext(StaffContext);
-    // const { user } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const formik = useFormik({
         // initialValues: user //if signed in as user, autofill fields with user info
@@ -146,81 +146,88 @@ function FeedbackForm() {
                 </Grid>
             </Grid>
 
-            <Box component="form" onSubmit={formik.handleSubmit} mt={12}>
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Email"
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
-
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="First Name"
-                            name="firstName"
-                            value={formik.values.firstName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                            helperText={formik.touched.firstName && formik.errors.firstName}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Last Name"
-                            name="lastName"
-                            value={formik.values.lastName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                            helperText={formik.touched.lastName && formik.errors.lastName}
-                        />
-                    </Grid>
-                </Grid>
-
-                <FormControl fullWidth sx={{ mt: 1 }}>
-                    <InputLabel id='topic'>Topic</InputLabel>
-                    <Select margin="dense"
-                        label="Topic"
-                        name="topic"
-                        value={formik.values.topic}
+            {!user ? (
+                <Typography variant="h6" sx={{ mt: 5, textAlign: 'center', fontWeight: 'bold' }}>
+                    You must be logged in.
+                </Typography>
+            ) : (
+                <Box component="form" onSubmit={formik.handleSubmit} mt={12}>
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Email"
+                        name="email"
+                        value={formik.values.email}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.topic && Boolean(formik.errors.topic)}
-                        helperText={formik.touched.topic && formik.errors.topic}
-                    >
-                        <MenuItem value="Enquiry">General Enquiry</MenuItem>
-                        <MenuItem value="Suggestions">Suggestions</MenuItem>
-                        <MenuItem value="Improvements">Improvements</MenuItem>
-                        <MenuItem value="Partnerships">Partnerships</MenuItem>
-                        <MenuItem value="Others">Others</MenuItem>
-                    </Select>
-                </FormControl>
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
 
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline minRows={2}
-                    label="Message"
-                    name="message"
-                    value={formik.values.message}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.message && Boolean(formik.errors.message)}
-                    helperText={formik.touched.message && formik.errors.message}
-                />
-                <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" type="submit">
-                        Add
-                    </Button>
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="First Name"
+                                name="firstName"
+                                value={formik.values.firstName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                helperText={formik.touched.firstName && formik.errors.firstName}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Last Name"
+                                name="lastName"
+                                value={formik.values.lastName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                helperText={formik.touched.lastName && formik.errors.lastName}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                        <InputLabel id='topic'>Topic</InputLabel>
+                        <Select margin="dense"
+                            labelId='topic'
+                            label="Topic"
+                            name="topic"
+                            value={formik.values.topic}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.topic && Boolean(formik.errors.topic)}
+                            helperText={formik.touched.topic && formik.errors.topic}
+                        >
+                            <MenuItem value="Enquiry">General Enquiry</MenuItem>
+                            <MenuItem value="Suggestions">Suggestions</MenuItem>
+                            <MenuItem value="Improvements">Improvements</MenuItem>
+                            <MenuItem value="Partnerships">Partnerships</MenuItem>
+                            <MenuItem value="Others">Others</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        multiline minRows={2}
+                        label="Message"
+                        name="message"
+                        value={formik.values.message}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.message && Boolean(formik.errors.message)}
+                        helperText={formik.touched.message && formik.errors.message}
+                    />
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" type="submit">
+                            Add
+                        </Button>
+                    </Box>
                 </Box>
-            </Box>
+            )}
         </Box>
     )
 }

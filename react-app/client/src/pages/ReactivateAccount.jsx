@@ -1,16 +1,13 @@
-import React, { useContext } from 'react';
-import { Box, Typography, TextField, Button, Link } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import UserContext from '../contexts/UserContext';
 
-function Login() {
-    const navigate = useNavigate();
-    const { setUser } = useContext(UserContext);
+function ReactivateAccount() {
+    const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -28,16 +25,18 @@ function Login() {
                 .required('Password is required')
         }),
         onSubmit: (data) => {
+            setLoading(true);
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
-            http.post("/user/login", data)
-                .then((res) => {
-                    localStorage.setItem("accessToken", res.data.accessToken);
-                    setUser(res.data.user);
-                    navigate("/");
+            http.post("/user/reactivate-account", data)
+                .then(() => {
+                    toast.success("Account reactivated successfully");
                 })
-                .catch(function (err) {
-                    toast.error(`${err.response.data.message}`);
+                .catch((err) => {
+                    toast.error(err.response.data);
+                })
+                .finally(() => {
+                    setLoading(false);
                 });
         }
     });
@@ -50,7 +49,7 @@ function Login() {
             alignItems: 'center'
         }}>
             <Typography variant="h5" sx={{ my: 2 }}>
-                Login
+                Reactivate Account
             </Typography>
             <Box component="form" sx={{ maxWidth: '500px' }}
                 onSubmit={formik.handleSubmit}>
@@ -74,19 +73,9 @@ function Login() {
                     error={formik.touched.password && Boolean(formik.errors.password)}
                     helperText={formik.touched.password && formik.errors.password}
                 />
-                <Box sx={{ textAlign: 'left', mt: 1 }}>
-                    <Link component="button" variant="body2" onClick={() => navigate('/forgetpassword')}>
-                        Forgot password?
-                    </Link>
-                </Box>
-                <Box sx={{ textAlign: 'left', mt: 1 }}>
-                    <Link component="button" variant="body2" onClick={() => navigate('/reactivateaccount')}>
-                        Reactivate Account
-                    </Link>
-                </Box>
                 <Button fullWidth variant="contained" sx={{ mt: 2 }}
-                    type="submit">
-                    Login
+                    type="submit" disabled={loading}>
+                    {loading ? 'Loading...' : 'Reactivate Account'}
                 </Button>
             </Box>
 
@@ -95,4 +84,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default ReactivateAccount;

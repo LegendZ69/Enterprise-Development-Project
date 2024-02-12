@@ -1,32 +1,32 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
   Typography,
   Grid,
   Card,
   CardContent,
-  Input,
   IconButton,
   Button,
   Container,
-  CssBaseline,
   Stack,
   CardMedia,
-  CardActions,
-  InputBase
-} from '@mui/material';
-import { AccountCircle, AccessTime, Search, Clear, Edit, Event  } from '@mui/icons-material';
-import http from '../http';
-import dayjs from 'dayjs';
-import UserContext from '../contexts/UserContext';
-import global from '../global';
-import '../css/activities.css';
+  InputBase,
+} from "@mui/material";
+import {
+  Search,
+  Clear,
+  Event,
+} from "@mui/icons-material";
+import http from "../http";
+import dayjs from "dayjs";
+import UserContext from "../contexts/UserContext";
+import "../css/activities.css";
 
 function Activities() {
   const [activitiesList, setActivitiesList] = useState([]);
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all'); // Define selectedCategory here
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const { user } = useContext(UserContext);
 
   const onSearchChange = (e) => {
@@ -38,9 +38,9 @@ function Activities() {
   };
 
   const getActivities = () => {
-    let url = '/activity';
+    let url = "/activity";
     if (search) {
-        url += `?search=${search}`;
+      url += `?search=${search}`;
     }
 
     if (selectedCategory !== 'all') {
@@ -48,16 +48,16 @@ function Activities() {
     }
 
     http.get(url).then((res) => {
-        setActivitiesList(res.data);
+      setActivitiesList(res.data);
     });
-};
+  };
 
   useEffect(() => {
     getActivities();
   }, [search, selectedCategory]);
 
   const onSearchKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       getActivities();
     }
   };
@@ -67,7 +67,7 @@ function Activities() {
   };
 
   const onClickClear = () => {
-    setSearch('');
+    setSearch("");
     getActivities();
   };
 
@@ -123,16 +123,28 @@ function Activities() {
 
       {/* Category Buttons */}
       <Stack direction="row" spacing={2} justifyContent="center">
-        <Button variant={selectedCategory === 'all' ? 'contained' : 'outlined'} onClick={() => handleCategoryChange('all')}>
+        <Button
+          variant={selectedCategory === "all" ? "contained" : "outlined"}
+          onClick={() => handleCategoryChange("all")}
+        >
           All
         </Button>
-        <Button variant={selectedCategory === 'family' ? 'contained' : 'outlined'} onClick={() => handleCategoryChange('family')}>
+        <Button
+          variant={selectedCategory === "family" ? "contained" : "outlined"}
+          onClick={() => handleCategoryChange("family")}
+        >
           Family
         </Button>
-        <Button variant={selectedCategory === 'leisure' ? 'contained' : 'outlined'} onClick={() => handleCategoryChange('leisure')}>
+        <Button
+          variant={selectedCategory === "leisure" ? "contained" : "outlined"}
+          onClick={() => handleCategoryChange("leisure")}
+        >
           Leisure
         </Button>
-        <Button variant={selectedCategory === 'sports' ? 'contained' : 'outlined'} onClick={() => handleCategoryChange('sports')}>
+        <Button
+          variant={selectedCategory === "sports" ? "contained" : "outlined"}
+          onClick={() => handleCategoryChange("sports")}
+        >
           Sports
         </Button>
       </Stack>
@@ -141,24 +153,34 @@ function Activities() {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
          
           {user && (
-            <Link to="/addActivity" style={{ textDecoration: 'none' }}>
+            <Link to="/addActivity" style={{ textDecoration: "none" }}>
               <Button variant="contained">Add</Button>
             </Link>
           )}
-        </Box>
+        </Box> */}
 
         <Grid container spacing={4}>
           {activitiesList.map((activity) => (
             <Grid item key={activity.id} xs={12} sm={6} md={3}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }} className='card-container'>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  position: "relative",
+                }}
+                className="card-container"
+              >
                 {activity.imageFile && (
                   <CardMedia
                     component="div"
-                    className='card-img'
+                    className="card-img"
                     sx={{
-                      pt: '55%',
+                      pt: "55%",
                     }}
-                    image={`${import.meta.env.VITE_FILE_BASE_URL}${activity.imageFile}`}
+                    image={`${import.meta.env.VITE_FILE_BASE_URL}${
+                      activity.imageFile
+                    }`}
                   />
                 )}
 <CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>

@@ -78,7 +78,7 @@ function DisplayRatingsAndReviews() {
                 </Link>
             </Box>
 
-            {
+            {/* {
                 user && user.id === ratingsAndReviews.userId && (
                     <Grid container spacing={2}>
                         {
@@ -139,6 +139,54 @@ function DisplayRatingsAndReviews() {
                         }
                     </Grid>
                 )
+            } */}
+
+            {
+                user && ratingsAndReviewsList.map((ratingsAndReviews, i) => {
+                    return (
+                        user.id === ratingsAndReviews.userId && (
+                            <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
+                                <Card>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex' }}>
+                                            <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                                                {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
+                                            </Typography>
+                                            <Link to={`/editRatingsAndReviews/${ratingsAndReviews.id}`}>
+                                                <IconButton color="primary" sx={{ padding: '4px' }}>
+                                                    <Edit />
+                                                </IconButton>
+                                            </Link>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                                            <AccountCircle sx={{ mr: 1 }} />
+                                            <Typography>
+                                                {ratingsAndReviews.user?.name}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                                            <Rating value={ratingsAndReviews.rating} readOnly />
+                                            <AccessTime fontSize='small' />
+                                            <Typography variant='body2'>
+                                                {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
+                                            </Typography>
+                                        </Box>
+                                        <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {ratingsAndReviews.review}
+                                        </Typography>
+                                        {
+                                            ratingsAndReviews.imageFile && (
+                                                <Box className="aspect-ratio-container">
+                                                    <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
+                                                </Box>
+                                            )
+                                        }
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        )
+                    );
+                })
             }
         </Box>
     )
