@@ -80,8 +80,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        /*[HttpPost, Authorize]*/ //only authorised user can add / bind form to userid
-        [HttpPost]
+        [HttpPost, Authorize] //only authorised user can add / bind form to userid
         [ProducesResponseType(typeof(SuggestionFormDTO), StatusCodes.Status200OK)]
         public IActionResult AddSuggestionForm(AddSuggestionRequest suggestionForm)
         {

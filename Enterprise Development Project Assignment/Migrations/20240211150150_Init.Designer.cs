@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20240209100348_date")]
-    partial class date
+    [Migration("20240211150150_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -283,7 +283,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FeedbackForms");
                 });
@@ -309,6 +314,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ImageFile")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -328,7 +337,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("RatingsAndReviews");
                 });
@@ -376,7 +390,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SuggestionForms");
                 });
@@ -467,6 +486,39 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("FeedbackForms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("RatingsAndReviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.SuggestionForm", b =>
+                {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
+                        .WithMany("SuggestionForms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
@@ -479,6 +531,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("Bookings");
+
+                    b.Navigation("FeedbackForms");
+
+                    b.Navigation("RatingsAndReviews");
+
+                    b.Navigation("SuggestionForms");
                 });
 #pragma warning restore 612, 618
         }

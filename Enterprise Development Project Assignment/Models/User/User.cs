@@ -40,11 +40,9 @@ namespace Enterprise_Development_Project_Assignment.Models
 		//// Navigation property to represent the one-to-many relationship
 		[JsonIgnore]
 		public List<Activity>? Activities { get; set; }
-
         public List<FeedbackForm>? FeedbackForms { get; set; }
         public List<SuggestionForm>? SuggestionForms { get; set; }
         public List<RatingsAndReviews>? RatingsAndReviews { get; set; }
-
 
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }

@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -30,6 +32,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             _logger = logger;
         }
 
+        /*private JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            return new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
+        }*/
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<FeedbackFormDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAll(string? search)
@@ -48,7 +58,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
                 var list = result.OrderByDescending(x => x.CreatedAt).ToList();
                 IEnumerable<FeedbackFormDTO> data = list.Select(t => _mapper.Map<FeedbackFormDTO>(t));
-                return Ok(list);
+                return Ok(data);
             }
             catch (Exception ex)
             {
@@ -78,10 +88,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        /*[HttpPost, Authorize]*/ //only authorised user can add / bind form to userid
-        [HttpPost]
-        [ProducesResponseType(typeof(FeedbackForm), StatusCodes.Status200OK)]
-        public IActionResult AddFeedbackForm(AddFeedbackRequest FeedbackForm)
+        [HttpPost, Authorize] //only authorised user can add / bind form to userid
+        [ProducesResponseType(typeof(FeedbackFormDTO), StatusCodes.Status200OK)]
+        public IActionResult AddFeedbackForm(AddFeedbackRequest feedbackForm)
         {
             try
             {
@@ -90,11 +99,11 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 var myFeedbackForm = new FeedbackForm()
                 {
                     //only can trim string
-                    Email = FeedbackForm.Email.Trim().ToLower(),
-                    FirstName = FeedbackForm.FirstName.Trim(),
-                    LastName = FeedbackForm.LastName.Trim(),
-                    Topic = FeedbackForm.Topic,
-                    Message = FeedbackForm.Message.Trim(),
+                    Email = feedbackForm.Email.Trim().ToLower(),
+                    FirstName = feedbackForm.FirstName.Trim(),
+                    LastName = feedbackForm.LastName.Trim(),
+                    Topic = feedbackForm.Topic,
+                    Message = feedbackForm.Message.Trim(),
                     CreatedAt = now,
                     UpdatedAt = now,
                     UserId = userId
