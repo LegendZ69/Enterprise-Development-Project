@@ -4,6 +4,8 @@ using Enterprise_Development_Project_Assignment.Models;
 using System.Threading.Tasks;
 using System.Linq;
 using Enterprise_Development_Project_Assignment.Helpers;
+using Microsoft.Extensions.Logging;
+
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
     [Route("[controller]")]
@@ -11,44 +13,68 @@ namespace Enterprise_Development_Project_Assignment.Controllers
     public class ThreadController : ControllerBase
     {
         private readonly MyDbContext _context;
+        private readonly ILogger<ThreadController> _logger; // Make sure the logger type matches the current controller
+        private readonly AuditLogHelper _auditLogHelper;
 
-        public ThreadController(MyDbContext context)
+        public ThreadController(MyDbContext context, ILogger<ThreadController> logger, AuditLogHelper auditLogHelper)
         {
             _context = context;
+            _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
 
-        // GET: api/Thread
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ThreadModel>>> GetThreads()
         {
-            return await _context.Threads.ToListAsync();
+            try
+            {
+                var threads = await _context.Threads.ToListAsync();
+               
+                return threads;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving threads.");
+                return StatusCode(500, "Internal server error while retrieving threads.");
+            }
         }
 
-        // GET: api/Thread/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ThreadModel>> GetThread(int id)
         {
-            var thread = await _context.Threads.FindAsync(id);
-
-            if (thread == null)
+            try
             {
-                return NotFound();
+                var thread = await _context.Threads.FindAsync(id);
+                if (thread == null)
+                {
+                    return NotFound();
+                }
+                return thread;
             }
-
-            return thread;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while retrieving thread with ID {id}.");
+                return StatusCode(500, "Internal server error while retrieving thread.");
+            }
         }
 
-        // POST: api/Thread
         [HttpPost]
         public async Task<ActionResult<ThreadModel>> CreateThread(ThreadModel thread)
         {
-            _context.Threads.Add(thread);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetThread", new { id = thread.Id }, thread);
+            try
+            {
+                _context.Threads.Add(thread);
+                await _context.SaveChangesAsync();
+                _auditLogHelper.LogUserActivityAsync(thread.CreatedByUserId.ToString(), $"Created a thread id : {thread.Id}").Wait();
+                return CreatedAtAction("GetThread", new { id = thread.Id }, thread);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating a thread.");
+                return StatusCode(500, "Internal server error while creating thread.");
+            }
         }
 
-        // PUT: api/Thread/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateThread(int id, ThreadModel thread)
         {
@@ -62,8 +88,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!_context.Threads.Any(e => e.Id == id))
                 {
@@ -71,28 +98,39 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
                 else
                 {
+                    _logger.LogError(ex, $"A concurrency error occurred while updating thread with ID {id}.");
                     throw;
                 }
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating thread with ID {id}.");
+                return StatusCode(500, "Internal server error while updating thread.");
+            }
         }
 
-        // DELETE: api/Thread/5 (Optional)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteThread(int id)
         {
-            var thread = await _context.Threads.FindAsync(id);
-            if (thread == null)
+            try
             {
-                return NotFound();
+                var thread = await _context.Threads.FindAsync(id);
+                if (thread == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Threads.Remove(thread);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
-
-            _context.Threads.Remove(thread);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while deleting thread with ID {id}.");
+                return StatusCode(500, "Internal server error while deleting thread.");
+            }
         }
+
         [HttpPost("{id}/upvote")]
         public async Task<IActionResult> UpvoteThread(int id)
         {
@@ -122,10 +160,5 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             return Ok(thread); // Or return NoContent(); based on your API design
         }
-
-       
-
-
-
     }
 }
