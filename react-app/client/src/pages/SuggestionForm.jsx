@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,41 +15,41 @@ function SuggestionForm() {
 
     //add form as user/staff
     // const { setStaff } = useContext(StaffContext);
-    // const { user } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const formik = useFormik({
-        // initialValues: user //if signed in as user, autofill fields with user info
-        //     ? {
-        //         // email: user.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //     }
-        //     : staff
-        //         ? {
-        //             // email: staff.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         }
-        //         : {
-        // email: "",
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         },
-        
-        initialValues: {
-            // email: user.email, //merge with user.id
-            email: "", //delete this after
-            activityName: "",
-            activityType: "",
-            activityDescription: "",
-            activityReason: ""
-        },
+        initialValues: user //if signed in as user, autofill fields with user info
+            ? {
+                // email: user.email, //merge with user.id
+                activityName: "",
+                activityType: "",
+                activityDescription: "",
+                activityReason: ""
+            }
+            // : staff
+            //     ? {
+            //         // email: staff.email, //merge with user.id
+            //         activityName: "",
+            //         activityType: "",
+            //         activityDescription: "",
+            //         activityReason: ""
+            //     }
+            : {
+                email: "",
+                activityName: "",
+                activityType: "",
+                activityDescription: "",
+                activityReason: ""
+            },
+
+        // initialValues: {
+        //     email: user.email, //merge with user.id
+        //     //email: "", //delete this after
+        //     activityName: "",
+        //     activityType: "",
+        //     activityDescription: "",
+        //     activityReason: ""
+        // },
 
         validationSchema: yup.object({
             //refer to edp ass
@@ -119,82 +119,88 @@ function SuggestionForm() {
                 Suggestion Form
             </Typography>
 
-            <Box component="form" onSubmit={formik.handleSubmit}>
+            {!user ? (
+                <Typography variant="h6" sx={{ mt: 5, textAlign: 'center', fontWeight: 'bold' }}>
+                    You must be logged in.
+                </Typography>
+            ) : (
+                <Box component="form" onSubmit={formik.handleSubmit}>
 
-                {/* remove email field, only allow signed in user to suggest / review */}
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    label="Email"
-                    name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
+                    {/* remove email field, only allow signed in user to suggest / review */}
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        label="Email"
+                        name="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
 
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth margin="dense" autoComplete="off"
-                            label="Activity Name"
-                            name="activityName"
-                            value={formik.values.activityName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.activityName && Boolean(formik.errors.activityName)}
-                            helperText={formik.touched.activityName && formik.errors.activityName}
-                        />
-                    </Grid>
-                    <Grid item xs={6} sx={{ mt: 1 }}>
-                        <FormControl fullWidth>
-                            <InputLabel id='activityType'>Activity Type</InputLabel>
-                            <Select margin="dense"
-                                label="Activity Type"
-                                name="activityType"
-                                value={formik.values.activityType}
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Activity Name"
+                                name="activityName"
+                                value={formik.values.activityName}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.activityType && Boolean(formik.errors.activityType)}
-                                helperText={formik.touched.activityType && formik.errors.activityType}
-                            >
-                                <MenuItem value="Leisure And Entertainment">Leisure and Entertainment</MenuItem>
-                                <MenuItem value="Sports and Adventure">Sports and Adventure</MenuItem>
-                                <MenuItem value="Family and Friends">Family and Friends</MenuItem>
-                                <MenuItem value="Others">Others</MenuItem>
-                            </Select>
-                        </FormControl>
+                                error={formik.touched.activityName && Boolean(formik.errors.activityName)}
+                                helperText={formik.touched.activityName && formik.errors.activityName}
+                            />
+                        </Grid>
+                        <Grid item xs={6} sx={{ mt: 1 }}>
+                            <FormControl fullWidth>
+                                <InputLabel id='activityType'>Activity Type</InputLabel>
+                                <Select margin="dense"
+                                    label="Activity Type"
+                                    name="activityType"
+                                    value={formik.values.activityType}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.activityType && Boolean(formik.errors.activityType)}
+                                    helperText={formik.touched.activityType && formik.errors.activityType}
+                                >
+                                    <MenuItem value="Leisure And Entertainment">Leisure and Entertainment</MenuItem>
+                                    <MenuItem value="Sports and Adventure">Sports and Adventure</MenuItem>
+                                    <MenuItem value="Family and Friends">Family and Friends</MenuItem>
+                                    <MenuItem value="Others">Others</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
                     </Grid>
-                </Grid>
-                
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline minRows={2}
-                    label="Activity Description"
-                    name="activityDescription"
-                    value={formik.values.activityDescription}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityDescription && Boolean(formik.errors.activityDescription)}
-                    helperText={formik.touched.activityDescription && formik.errors.activityDescription}
-                />
-                <TextField
-                    fullWidth margin="dense" autoComplete="off"
-                    multiline
-                    label="Activity Reason"
-                    name="activityReason"
-                    value={formik.values.activityReason}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.activityReason && Boolean(formik.errors.activityReason)}
-                    helperText={formik.touched.activityReason && formik.errors.activityReason}
-                />
-                <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" type="submit">
-                        Add
-                    </Button>
+
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        multiline minRows={2}
+                        label="Activity Description"
+                        name="activityDescription"
+                        value={formik.values.activityDescription}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.activityDescription && Boolean(formik.errors.activityDescription)}
+                        helperText={formik.touched.activityDescription && formik.errors.activityDescription}
+                    />
+                    <TextField
+                        fullWidth margin="dense" autoComplete="off"
+                        multiline
+                        label="Activity Reason"
+                        name="activityReason"
+                        value={formik.values.activityReason}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.activityReason && Boolean(formik.errors.activityReason)}
+                        helperText={formik.touched.activityReason && formik.errors.activityReason}
+                    />
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" type="submit">
+                            Add
+                        </Button>
+                    </Box>
                 </Box>
-            </Box>
+            )}
         </Box>
     )
 }

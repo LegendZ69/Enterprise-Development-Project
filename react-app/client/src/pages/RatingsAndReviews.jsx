@@ -153,112 +153,114 @@ function RatingsAndReviews() {
                 Ratings and Reviews
             </Typography>
 
-            {
-                user && (
-                    <Box>
-                        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                            Activity Name: integrate with team member for part 2
+            {!user ? (
+                <Typography variant="h6" sx={{ mt: 5, textAlign: 'center', fontWeight: 'bold' }}>
+                    You must be logged in.
+                </Typography>
+            ) : (
+                <Box>
+                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                        Activity Name: integrate with team member for part 2
+                    </Typography>
+                    <Box sx={{ display: 'flex', mb: 2 }} color="text.secondary">
+                        <AccessTime fontSize='small' />
+                        <Typography variant='body2'>
+                            Booking Date{/* {dayjs(bookingId.createdAt).format(global.datetimeFormat)} */}: integrate with team member for part 2
                         </Typography>
-                        <Box sx={{ display: 'flex', mb: 2 }} color="text.secondary">
-                            <AccessTime fontSize='small' />
-                            <Typography variant='body2'>
-                                Booking Date{/* {dayjs(bookingId.createdAt).format(global.datetimeFormat)} */}: integrate with team member for part 2
-                            </Typography>
-                        </Box>
-
-                        <Box component="form" onSubmit={formik.handleSubmit}>
-                            <Rating
-                                name="rating"
-                                size='large'
-                                value={formik.values.rating}
-                                onChange={(event, newValue) => {
-                                    setValue(newValue);
-                                    formik.setFieldValue('rating', newValue); // Update formik value
-                                }}
-                                fullWidth
-                                // multiline minRows={2}
-                                label="Rating"
-                                error={formik.touched.rating && Boolean(formik.errors.rating)}
-                                helperText={formik.touched.rating && formik.errors.rating}
-                            />
-
-                            <TextField
-                                fullWidth margin="dense" autoComplete="off"
-                                label="Email"
-                                name="email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
-                            />
-
-                            <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        fullWidth margin="dense" autoComplete="off"
-                                        label="First Name"
-                                        name="firstName"
-                                        value={formik.values.firstName}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                                        helperText={formik.touched.firstName && formik.errors.firstName}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        fullWidth margin="dense" autoComplete="off"
-                                        label="Last Name"
-                                        name="lastName"
-                                        value={formik.values.lastName}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                                        helperText={formik.touched.lastName && formik.errors.lastName}
-                                    />
-                                </Grid>
-                            </Grid>
-
-                            <TextField
-                                fullWidth margin="dense" autoComplete="off"
-                                multiline minRows={2}
-                                label="Review"
-                                name="review"
-                                value={formik.values.review}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.review && Boolean(formik.errors.review)}
-                                helperText={formik.touched.review && formik.errors.review}
-                            />
-
-                            <Box sx={{ textAlign: 'center', mt: 2 }} >
-                                <Button variant="contained" component="label">
-                                    Upload Image
-                                    <input hidden accept="image/*" multiple type="file" onChange={onFileChange} />
-                                </Button>
-                            </Box>
-
-                            {
-                                imageFile && (
-                                    <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
-                                        <img alt="Reviews Photo"
-                                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
-                                        </img>
-                                    </Box>
-                                )
-                            }
-
-                            <Box sx={{ mt: 2 }}>
-                                <Button variant="contained" type="submit">
-                                    Add
-                                </Button>
-                            </Box>
-                        </Box>
-                        <ToastContainer />
                     </Box>
-                )
-            }
+
+                    <Box component="form" onSubmit={formik.handleSubmit}>
+                        <Rating
+                            name="rating"
+                            size='large'
+                            value={formik.values.rating}
+                            onChange={(event, newValue) => {
+                                setValue(newValue);
+                                formik.setFieldValue('rating', newValue); // Update formik value
+                            }}
+                            fullWidth
+                            // multiline minRows={2}
+                            label="Rating"
+                            error={formik.touched.rating && Boolean(formik.errors.rating)}
+                            helperText={formik.touched.rating && formik.errors.rating}
+                        />
+
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            label="Email"
+                            name="email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
+                        />
+
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth margin="dense" autoComplete="off"
+                                    label="First Name"
+                                    name="firstName"
+                                    value={formik.values.firstName}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                    helperText={formik.touched.firstName && formik.errors.firstName}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth margin="dense" autoComplete="off"
+                                    label="Last Name"
+                                    name="lastName"
+                                    value={formik.values.lastName}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                    helperText={formik.touched.lastName && formik.errors.lastName}
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <TextField
+                            fullWidth margin="dense" autoComplete="off"
+                            multiline minRows={2}
+                            label="Review"
+                            name="review"
+                            value={formik.values.review}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.review && Boolean(formik.errors.review)}
+                            helperText={formik.touched.review && formik.errors.review}
+                        />
+
+                        <Box sx={{ textAlign: 'center', mt: 2 }} >
+                            <Button variant="contained" component="label">
+                                Upload Image
+                                <input hidden accept="image/*" multiple type="file" onChange={onFileChange} />
+                            </Button>
+                        </Box>
+
+                        {
+                            imageFile && (
+                                <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
+                                    <img alt="Reviews Photo"
+                                        src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}>
+                                    </img>
+                                </Box>
+                            )
+                        }
+
+                        <Box sx={{ mt: 2 }}>
+                            <Button variant="contained" type="submit">
+                                Add
+                            </Button>
+                        </Box>
+                    </Box>
+                    <ToastContainer />
+                </Box>
+            )}
         </Box>
     )
 }
