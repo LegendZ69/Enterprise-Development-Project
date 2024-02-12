@@ -70,11 +70,21 @@ function UserProfile() {
                                 <Typography>Phone Number: {userProfile.phoneNumber}</Typography>
                             </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                            <AccessTime sx={{ mr: 1 }} />
+                            <Typography>
+                                User Status: {userProfile.status}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                            <Typography>
+                            Two-Factor Authentication (Email): {userProfile.twoFactorEnabled ? "Enabled" : "Disabled"}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                             <Typography>
                                 User since {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}
                             </Typography>
                         </Box>
+
                         {/* Add more user-related information as needed */}
                     </CardContent>
                 </Card>
