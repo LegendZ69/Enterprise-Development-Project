@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class t : Migration
+    public partial class a : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -175,7 +175,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Topic = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    StaffRemark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    StaffRemark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -191,6 +191,29 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ActivityTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SuggestionForms",
                 columns: table => new
                 {
@@ -202,7 +225,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     ActivityType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ActivityDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ActivityReason = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StaffRemark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    StaffRemark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -281,8 +304,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Review = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Like = table.Column<int>(type: "int", nullable: false),
                     ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    StaffRemark = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -334,6 +357,11 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_UserId",
+                table: "Payments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RatingsAndReviews_ActivityId",
                 table: "RatingsAndReviews",
                 column: "ActivityId");
@@ -373,6 +401,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             migrationBuilder.DropTable(
                 name: "FeedbackForms");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "RatingsAndReviews");

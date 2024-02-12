@@ -274,7 +274,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("StaffRemark")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -361,9 +360,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Like")
-                        .HasColumnType("int");
-
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
@@ -371,6 +367,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("StaffRemark")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime");
@@ -458,7 +458,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("StaffRemark")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
