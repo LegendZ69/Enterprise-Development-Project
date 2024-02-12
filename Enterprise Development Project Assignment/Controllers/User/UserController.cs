@@ -236,7 +236,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 _context.SaveChanges();
 
                 // Log successful login
-                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User logged in successfully").Wait();
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User logged in successfully with verification code").Wait();
 
                 // Generate JWT token
                 string accessToken = CreateToken(foundUser);
