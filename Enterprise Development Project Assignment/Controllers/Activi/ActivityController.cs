@@ -111,8 +111,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             await _context.SaveChangesAsync();
 
-            Activity newActivity = _context.Activities.Include(t => t.User)
-                .FirstOrDefault(t => t.Id == myActivity.Id);
+            Activity newActivity = _context.Activities.Include(t => t.User).FirstOrDefault(t => t.Id == myActivity.Id);
             ActivityDTO activityDTO = _mapper.Map<ActivityDTO>(newActivity);
             return Ok(activityDTO);
         }
