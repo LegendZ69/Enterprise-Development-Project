@@ -449,7 +449,13 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 IQueryable<User> result = _context.Users;
                 if (search != null)
                 {
-                    result = result.Where(x => x.Name.Contains(search) || x.Email.Contains(search));
+                    result = result.Where(x =>
+                    x.Name.Contains(search) ||
+                    x.Email.Contains(search) ||
+                    x.Id.ToString().Contains(search) || // Assuming Id is numeric
+                    x.Role.Contains(search) ||
+                    x.Status.Contains(search));
+
                 }
 
                 var list = result.OrderByDescending(x => x.CreatedAt).ToList();
