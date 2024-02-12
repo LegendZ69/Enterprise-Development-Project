@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Card, CardContent, MenuItem } from '@mui/material';
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Box, Typography, Button, TextField, Card, CardContent, MenuItem, Grid, Divider, IconButton, Rating, Input } from '@mui/material';
+import { AccountCircle, AccessTime, Search, Clear, Edit } from '@mui/icons-material';
 import SportsIcon from '@mui/icons-material/Sports';
 import FamilyIcon from '@mui/icons-material/FamilyRestroom';
 import LeisureIcon from '@mui/icons-material/BeachAccess';
@@ -10,10 +11,12 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers'; 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; 
 import dayjs from 'dayjs';
-import 'dayjs/locale/en-sg';
+// import 'dayjs/locale/en-sg';
 import http from '../http';
+import global from '../global';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserContext from '../contexts/UserContext';
 
 function ViewActivity() {
   const { id } = useParams();
@@ -25,6 +28,14 @@ function ViewActivity() {
   const [timeSlotsList, setTimeSlotsList] = useState([]);
   const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
 
+  const [ratingsAndReviewsList, setRatingsAndReviewsList] = useState([]);
+  const [search, setSearch] = useState('');
+
+  const getRatingsAndReviews = () => {
+    http.get('/ratingsAndReviews').then((res) => {
+      setRatingsAndReviewsList(res.data);
+    });
+  };
 
   useEffect(() => {
     http.get(`/activity/${id}`)
@@ -42,6 +53,9 @@ function ViewActivity() {
       .catch((error) => {
         console.error('Error fetching activity:', error.message);
       });
+    
+    getRatingsAndReviews();
+
   }, [id]);
 
   window.initMap = () => {
@@ -58,8 +72,9 @@ function ViewActivity() {
       title: activity.title,
     });
   
-};
-
+  };
+  
+  
 
 // new code
 useEffect(() => {
@@ -125,6 +140,44 @@ if (googleScriptLoaded && activity) {
   if (!activity) {
     return <div>Loading...</div>;
   }
+
+
+
+
+  
+
+  const { user } = useContext(UserContext);
+
+  const onSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  
+
+  const searchRatingsAndReviews = () => {
+    http.get(`/ratingsAndReviews?search=${search}`).then((res) => {
+      setRatingsAndReviewsList(res.data);
+    });
+  };
+
+  // useEffect(() => {
+  //   getRatingsAndReviews();
+  // }, []);
+
+  const onSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchRatingsAndReviews();
+    }
+  };
+
+  const onClickSearch = () => {
+    searchRatingsAndReviews();
+  };
+
+  const onClickClear = () => {
+    setSearch('');
+    getRatingsAndReviews();
+  };
 
   return (
     <Box sx={{ mt: 10 }}>
@@ -262,6 +315,115 @@ if (googleScriptLoaded && activity) {
           </CardContent>
         </Card>
       </Box>
+
+      <Typography variant="h2" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
+        Reviews
+      </Typography>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Input value={search} placeholder="Search"
+          onChange={onSearchChange}
+          onKeyDown={onSearchKeyDown} />
+        <IconButton color="primary"
+          onClick={onClickSearch}>
+          <Search />
+        </IconButton>
+        <IconButton color="primary"
+          onClick={onClickClear}>
+          <Clear />
+        </IconButton>
+
+        <Box sx={{ flexGrow: 1 }} />
+        <Link to="/ratingsAndReviews" style={{ textDecoration: 'none' }}>
+          <Button variant='contained'>
+            Add
+          </Button>
+        </Link>
+      </Box>
+
+      {/* {
+        ratingsAndReviewsList.map((ratingsAndReviews, i) => (
+          <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                    {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                  <AccountCircle />
+                  <Typography sx={{ mr: 1 }}>
+                    {ratingsAndReviews.user?.name}
+                  </Typography>
+                  <AccessTime fontSize='small' />
+                  <Typography variant='body2'>
+                    {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                  <Rating value={ratingsAndReviews.rating} readOnly />
+                </Box>
+                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                  {ratingsAndReviews.review}
+                </Typography>
+                {
+                  ratingsAndReviews.imageFile && (
+                    <Box className="aspect-ratio-container">
+                      <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
+                    </Box>
+                  )
+                }
+              </CardContent>
+            </Card>
+          </Grid>
+        ))
+      } */}
+
+      {
+        ratingsAndReviewsList.map((ratingsAndReviews, i) => (
+          // activity.id === ratingsAndReviews.activityId && (
+            <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex' }}>
+                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                      {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                    <AccountCircle />
+                    <Typography sx={{ mr: 1 }}>
+                      {ratingsAndReviews.user?.name}
+                    </Typography>
+                    <AccessTime fontSize='small' />
+                    <Typography variant='body2'>
+                      {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                    <Rating value={ratingsAndReviews.rating} readOnly />
+                  </Box>
+                  <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                    {ratingsAndReviews.review}
+                  </Typography>
+                  {
+                    ratingsAndReviews.imageFile && (
+                      <Box className="aspect-ratio-container">
+                        <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
+                      </Box>
+                    )
+                  }
+                </CardContent>
+              </Card>
+            </Grid>
+          )
+        )
+        // )
+      }
+
 
       <ToastContainer />
     </Box>

@@ -9,18 +9,26 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserContext from '../contexts/UserContext';
 
-function EditRatingsAndReviews() {
+function AdminEditRatingsAndReviews() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
     const { user } = useContext(UserContext);
 
     const [value, setValue] = useState(0);
 
     const [ratingsAndReviews, setRatingsAndReviews] = useState({
+        bookingId: "",
+        bookingDate: "",
+        email: "",
+        firstName: "",
+        lastName: "",
         rating: "",
         review: "",
-        imageFile: ""
+        imageFile: "" //addon
     });
 
     useEffect(() => {
@@ -57,6 +65,18 @@ function EditRatingsAndReviews() {
         initialValues: ratingsAndReviews,
         enableReinitialize: true,
         validationSchema: yup.object({
+            email: yup.string().trim()
+                .email('Enter a valid email')
+                .max(100, 'Email must be at most 100 characters')
+                .required('Email is required'),
+            firstName: yup.string().trim()
+                .min(3, 'First Name must be at least 3 characters')
+                .max(50, 'First Name must be at most 50 characters')
+                .required('First Name is required'),
+            lastName: yup.string().trim()
+                .min(3, 'Last Name must be at least 3 characters')
+                .max(50, 'Last Name must be at most 50 characters')
+                .required('Last Name is required'),
             rating: yup.number()
                 // .min(1, 'Rating should be at least 1 star')
                 // .max(5, 'Rating should be at most 5 stars')
@@ -115,7 +135,7 @@ function EditRatingsAndReviews() {
             </Typography>
 
             {
-                user && (
+                user.role == "admin" && (
                     <Box>
                         <Box component="form" onSubmit={formik.handleSubmit}>
                             <Rating
@@ -131,6 +151,44 @@ function EditRatingsAndReviews() {
                                 error={formik.touched.rating && Boolean(formik.errors.rating)}
                                 helperText={formik.touched.rating && formik.errors.rating}
                             />
+
+                            <TextField
+                                fullWidth margin="dense" autoComplete="off"
+                                label="Email"
+                                name="email"
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
+                            />
+
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth margin="dense" autoComplete="off"
+                                        label="First Name"
+                                        name="firstName"
+                                        value={formik.values.firstName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                        helperText={formik.touched.firstName && formik.errors.firstName}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth margin="dense" autoComplete="off"
+                                        label="Last Name"
+                                        name="lastName"
+                                        value={formik.values.lastName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                        helperText={formik.touched.lastName && formik.errors.lastName}
+                                    />
+                                </Grid>
+                            </Grid>
 
                             <TextField
                                 fullWidth margin="dense" autoComplete="off"
@@ -199,4 +257,4 @@ function EditRatingsAndReviews() {
     )
 }
 
-export default EditRatingsAndReviews
+export default AdminEditRatingsAndReviews

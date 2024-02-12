@@ -17,38 +17,20 @@ function FeedbackForm() {
     const { user } = useContext(UserContext);
 
     const formik = useFormik({
-        // initialValues: user //if signed in as user, autofill fields with user info
-        //     ? {
-        //         // email: user.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //     }
-        //     : staff
-        //         ? {
-        //             // email: staff.email, //merge with user.id
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         }
-        //         : {
-        // email: "",
-        // activityName: "",
-        // activityType: "",
-        // activityDescription: "",
-        // activityReason: ""
-        //         },
-
-        initialValues: {
-            //email: user.email, //merge with user.id
-            email: "", //delete this after
-            firstName: "",
-            lastName: "",
-            topic: "",
-            message: ""
-        },
+        initialValues: user //if signed in as user, autofill fields with user info
+            ? {
+                email: user.email, 
+                firstName: user.name,
+                lastName: user.name,
+                topic: "",
+                message: ""
+            } : {
+                email: "nomail@mail.com",
+                firstName: "",
+                lastName: "",
+                topic: "",
+                message: ""
+                },
 
         validationSchema: yup.object({
             email: yup.string().trim()
@@ -77,29 +59,6 @@ function FeedbackForm() {
             data.lastName = data.lastName.trim();
             data.topic = data.topic;
             data.message = data.message.trim();
-
-            //if AccessToken is staff, post form as staff else user
-            // if (localStorage.getItem("staffAccessToken")) {
-            //     http.post("/contactUsForm/staff", data)
-            //         .then((res) => {
-            //             console.log(res.data);
-            //             navigate("/formSuccess");
-            //         })
-            //         .catch(function (err) {
-            //             toast.error(`${err.response.data.message}`);
-            //         });
-            // } else if (localStorage.getItem("userAccessToken")) {
-            //     http.post("/contactUsForm/user", data)
-            //         .then((res) => {
-            //             console.log(res.data);
-            //             navigate("/formSuccess");
-            //         })
-            //         .catch(function (err) {
-            //             toast.error(`${err.response.data.message}`);
-            //         });
-            // };
-
-            //delete this after merge
             http.post("/feedbackForm", data)
                 .then((res) => {
                     console.log(res.data);
@@ -146,9 +105,9 @@ function FeedbackForm() {
                 </Grid>
             </Grid>
 
-            {!user ? (
+            {!user || !user.role == "admin" ? (
                 <Typography variant="h6" sx={{ mt: 5, textAlign: 'center', fontWeight: 'bold' }}>
-                    You must be logged in.
+                    Have a message? Please login to contact us.
                 </Typography>
             ) : (
                 <Box component="form" onSubmit={formik.handleSubmit} mt={12}>

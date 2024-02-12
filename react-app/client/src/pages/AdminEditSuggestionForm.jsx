@@ -7,12 +7,16 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import UserContext from '../contexts/UserContext';
 
-function EditSuggestionForm() {
+function AdminEditSuggestionForm() {
     const { id } = useParams();
     const navigate = useNavigate();
+
+    //add form as user/staff
+    // const { staff } = useContext(StaffContext);
     const { user } = useContext(UserContext);
 
     const [suggestionForm, setSuggestionForm] = useState({
+        email: "",
         activityName: "",
         activityType: "",
         activityDescription: "",
@@ -30,6 +34,10 @@ function EditSuggestionForm() {
         initialValues: suggestionForm,
         enableReinitialize: true,
         validationSchema: yup.object({
+            email: yup.string().trim()
+                .email('Enter a valid email')
+                .max(100, 'Email must be at most 100 characters')
+                .required('Email is required'),
             activityName: yup.string().trim()
                 .min(3, 'Activity Name must be at least 3 characters')
                 .max(50, 'Activity Name must be at most 50 characters')
@@ -102,7 +110,7 @@ function EditSuggestionForm() {
             </Typography>
 
             {
-                user && (
+                user.role == "admin" && (
                     <Box>
                         <Box component="form" onSubmit={formik.handleSubmit}>
                             <TextField
@@ -173,32 +181,28 @@ function EditSuggestionForm() {
                                 helperText={formik.touched.activityReason && formik.errors.activityReason}
                             />
 
-                            {user.role == "admin" && (
-                                <React.Fragment>
-                                    <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+                            <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
 
-                                    <TextField
-                                        fullWidth margin="normal" autoComplete="on"
-                                        multiline minRows={4}
-                                        label="Staff Remark"
-                                        name="staffRemark"
-                                        value={formik.values.staffRemark}
-                                        onChange={formik.handleChange}
-                                        error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
-                                        helperText={formik.touched.staffRemark && formik.errors.staffRemark}
-                                    />
+                            <TextField
+                                fullWidth margin="normal" autoComplete="on"
+                                multiline minRows={4}
+                                label="Staff Remark"
+                                name="staffRemark"
+                                value={formik.values.staffRemark}
+                                onChange={formik.handleChange}
+                                error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
+                                helperText={formik.touched.staffRemark && formik.errors.staffRemark}
+                            />
 
-                                    <Button variant="contained" onClick={() => submitStaffRemark("Thanks for the suggestion! We will incorporate it in future.")}
-                                    >
-                                        Thanks for the suggestion! We will incorporate it in future.
-                                    </Button>
+                            <Button variant="contained" onClick={() => submitStaffRemark("Thanks for the suggestion! We will incorporate it in future.")}
+                            >
+                                Thanks for the suggestion! We will incorporate it in future.
+                            </Button>
 
-                                    <Button variant="contained" onClick={() => submitStaffRemark("Unfortunately, this suggestion is not feasible.")}
-                                    >
-                                        Unfortunately, this suggestion is not feasible.
-                                    </Button>
-                                </React.Fragment>
-                            )}
+                            <Button variant="contained" onClick={() => submitStaffRemark("Unfortunately, this suggestion is not feasible.")}
+                            >
+                                Unfortunately, this suggestion is not feasible.
+                            </Button>
 
                             <Box sx={{ mt: 2 }}>
                                 <Button variant="contained" type="submit">
@@ -238,4 +242,4 @@ function EditSuggestionForm() {
     )
 }
 
-export default EditSuggestionForm
+export default AdminEditSuggestionForm

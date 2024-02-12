@@ -17,6 +17,7 @@ import {
   Search,
   Clear,
   Event,
+  Edit
 } from "@mui/icons-material";
 import http from "../http";
 import dayjs from "dayjs";
@@ -44,7 +45,7 @@ function Activities() {
     }
 
     if (selectedCategory !== 'all') {
-        url = `/activity/category/${selectedCategory}?search=${search}`;
+      url = `/activity/category/${selectedCategory}?search=${search}`;
     }
 
     http.get(url).then((res) => {
@@ -71,55 +72,55 @@ function Activities() {
     getActivities();
   };
 
-  
 
- return (
+
+  return (
     <>
       {/* Search Bar and other stuff */}
-<Box sx={{ pt: 4, pb: 2, textAlign: 'center', position: 'relative' }}>
-  <div className="wrapper">
-    <div className="searchBar">
-      <InputBase
-        id="searchQueryInput"
-        type="text"
-        name="searchQueryInput"
-        placeholder="Search"
-        value={search}
-        onChange={onSearchChange}
-        onKeyDown={onSearchKeyDown}
-        sx={{
-          width: '60%',
-          height: '4rem',
-          background: '#f5f5f5',
-          borderRadius: '2rem',
-          padding: '0 3.5rem 0 1.5rem',
-          fontSize: '1rem',
-          borderBottom: 'none', // Remove underline
-        }}
-      />
-      {search && ( // Render clear icon only if there is text
-        <>
-          <IconButton color="primary" onClick={onClickClear} sx={{ position: 'absolute',marginLeft: '-7rem' }}>
-            <Clear />
-          </IconButton>
-        </>
-      )}
-      <IconButton color="primary" onClick={onClickSearch} sx={{ marginLeft: '-3.5rem' }}>
-        <Search />
-      </IconButton>
-    </div>
-  </div>
-</Box>
+      <Box sx={{ pt: 4, pb: 2, textAlign: 'center', position: 'relative' }}>
+        <div className="wrapper">
+          <div className="searchBar">
+            <InputBase
+              id="searchQueryInput"
+              type="text"
+              name="searchQueryInput"
+              placeholder="Search"
+              value={search}
+              onChange={onSearchChange}
+              onKeyDown={onSearchKeyDown}
+              sx={{
+                width: '60%',
+                height: '4rem',
+                background: '#f5f5f5',
+                borderRadius: '2rem',
+                padding: '0 3.5rem 0 1.5rem',
+                fontSize: '1rem',
+                borderBottom: 'none', // Remove underline
+              }}
+            />
+            {search && ( // Render clear icon only if there is text
+              <>
+                <IconButton color="primary" onClick={onClickClear} sx={{ position: 'absolute', marginLeft: '-7rem' }}>
+                  <Clear />
+                </IconButton>
+              </>
+            )}
+            <IconButton color="primary" onClick={onClickSearch} sx={{ marginLeft: '-3.5rem' }}>
+              <Search />
+            </IconButton>
+          </div>
+        </div>
+      </Box>
 
 
-<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Link to="/suggestionForm" style={{ textDecoration: 'none' }}>
-                    <Button variant="contained">
-                        Suggest An Activity
-                    </Button>
-                </Link>
-            </Box>
-      
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Link to="/suggestionForm" style={{ textDecoration: 'none' }}>
+          <Button variant="contained">
+            Suggest An Activity
+          </Button>
+        </Link>
+      </Box>
+
 
       {/* Category Buttons */}
       <Stack direction="row" spacing={2} justifyContent="center">
@@ -151,13 +152,13 @@ function Activities() {
 
       <Container sx={{ py: 8, maxWidth: 'md' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-         
+
           {user && (
             <Link to="/addActivity" style={{ textDecoration: "none" }}>
               <Button variant="contained">Add</Button>
             </Link>
           )}
-        </Box> */}
+        </Box>
 
         <Grid container spacing={4}>
           {activitiesList.map((activity) => (
@@ -178,38 +179,37 @@ function Activities() {
                     sx={{
                       pt: "55%",
                     }}
-                    image={`${import.meta.env.VITE_FILE_BASE_URL}${
-                      activity.imageFile
-                    }`}
+                    image={`${import.meta.env.VITE_FILE_BASE_URL}${activity.imageFile
+                      }`}
                   />
                 )}
-<CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-  <Typography variant="h6" className="card-title">
-    {activity.title}
-    {user && user.id === activity.userId && (
-      <Link to={`/editActivity/${activity.id}`}>
-        <IconButton color="primary" sx={{ padding: '4px' }}>
-          <Edit />
-        </IconButton>
-      </Link>
-    )}
-  </Typography>
+                <CardContent className="card-content" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Typography variant="h6" className="card-title">
+                    {activity.title}
+                    {user && user.id === activity.userId && (
+                      <Link to={`/editActivity/${activity.id}`}>
+                        <IconButton color="primary" sx={{ padding: '4px' }}>
+                          <Edit />
+                        </IconButton>
+                      </Link>
+                    )}
+                  </Typography>
 
-  <div className="card-details" sx={{ flexGrow: 1 }}>
-    <Typography color="textSecondary" sx={{ marginBottom: 1 }}>
-      <Event fontSize="small" sx={{ marginRight: 1 }} />
-      {dayjs(activity.eventDate).format('DD/MM/YYYY')}
-    </Typography>
+                  <div className="card-details" sx={{ flexGrow: 1 }}>
+                    <Typography color="textSecondary" sx={{ marginBottom: 1 }}>
+                      <Event fontSize="small" sx={{ marginRight: 1 }} />
+                      {dayjs(activity.eventDate).format('DD/MM/YYYY')}
+                    </Typography>
 
-    <Typography variant="body" color="textSecondary" sx={{ marginBottom: 1 }}>
-      Price: <strong>${activity.price}</strong>
-    </Typography>
-  </div>
+                    <Typography variant="body" color="textSecondary" sx={{ marginBottom: 1 }}>
+                      Price: <strong>${activity.price}</strong>
+                    </Typography>
+                  </div>
 
-  <Link to={`/viewActivity/${activity.id}`} className='card-btn' sx={{ alignSelf: 'flex-start', mt: 'auto' }}>
-    View
-  </Link>
-</CardContent>
+                  <Link to={`/viewActivity/${activity.id}`} className='card-btn' sx={{ alignSelf: 'flex-start', mt: 'auto' }}>
+                    View
+                  </Link>
+                </CardContent>
 
 
 
@@ -220,7 +220,7 @@ function Activities() {
           ))}
         </Grid>
 
-        
+
       </Container>
     </>
   );
