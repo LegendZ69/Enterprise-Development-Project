@@ -212,7 +212,6 @@ function AddActivity() {
               {timeSlots.map((slot, index) => (
                 <Grid container spacing={2} key={index}>
                   <Grid item xs={6}>
-                    {/* Start time picker for each time slot */}
                     <TimePicker
                       label={`Start Time Slot ${index + 1}`}
                       value={slot.startTime}
@@ -223,7 +222,6 @@ function AddActivity() {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    {/* End time picker for each time slot */}
                     <TimePicker
                       label={`End Time Slot ${index + 1}`}
                       value={slot.endTime}
@@ -233,11 +231,9 @@ function AddActivity() {
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </Grid>
-                  {/* Button to add a new time slot */}
                   <Button variant="outlined" onClick={addTimeSlot}>
                     Add Time Slot
                   </Button>
-                  {/* Button to delete a time slot */}
                   <Button
                     variant="outlined"
                     style={{ marginLeft: "16px", color: "red" }}
@@ -265,7 +261,6 @@ function AddActivity() {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <Box sx={{ textAlign: "center", mt: 2 }}>
-              {/* Button to upload image */}
               <Button variant="contained" component="label">
                 Upload Image
                 <input
@@ -276,7 +271,6 @@ function AddActivity() {
                   onChange={onFileChange}
                 />
               </Button>
-              {/* Display uploaded image */}
               {imageFile && (
                 <Box className="aspect-ratio-container" sx={{ mt: 2 }}>
                   <img
@@ -288,7 +282,6 @@ function AddActivity() {
             </Box>
           </Grid>
         </Grid>
-        {/* Submit button */}
         <Box sx={{ mt: 2 }}>
           <Button variant="contained" type="submit">
             Add
