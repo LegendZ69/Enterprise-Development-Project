@@ -55,6 +55,7 @@ import ResetPassword from './pages/ResetPassword';
 import ForgetPassword from './pages/ForgetPassword';
 import ReactivateAccount from './pages/ReactivateAccount';
 import Verify from './pages/Verify';
+import Cart from './pages/Cart';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -106,10 +107,9 @@ function App() {
               <Link to="/feedbackForm" ><Typography>Contact Us</Typography></Link>
               <Link to="/aboutUs" ><Typography>About Us</Typography></Link>
               <Link to="/faqs" ><Typography>FAQs</Typography></Link>
-              <Link to="/coupons" ><Typography>Coupons</Typography></Link>
-              <Link to="/creditcard" ><Typography>Credit card</Typography></Link>
               <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
+              
               {user && user.role === "admin" && (
               <>
                 <Button
@@ -147,7 +147,8 @@ function App() {
               )}
               <Box sx={{ flexGrow: 1 }}></Box>
               {user && userProfile && (
-                <>
+
+                <><Link to ="/cart"><Typography>Cart</Typography></Link>
                   <Link to="/profile"><Avatar
                   alt="Profile Picture"
                   src={`${import.meta.env.VITE_FILE_BASE_URL}${userProfile.imageFile}`}
@@ -220,6 +221,7 @@ function App() {
             <Route path={"/Forum"} element ={<ThreadList/>}/>
             <Route path={"/CreateThread"} element ={<CreateThread/>}/>
             <Route path={"/Thread/:threadId"} element={<ThreadDetail />} />
+            <Route path={"/cart"} element ={<Cart/>} />
           </Routes>
         </Container>
 
