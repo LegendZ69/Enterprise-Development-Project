@@ -50,6 +50,7 @@ import AuditLog from './pages/AuditLog';
 import ResetPassword from './pages/ResetPassword';
 import ForgetPassword from './pages/ForgetPassword';
 import ReactivateAccount from './pages/ReactivateAccount';
+import Verify from './pages/Verify';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -197,6 +198,7 @@ function App() {
             <Route path={"/resetpassword"} element ={<ResetPassword/>}/>
             <Route path={"/forgetpassword"} element ={<ForgetPassword/>}/>
             <Route path={"/reactivateaccount"} element ={<ReactivateAccount/>}/>
+            <Route path={"/verify"} element ={<Verify/>}/>
 
 
 

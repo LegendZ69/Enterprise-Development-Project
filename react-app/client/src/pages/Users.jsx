@@ -167,7 +167,7 @@ function Users() {
                                         sx={{ width: 60, height: 60, marginRight: 2, borderRadius: '50%' }}
                                     />
                                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                                        {user.name}
+                                        Name: {user.name}
                                         <Button variant="contained" sx={{ ml: 2 }} color="error" onClick={() => handleOpen(user)}>
                                             Delete
                                         </Button>
@@ -175,9 +175,15 @@ function Users() {
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
                                     color="text.secondary">
-                                    <AccountCircle sx={{ mr: 1 }} />
                                     <Typography>
-                                        {user.email}
+                                        Email: {user.email}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
+                                    color="text.secondary">
+                                    
+                                    <Typography>
+                                       User Id: {user.id}
                                     </Typography>
                                 </Box>
                                 {/* Display additional user information here */}

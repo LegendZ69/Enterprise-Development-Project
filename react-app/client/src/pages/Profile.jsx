@@ -72,7 +72,7 @@ function UserProfile() {
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
                             <AccessTime sx={{ mr: 1 }} />
                             <Typography>
-                                Member since {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}
+                                User since {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}
                             </Typography>
                         </Box>
                         {/* Add more user-related information as needed */}
