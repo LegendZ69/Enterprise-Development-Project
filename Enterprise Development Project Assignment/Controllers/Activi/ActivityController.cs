@@ -65,7 +65,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             if (!User.IsInRole("admin"))
             {
-  
                 return Forbid("You do not have permission to perform this action.");
             }
 
@@ -75,6 +74,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             {
                 return BadRequest("Invalid location.");
             }
+
+            // Add 1 day to the event date
+            activity.EventDate = activity.EventDate.AddDays(1);
 
             var myActivity = new Activity()
             {
@@ -114,6 +116,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             ActivityDTO activityDTO = _mapper.Map<ActivityDTO>(newActivity);
             return Ok(activityDTO);
         }
+
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ActivityDTO), StatusCodes.Status200OK)]
