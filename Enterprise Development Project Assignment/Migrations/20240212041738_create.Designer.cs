@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-    [Migration("20240211150150_Init")]
-    partial class Init
-========
-    [Migration("20240211183546_create")]
+    [Migration("20240212041738_create")]
     partial class create
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -576,8 +571,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-========
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -589,7 +582,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -636,11 +628,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.Navigation("Bookings");
 
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-========
                     b.Navigation("CreditCards");
 
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
                     b.Navigation("FeedbackForms");
 
                     b.Navigation("RatingsAndReviews");

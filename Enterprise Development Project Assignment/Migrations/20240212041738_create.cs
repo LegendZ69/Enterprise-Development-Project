@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-    public partial class Init : Migration
-========
     public partial class create : Migration
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,8 +64,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "Threads",
                 columns: table => new
                 {
@@ -88,7 +82,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "Users",
                 columns: table => new
                 {
@@ -143,8 +136,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "CreditCard",
                 columns: table => new
                 {
@@ -171,7 +162,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "FeedbackForms",
                 columns: table => new
                 {
@@ -319,14 +309,11 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "IX_CreditCard_UserId",
                 table: "CreditCard",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "IX_FeedbackForms_UserId",
                 table: "FeedbackForms",
                 column: "UserId");

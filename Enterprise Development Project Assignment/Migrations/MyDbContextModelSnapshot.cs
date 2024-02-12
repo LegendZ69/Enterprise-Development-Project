@@ -568,8 +568,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -581,7 +579,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
->>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -628,11 +625,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.Navigation("Bookings");
 
-<<<<<<< HEAD
-=======
                     b.Navigation("CreditCards");
 
->>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47
                     b.Navigation("FeedbackForms");
 
                     b.Navigation("RatingsAndReviews");
