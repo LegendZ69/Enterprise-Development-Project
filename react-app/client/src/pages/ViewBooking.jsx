@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Button } from '@mui/material';
 import http from '../http';
+import dayjs from 'dayjs';
 
 function BookingTest() {
   const { id } = useParams();
@@ -42,32 +43,32 @@ function BookingTest() {
   }
 
   return (
-    <Box>
-      {/* Booking Details */}
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        Booking Details
+    <Box sx={{ pt: 4 }}>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
+        {booking.activityTitle}
       </Typography>
+      {booking.activityImage && (
+        <Box sx={{ position: 'relative', mb: 2 }}>
+          <img
+            alt="Activity"
+            src={`${import.meta.env.VITE_FILE_BASE_URL}${booking.activityImage}`}
+            style={{ width: '100%', maxWidth: '400px', height: 'auto', borderRadius: '8px' }}
+          />
+        </Box>
+      )}
       <Typography variant="body1" sx={{ mb: 2 }}>
         Booking ID: {booking.id}
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
-        Booking Date: {new Date(booking.bookingDate).toLocaleDateString()}
+        Quantity: {booking.quantity}
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
-        Activity ID: {booking.activityId}
+        Price: ${booking.price}
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
-        Activity Name: {booking.activityTitle} {/* Display ActivityName */}
+        Timeslot Booked: {dayjs(booking.selectedTimeSlot, 'HH:mm').format('HH:mm')}
       </Typography>
-      <Typography variant="body1" sx={{ mb: 2 }}>
-        Quantity: {booking.quantity} {/* Display Quantity */}
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 2 }}>
-        User ID: {booking.userId}
-      </Typography>
-  
-      {/* Additional UI elements, e.g., a button to navigate back */}
-      <Button variant="contained" onClick={goBack}>
+      <Button variant="contained" onClick={goBack} sx={{ mt: 2 }}>
         Go Back
       </Button>
     </Box>

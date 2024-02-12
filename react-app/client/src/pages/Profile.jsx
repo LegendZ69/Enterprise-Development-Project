@@ -161,7 +161,15 @@ function UserProfile() {
 
                     {user && user.role === "admin" && (
                       <>
-                        <Link to={`/activitiesDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        
+                <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="chart-line" style={{ color: '#333333' }}/>
+                        <MDBCardText>Profile</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+
+                <Link to={`/activitiesDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
                             <MDBIcon fas icon="chart-line" style={{ color: '#333333' }} />
                             <MDBCardText>Activities Dashboard</MDBCardText>
@@ -213,14 +221,21 @@ function UserProfile() {
                       </>
                     )}
 
-                    {user && user.role === "user" && (
-                      <>
-                        <Link to={`/creditcard`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon fas icon="credit-card" style={{ color: '#333333' }} />
-                            <MDBCardText>Credit Cards</MDBCardText>
-                          </MDBListGroupItem>
-                        </Link>
+                {user && user.role === "user" && (
+                    <>
+                    <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="chart-line" style={{ color: '#333333' }}/>
+                        <MDBCardText>Profile</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+                    
+                    <Link to={`/creditcard`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="credit-card"style={{ color: '#333333' }} />
+                        <MDBCardText>Credit Cards</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
 
                         <Link to={`/userbookings`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
