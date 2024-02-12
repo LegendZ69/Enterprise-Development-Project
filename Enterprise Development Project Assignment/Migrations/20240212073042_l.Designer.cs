@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-    [Migration("20240211150150_Init")]
-    partial class Init
-========
-    [Migration("20240211183546_create")]
-    partial class create
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
+    [Migration("20240212073042_l")]
+    partial class l
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -311,6 +306,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
@@ -351,6 +352,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("BookingId");
 
                     b.HasIndex("UserId");
 
@@ -576,8 +581,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-========
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -589,13 +592,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("FeedbackForms")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -603,11 +605,27 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
                 {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
+                        .WithMany("RatingsAndReviews")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("RatingsAndReviews")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("Booking");
 
                     b.Navigation("User");
                 });
@@ -617,7 +635,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("SuggestionForms")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -626,6 +644,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("RatingsAndReviews");
 
                     b.Navigation("Timeslots");
                 });
@@ -636,11 +656,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.Navigation("Bookings");
 
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.Designer.cs
-========
                     b.Navigation("CreditCards");
 
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.Designer.cs
                     b.Navigation("FeedbackForms");
 
                     b.Navigation("RatingsAndReviews");

@@ -24,7 +24,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<SuggestionFormController> _logger;
 
-
         public SuggestionFormController(MyDbContext context, IMapper mapper, ILogger<SuggestionFormController> logger)
         {
             _context = context;

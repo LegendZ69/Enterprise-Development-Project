@@ -2,6 +2,8 @@
 {
     public class RatingsAndReviewsDTO
     {
+        public int Id { get; set; }
+
         public string Email { get; set; } = string.Empty;
 
         public string FirstName { get; set; } = string.Empty;
@@ -24,8 +26,12 @@
 
         public UserBasicDTO? User { get; set; }
 
-        /*public int ActivityId { get; set; }
+        public int ActivityId { get; set; }
 
-        public ActivityBasicDTO? Activity { get; set; }*/
+        public ActivityDTO? Activity { get; set; }
+
+        public int BookingId { get; set; }
+
+        public BookingDTO? Booking { get; set; }
     }
 }

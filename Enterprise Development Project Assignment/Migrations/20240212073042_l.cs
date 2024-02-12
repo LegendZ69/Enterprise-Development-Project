@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-    public partial class Init : Migration
-========
-    public partial class create : Migration
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
+    public partial class l : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,8 +64,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "Threads",
                 columns: table => new
                 {
@@ -88,7 +82,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "Users",
                 columns: table => new
                 {
@@ -143,8 +136,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "CreditCard",
                 columns: table => new
                 {
@@ -171,7 +162,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 });
 
             migrationBuilder.CreateTable(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "FeedbackForms",
                 columns: table => new
                 {
@@ -195,35 +185,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RatingsAndReviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Review = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Like = table.Column<int>(type: "int", nullable: false),
-                    ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RatingsAndReviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RatingsAndReviews_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -250,7 +212,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,6 +265,48 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RatingsAndReviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    BookingId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Review = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Like = table.Column<int>(type: "int", nullable: false),
+                    ImageFile = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RatingsAndReviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RatingsAndReviews_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RatingsAndReviews_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RatingsAndReviews_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Activities_UserId",
                 table: "Activities",
@@ -319,17 +323,24 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240211150150_Init.cs
-========
                 name: "IX_CreditCard_UserId",
                 table: "CreditCard",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
->>>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47:Enterprise Development Project Assignment/Migrations/20240211183546_create.cs
                 name: "IX_FeedbackForms_UserId",
                 table: "FeedbackForms",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RatingsAndReviews_ActivityId",
+                table: "RatingsAndReviews",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RatingsAndReviews_BookingId",
+                table: "RatingsAndReviews",
+                column: "BookingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RatingsAndReviews_UserId",
@@ -354,9 +365,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                 name: "AuditLogs");
 
             migrationBuilder.DropTable(
-                name: "Bookings");
-
-            migrationBuilder.DropTable(
                 name: "Coupons");
 
             migrationBuilder.DropTable(
@@ -379,6 +387,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             migrationBuilder.DropTable(
                 name: "Timeslots");
+
+            migrationBuilder.DropTable(
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "Activities");

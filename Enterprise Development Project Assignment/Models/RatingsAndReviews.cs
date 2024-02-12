@@ -7,18 +7,22 @@ namespace Enterprise_Development_Project_Assignment.Models
     {
         public int Id { get; set; }
 
-        //FK property
+        //FK properties
         public int UserId { get; set; }
 
         // Navigation property to represent the one-to-many relationship
         public User? User { get; set; }
 
-        //FK property
-/*        public int ActivityId { get; set; }
-*/
-        // Navigation property to represent the one-to-many relationship
-/*        public Activity? Activity { get; set; }
-*/
+        public int? ActivityId { get; set; }
+
+        public Activity? Activity { get; set; }
+
+        public int? BookingId { get; set; }
+
+        public Booking? Booking { get; set; }
+
+        /*public RatingsAndReviewsBasicDTO? RatingsAndReviewsBasic { get; set; }*/
+
         /*[Column(TypeName = "datetime")]
         public DateTime BookingDate { get; set; }*/
 

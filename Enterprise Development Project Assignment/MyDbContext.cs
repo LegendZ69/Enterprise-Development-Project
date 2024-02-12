@@ -34,14 +34,31 @@ namespace Enterprise_Development_Project_Assignment
                 .WithOne(b => b.User)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.SuggestionForms)
+                .WithOne(b => b.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FeedbackForms)
+                .WithOne(b => b.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.RatingsAndReviews)
+                .WithOne(b => b.User)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Activity>()
                 .HasMany(a => a.Bookings)
                 .WithOne(b => b.Activity)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ... other configurations
+            modelBuilder.Entity<Activity>()
+                .HasMany(a => a.RatingsAndReviews)
+                .WithOne(b => b.Activity)
+                .OnDelete(DeleteBehavior.Restrict);
         }
-
 
 
         public DbSet<SuggestionForm> SuggestionForms { get; set; }

@@ -303,6 +303,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
@@ -343,6 +349,10 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("BookingId");
 
                     b.HasIndex("UserId");
 
@@ -568,8 +578,6 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.CreditCard", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
@@ -581,13 +589,12 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Navigation("User");
                 });
 
->>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.FeedbackForm", b =>
                 {
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("FeedbackForms")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -595,11 +602,24 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.RatingsAndReviews", b =>
                 {
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Activity", "Activity")
+                        .WithMany("RatingsAndReviews")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Enterprise_Development_Project_Assignment.Models.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId");
+
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("RatingsAndReviews")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("Booking");
 
                     b.Navigation("User");
                 });
@@ -609,7 +629,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.HasOne("Enterprise_Development_Project_Assignment.Models.User", "User")
                         .WithMany("SuggestionForms")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -618,6 +638,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
             modelBuilder.Entity("Enterprise_Development_Project_Assignment.Models.Activity", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("RatingsAndReviews");
 
                     b.Navigation("Timeslots");
                 });
@@ -628,11 +650,8 @@ namespace Enterprise_Development_Project_Assignment.Migrations
 
                     b.Navigation("Bookings");
 
-<<<<<<< HEAD
-=======
                     b.Navigation("CreditCards");
 
->>>>>>> bb4f9b3da7b2b6c743cbc012ece947eccdadfd47
                     b.Navigation("FeedbackForms");
 
                     b.Navigation("RatingsAndReviews");

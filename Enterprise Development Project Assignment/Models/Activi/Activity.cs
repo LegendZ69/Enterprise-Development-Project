@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Enterprise_Development_Project_Assignment.Models
 {
@@ -51,7 +52,7 @@ namespace Enterprise_Development_Project_Assignment.Models
 
         public virtual ICollection<Timeslot> Timeslots { get; set; }
 
-        /* [JsonIgnore]
-       public List<RatingsAndReviews>? RatingsAndReviews { get; set; }*/
+        [JsonIgnore]
+        public List<RatingsAndReviews>? RatingsAndReviews { get; set; }
     }
 }

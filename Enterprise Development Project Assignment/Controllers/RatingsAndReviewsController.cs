@@ -36,7 +36,9 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         {
             try
             {
-                IQueryable<RatingsAndReviews> result = _context.RatingsAndReviews.Include(t => t.User);
+                IQueryable<RatingsAndReviews> result = _context.RatingsAndReviews.Include(t => t.User)
+                    .Include(a => a.Activity)
+                    .Include(b => b.Booking);
                 if (search != null)
                 {
                     result = result.Where(x =>
@@ -65,7 +67,10 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         {
             try
             {
-                RatingsAndReviews? ratingsAndReviews = _context.RatingsAndReviews.Include(t => t.User).FirstOrDefault(t => t.Id == id);
+                RatingsAndReviews? ratingsAndReviews = _context.RatingsAndReviews.Include(t => t.User)
+                    .Include(a => a.Activity)
+                    .Include(b => b.Booking)
+                    .FirstOrDefault(t => t.Id == id);
                 if (ratingsAndReviews == null)
                 {
                     return NotFound();
@@ -82,7 +87,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
         [HttpPost, Authorize]
         [ProducesResponseType(typeof(RatingsAndReviewsDTO), StatusCodes.Status200OK)]
-        public IActionResult AddRatingsAndReviews(AddRatingsAndReviewsRequest RatingsAndReviews)
+        public IActionResult AddRatingsAndReviews(AddRatingsAndReviewsRequest ratingsAndReviews)
         {
             try
             {
@@ -91,33 +96,80 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 var myRatingsAndReviews = new RatingsAndReviews()
                 {
                     //only can trim string
-                    /*                BookingId = RatingsAndReviews.BookingId,
-                    */                /*BookingDate = RatingsAndReviews.BookingDate,*/
-                    Email = RatingsAndReviews.Email.Trim().ToLower(),
-                    FirstName = RatingsAndReviews.FirstName.Trim(),
-                    LastName = RatingsAndReviews.LastName.Trim(),
-                    Rating = RatingsAndReviews.Rating,
-                    Review = RatingsAndReviews.Review.Trim(),
-                    ImageFile = RatingsAndReviews.ImageFile,
+                    /*BookingId = RatingsAndReviews.BookingId,
+                    BookingDate = RatingsAndReviews.BookingDate,*/
+                    Email = ratingsAndReviews.Email.Trim().ToLower(),
+                    FirstName = ratingsAndReviews.FirstName.Trim(),
+                    LastName = ratingsAndReviews.LastName.Trim(),
+                    Rating = ratingsAndReviews.Rating,
+                    Review = ratingsAndReviews.Review.Trim(),
+                    ImageFile = ratingsAndReviews.ImageFile,
                     CreatedAt = now,
                     UpdatedAt = now,
-                    UserId = userId
+                    UserId = userId,
                 };
 
                 _context.RatingsAndReviews.Add(myRatingsAndReviews);
                 _context.SaveChanges();
 
                 RatingsAndReviews? newRatingsAndReviews = _context.RatingsAndReviews.Include(t => t.User)
+                    .Include(a => a.Activity)
+                    .Include(b => b.Booking)
                     .FirstOrDefault(t => t.Id == myRatingsAndReviews.Id);
                 RatingsAndReviewsDTO ratingsAndReviewsDTO = _mapper.Map<RatingsAndReviewsDTO>(newRatingsAndReviews);
                 return Ok(ratingsAndReviewsDTO);
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error when post rating and review");
                 return StatusCode(500);
             }
         }
+
+
+        /*[HttpPost, Authorize]
+        [ProducesResponseType(typeof(RatingsAndReviewsDTO), StatusCodes.Status200OK)]
+        public IActionResult AddRatingsAndReviews(AddRatingsAndReviewsRequest ratingsAndReviews)
+        {
+            try
+            {
+                //var bookingId = _context.Activities.Find(id);
+                int userId = GetUserId();
+                var now = DateTime.Now;
+                var myRatingsAndReviews = new RatingsAndReviews()
+                {
+                    //only can trim string
+                    *//*                BookingId = RatingsAndReviews.BookingId,
+                    */                /*BookingDate = RatingsAndReviews.BookingDate,*//*
+                    Email = ratingsAndReviews.Email.Trim().ToLower(),
+                    FirstName = ratingsAndReviews.FirstName.Trim(),
+                    LastName = ratingsAndReviews.LastName.Trim(),
+                    Rating = ratingsAndReviews.Rating,
+                    Review = ratingsAndReviews.Review.Trim(),
+                    ImageFile = ratingsAndReviews.ImageFile,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    UserId = userId,
+                };
+
+                _context.RatingsAndReviews.Add(myRatingsAndReviews);
+                _context.SaveChanges();
+
+                RatingsAndReviews? newRatingsAndReviews = _context.RatingsAndReviews.Include(t => t.User)
+                    .Include(a => a.Activity)
+                    .Include(b => b.Booking)
+                    .FirstOrDefault(t => t.Id == myRatingsAndReviews.Id);
+                RatingsAndReviewsDTO ratingsAndReviewsDTO = _mapper.Map<RatingsAndReviewsDTO>(newRatingsAndReviews);
+                return Ok(ratingsAndReviewsDTO);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when post rating and review");
+                return StatusCode(500);
+            }
+        }*/
+
+
 
         [HttpPut("{id}"), Authorize]
         public IActionResult UpdateRatingsAndReviews(int id, UpdateRatingsAndReviewsRequest ratingsAndReviews)
