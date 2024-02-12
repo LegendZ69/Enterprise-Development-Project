@@ -21,39 +21,18 @@ function Cart() {
 
   useEffect(() => {
     let totalPrice = 0;
-    let processedBookingsCount = 0; // Counter to track processed bookings
     bookings.forEach(booking => {
-      http.get(`/activity/${booking.activityId}`)
-        .then((res) => {
-          const activity = res.data;
-          totalPrice += activity.price * booking.quantity;
-          const updatedBookings = bookings.map(item => {
-            if (item.activityId === activity.id) {
-              return {
-                ...item,
-                price: activity.price * booking.quantity
-              };
-            }
-            return item;
-          });
-          setBookings(updatedBookings);
-          processedBookingsCount++; // Increment the counter
-          if (processedBookingsCount === bookings.length) {
-            setFinalPrice(totalPrice); // Set final price after all bookings are processed
-          }
-        })
-        .catch((error) => {
-          console.error(`Failed to fetch activity for booking ${booking.id}:`, error.message);
-        });
+        totalPrice += booking.price;
     });
-  }, [bookings]); // Run when bookings state changes
+    setFinalPrice(totalPrice);
+}, [bookings]);
 
   return (
     <div>
       <h2>Cart</h2>
       {bookings.map((booking) => (
         <div key={booking.id}>
-          <p>Activity ID: {booking.activityId}, Activity Title: {booking.activityTitle}, Price: ${booking.price}, Quantity: {booking.quantity}</p>
+          <p>Activity ID: {booking.activityId}, Activity Title: {booking.activityTitle}, Quantity: {booking.quantity}, Total Price: ${booking.price}</p>
         </div>
       ))}
       <p>Final Price: ${finalPrice}</p>

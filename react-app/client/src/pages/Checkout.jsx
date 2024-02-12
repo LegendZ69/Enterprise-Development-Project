@@ -1,17 +1,34 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { Typography, Box, Button, TextField, Grid } from '@mui/material';
 import http from '../http';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-
 
 function Checkout() {
-    const PRICE = 1000;
     const [couponName, setCouponName] = useState('');
     const [discount, setDiscount] = useState(0);
-    const [finalPrice, setFinalPrice] = useState(PRICE);
+    const [bookings, setBookings] = useState([]);
+    const [originalPrice, setOriginalPrice] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(0);
+    const [costReduction, setCostReduction] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+        let totalOriginalPrice = 0;
+        bookings.forEach(booking => {
+            totalOriginalPrice += booking.price;
+        });
+        setOriginalPrice(totalOriginalPrice);
+        setFinalPrice(totalOriginalPrice - discount);
+    }, [bookings, discount]);
+
+    useEffect(() => {
+        http.get('/Booking/userBookings')
+            .then((res) => {
+                setBookings(res.data);
+            })
+            .catch((error) => {
+                console.error('Failed to fetch bookings:', error.message);
+            });
+    }, []);
 
     const handleApplyCoupon = () => {
         http.get(`/coupons?name=${couponName}`)
@@ -20,11 +37,10 @@ function Checkout() {
                 const coupon = coupons.find(coupon => coupon.couponName === couponName);
                 if (coupon) {
                     setDiscount(coupon.discount);
-                    setFinalPrice(PRICE - coupon.discount);
+                    setCostReduction(originalPrice - (originalPrice - coupon.discount));
                     setErrorMessage('Coupon Applied');
                 } else {
                     setDiscount(0);
-                    setFinalPrice(PRICE);
                     setErrorMessage('Coupon not found');
                 }
             })
@@ -41,13 +57,8 @@ function Checkout() {
                     Checkout
                 </Typography>
                 <Typography variant="h6">
-                    Activity Name: Private Yacht Activity
-                    
-                </Typography>
-                <Typography variant="h6">
-                    Original Price: ${PRICE} 
-                    <br>
-                    </br>
+                    Original Price: ${originalPrice} 
+                    <br />
                     &nbsp;
                 </Typography>
 
@@ -67,6 +78,11 @@ function Checkout() {
             {errorMessage && (
                 <Typography variant="body2" color={errorMessage === 'Coupon Applied' ? 'success' : 'error'} sx={{ mt: 1 }}>
                     {errorMessage}
+                </Typography>
+            )}
+            {discount > 0 && (
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                    Cost Reduction from Coupon: ${costReduction}
                 </Typography>
             )}
             <Grid item xs={12} mt={2}>
