@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Rating } from '@mui/material';
+import { Box, Typography, Button, TextField, Grid, FormControl, InputLabel, Select, MenuItem, Rating, Divider } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
@@ -76,16 +76,37 @@ function EditRatingsAndReviews() {
             if (imageFile) {
                 data.imageFile = imageFile;
             }
-            http.put(`/ratingsAndReviews/${id}`, data)
-                .then((res) => {
-                    console.log(res.data);
-                    navigate("/displayRatingsAndReviews");
-                })
-                .catch(function (err) {
-                    console.log(err.response);
-                });
+
+            if (user.role == "user") {
+                http.put(`/ratingsAndReviews/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/displayRatingsAndReviews");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            } else if (user.role == "admin") {
+                http.put(`/ratingsAndReviews/admin/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/adminDisplayRatingsAndReviews");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            }
         }
     });
+
+    const submitStaffRemark = (remark) => {
+        formik.setValues({
+            ...formik.values,
+            staffRemark: remark
+        });
+
+        formik.handleSubmit();
+    };
 
     const [open, setOpen] = useState(false);
 
@@ -98,14 +119,25 @@ function EditRatingsAndReviews() {
     };
 
     const deleteRatingsAndReviews = () => {
-        http.delete(`/ratingsAndReviews/${id}`)
-            .then((res) => {
-                console.log(res.data);
-                navigate("/displayRatingsAndReviews");
-            })
-            .catch(function (err) {
-                console.log(err.response);
-            });
+        if (user.role == "user") {
+            http.delete(`/ratingsAndReviews/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/displayRatingsAndReviews");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        } else if (user.role == "admin") {
+            http.delete(`/ratingsAndReviews/admin/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/adminDisplayRatingsAndReviews");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        }
     }
 
     return (
@@ -160,6 +192,33 @@ function EditRatingsAndReviews() {
                                     </Box>
                                 )
                             }
+
+                            {user.role == "admin" && (
+                                <React.Fragment>
+                                    <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+
+                                    <TextField
+                                        fullWidth margin="normal" autoComplete="on"
+                                        multiline minRows={4}
+                                        label="Staff Remark"
+                                        name="staffRemark"
+                                        value={formik.values.staffRemark}
+                                        onChange={formik.handleChange}
+                                        error={formik.touched.staffRemark && Boolean(formik.errors.staffRemark)}
+                                        helperText={formik.touched.staffRemark && formik.errors.staffRemark}
+                                    />
+
+                                    <Button variant="contained" onClick={() => submitStaffRemark("Please be mindful of your language.")}
+                                    >
+                                        Please be mindful of your language.
+                                    </Button>
+
+                                    <Button variant="contained" onClick={() => submitStaffRemark("We are happy to hear that!")}
+                                    >
+                                        We are happy to hear that!
+                                    </Button>
+                                </React.Fragment>
+                            )}
 
                             <Box sx={{ mt: 2 }}>
                                 <Button variant="contained" type="submit">

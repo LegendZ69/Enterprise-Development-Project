@@ -11,9 +11,6 @@ import UserContext from '../contexts/UserContext';
 
 function FeedbackForm() {
     const navigate = useNavigate();
-
-    //add form as user/staff
-    // const { staff } = useContext(StaffContext);
     const { user } = useContext(UserContext);
 
     const formik = useFormik({

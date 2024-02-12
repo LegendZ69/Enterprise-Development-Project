@@ -54,14 +54,26 @@ function EditSuggestionForm() {
             data.activityDescription = data.activityDescription.trim();
             data.activityReason = data.activityReason.trim();
             data.staffRemark = data.staffRemark.trim();
-            http.put(`/suggestionForm/${id}`, data)
-                .then((res) => {
-                    console.log(res.data);
-                    navigate("/displaySuggestionForm");
-                })
-                .catch(function (err) {
-                    console.log(err.response);
-                });
+
+            if (user.role == "user") {
+                http.put(`/suggestionForm/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/displaySuggestionForm");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            } else if (user.role == "admin") {
+                http.put(`/suggestionForm/admin/${id}`, data)
+                    .then((res) => {
+                        console.log(res.data);
+                        navigate("/adminDisplaySuggestionForm");
+                    })
+                    .catch(function (err) {
+                        console.log(err.response);
+                    });
+            }
         }
     });
 
@@ -85,14 +97,25 @@ function EditSuggestionForm() {
     };
 
     const deleteSuggestionForm = () => {
-        http.delete(`/suggestionForm/${id}`)
-            .then((res) => {
-                console.log(res.data);
-                navigate("/displaySuggestionForm");
-            })
-            .catch(function (err) {
-                console.log(err.response);
-            });
+        if (user.role == "user") {
+            http.delete(`/suggestionForm/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/displaySuggestionForm");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        } else if (user.role == "admin") {
+            http.delete(`/suggestionForm/admin/${id}`)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/adminDisplaySuggestionForm");
+                })
+                .catch(function (err) {
+                    console.log(err.response);
+                });
+        }
     }
 
     return (

@@ -15,9 +15,6 @@ function RatingsAndReviews() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
-
-    //add form as user/staff
-    // const { staff } = useContext(StaffContext);
     const { user } = useContext(UserContext);
 
     const [value, setValue] = useState(0);
