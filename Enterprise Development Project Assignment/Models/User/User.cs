@@ -33,19 +33,26 @@ namespace Enterprise_Development_Project_Assignment.Models
 		public DateTime UpdatedAt { get; set; }
         [RegularExpression(@"^\d{8}$", ErrorMessage = "Phone number must be 8 digits.")]
         public string PhoneNumber { get; set; } = string.Empty;
+        public string? PasswordResetToken { get; set; } = string.Empty;
+        [Column(TypeName = "datetime")]
+        public DateTime? ResetTokenExpires { get; set; }
 
-		public string Role { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
 
-		
-		//// Navigation property to represent the one-to-many relationship
-		[JsonIgnore]
+        public string Status {  get; set; } = string.Empty;
+        [Column(TypeName = "datetime")]
+        public DateTime? Deactivefully { get; set; }
+
+
+        //// Navigation property to represent the one-to-many relationship
+        [JsonIgnore]
 		public List<Activity>? Activities { get; set; }
 
         public List<FeedbackForm>? FeedbackForms { get; set; }
         public List<SuggestionForm>? SuggestionForms { get; set; }
         public List<RatingsAndReviews>? RatingsAndReviews { get; set; }
 
-
+        public List<CreditCard>? CreditCards { get; set; }
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
        

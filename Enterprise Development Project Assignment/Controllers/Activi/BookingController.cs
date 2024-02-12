@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Enterprise_Development_Project_Assignment.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using System;
-using System.Linq;
 using Enterprise_Development_Project_Assignment;
 using System.Net.Mail;
 using System.Net;
@@ -136,6 +134,31 @@ public class BookingController : ControllerBase
         }).ToList();
 
         return Ok(userBookingDTOs);
+    }
+
+    [HttpGet("adminBookings")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(typeof(List<BookingDTO>), StatusCodes.Status200OK)]
+    public IActionResult GetAdminBookings()
+    {
+        var adminBookings = _context.Bookings
+            .Include(b => b.Activity)
+            .Include(b => b.User)
+            .ToList();
+
+        var adminBookingDTOs = adminBookings.Select(booking => new BookingDTO
+        {
+            Id = booking.Id,
+            ActivityId = booking.ActivityId,
+            UserId = booking.UserId,
+            BookingDate = booking.BookingDate,
+            User = _mapper.Map<UserBasicDTO>(booking.User),
+            Quantity = booking.Quantity,
+            ActivityTitle = booking.Activity.Title,
+            Price = booking.Activity.Price * booking.Quantity
+        }).ToList();
+
+        return Ok(adminBookingDTOs);
     }
 
     private void SendBookingConfirmationEmail(string userEmail, string activityTitle, DateTime bookingDate)

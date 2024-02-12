@@ -1,4 +1,6 @@
-﻿namespace Enterprise_Development_Project_Assignment.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Enterprise_Development_Project_Assignment.Models
 {
 	public class UserDTO
 	{
@@ -9,5 +11,11 @@
         public string PhoneNumber { get; set; } = string.Empty;
 
         public string Role { get; set; } = string.Empty;
+        public string PasswordResetToken { get; set; } = string.Empty;
+        public DateTime ResetTokenExpires { get; set; }
+
+        public string Status { get; set; } = string.Empty;
+        [Column(TypeName = "datetime")]
+        public DateTime? Deactivefully { get; set; }
     }
 }

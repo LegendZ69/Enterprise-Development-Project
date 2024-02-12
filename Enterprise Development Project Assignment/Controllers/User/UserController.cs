@@ -7,6 +7,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Enterprise_Development_Project_Assignment.Helpers;
+using System.Net.Mail;
+using System.Net;
+using System.Security.Cryptography;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -50,7 +53,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
 
                 // Determine user role based on email
-                string role = request.Email.EndsWith("@admin.com") ? "admin" : "user";
+                string role = request.Email.Equals("test@admin.com", StringComparison.OrdinalIgnoreCase) ? "admin" : "user";
 
 
                 // Create user object
@@ -65,6 +68,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     UpdatedAt = now,
                     Role = role,
                     PhoneNumber =request.PhoneNumber,
+                    Status = "activated"
                 };
 
                 // Add user
@@ -107,6 +111,39 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     // Log failed login attempt
                     _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Login: Wrong Password").Wait();
                     return BadRequest(new { message });
+                }
+
+                // Check if the account is activated
+                if (foundUser.Status.ToLower() != "activated")
+                {
+                    // Check if the account is deactivated
+                    if (foundUser.Status.ToLower() == "deactivated")
+                    {
+                        // Check if the deactivation period is over
+                        if (foundUser.Deactivefully.HasValue && foundUser.Deactivefully.Value <= DateTime.Now)
+                        {
+                            // Delete the account
+                            _context.Users.Remove(foundUser);
+                            _context.SaveChanges();
+
+                            // Log account deletion
+                            _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Deleted account due to deactivation period expiration").Wait();
+
+                            return BadRequest(new { message = "Your account has been deleted due to inactivity. Please register again." });
+                        }
+                        else
+                        {
+                            // Account is deactivated but not yet expired, ask user if they want to reactivate
+                            // You can implement a logic to handle user reactivation here
+                            // For now, returning a message asking the user to contact support or something similar
+                            return BadRequest(new { message = "Your account is deactivated. Please contact support to reactivate." });
+                        }
+                    }
+                    else
+                    {
+                        // Account is neither activated nor deactivated
+                        return BadRequest(new { message = "Your account is not activated. Please contact support for assistance." });
+                    }
                 }
 
                 // Log successful login
@@ -190,7 +227,125 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
             return token;
         }
-        [HttpGet("users")]
+
+        private string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
+
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(ForgetPasswordRequest request)
+        {
+            try
+            {
+                request.Email = request.Email.Trim().ToLower();
+                string message = "User Not Found.";
+                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                if (foundUser == null)
+                {
+                    // Log failed forget password attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Forget Password: User not found").Wait();
+                    return BadRequest(new { message });
+                }
+
+                // Generate a random token
+                string resetToken = CreateRandomToken();
+
+                // Set the PasswordResetToken and ResetTokenExpires for the found user
+                foundUser.PasswordResetToken = resetToken;
+                foundUser.ResetTokenExpires = DateTime.Now.AddMinutes(5);
+
+                // Save changes to the database
+                _context.SaveChanges();
+                // Send email with reset link
+                SendResetPasswordEmail(foundUser.Email, resetToken);
+                // Log the successful forget password attempt
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Password reset token generated").Wait();
+
+                return Ok("You may now reset your password");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(ResetPasswordRequest request)
+        {
+            try
+            {
+                var foundUser = _context.Users.FirstOrDefault(x => x.PasswordResetToken == request.Token);
+                if (foundUser == null|| foundUser.ResetTokenExpires < DateTime.Now)
+                {
+                    return BadRequest("Invalid Token");
+                }
+
+                // Verify the current password
+                bool currentPasswordVerified = BCrypt.Net.BCrypt.Verify(request.NewPassword, foundUser.Password);
+                if (currentPasswordVerified)
+                {
+                    string message = "New password cannot be same as old password.";
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), $"Failed Reset Password: {message}").Wait();
+                    return BadRequest(new { message });
+                }
+
+                // Update the password with the new one
+                foundUser.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                foundUser.UpdatedAt = DateTime.Now;
+
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Reset Password").Wait();
+                // Save changes to the database
+                _context.SaveChanges();
+
+
+                return Ok("Password resetted");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error");
+                return StatusCode(500);
+            }
+        }
+
+
+        private void SendResetPasswordEmail(string userEmail, string resetToken)
+        {
+            try
+            {
+                string siteUrl = _configuration["AppSettings:SiteUrl"];
+                string resetUrl = $"http://localhost:3000/resetpassword?token={resetToken}";
+
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+
+                mail.From = new MailAddress("your_email@gmail.com");
+                mail.To.Add(userEmail);
+                mail.Subject = "Reset Your Password";
+                mail.Body = $"Click the link below to reset your password:\n{resetUrl}";
+
+                SmtpServer.Port = 587;
+                SmtpServer.Credentials = new System.Net.NetworkCredential("ouchueyangschool@gmail.com", "ddzq bazy zmlu nzsy\r\n");
+                SmtpServer.EnableSsl = true;
+
+                SmtpServer.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                // Log error
+            }
+        }
+
+
+
+
+
+
+
+
+    [HttpGet("users")]
         [ProducesResponseType(typeof(IEnumerable<UserDTO>), StatusCodes.Status200OK)]
         public IActionResult GetAllUsers(string? search)
         {
@@ -266,8 +421,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                     user.Email = newEmail;
 
-                    // Check if the updated email includes "@admin.com" and update the role
-                    user.Role = newEmail.EndsWith("@admin.com") ? "admin" : "user";
                 }
                 if (userUpdate.ImageFile != null)
                 {
@@ -276,6 +429,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 if (userUpdate.PhoneNumber != null)
                 {
                     user.PhoneNumber = userUpdate.PhoneNumber.Trim().ToLower();
+                }
+                if (userUpdate.Status != null)
+                {
+                    user.Status = userUpdate.Status.Trim().ToLower();
+                    if (user.Status == "deactivated")
+                    {
+                        user.Deactivefully = DateTime.Now.AddDays(5);
+                    }
                 }
 
                 user.UpdatedAt = DateTime.Now;
@@ -291,6 +452,72 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 return StatusCode(500);
             }
         }
+
+
+
+        [HttpPost("reactivate-account")]
+        public IActionResult ReactivateAccount(ReactivateRequest request)
+        {
+            try
+            {
+                // Trim string values
+                request.Email = request.Email.Trim().ToLower();
+                request.Password = request.Password.Trim();
+
+                // Check if the user exists
+                var foundUser = _context.Users.FirstOrDefault(x => x.Email == request.Email);
+                if (foundUser == null)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(request.Email, "Failed Reactivation: User not found").Wait();
+                    return BadRequest("User not found");
+                }
+
+                // Check if the user is deactivated
+                if (foundUser.Status.ToLower() != "deactivated")
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: User is not deactivated").Wait();
+                    return BadRequest("User is not deactivated");
+                }
+
+                // Check if the deactivation period is over
+                if (foundUser.Deactivefully.HasValue && foundUser.Deactivefully.Value < DateTime.Now)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: Deactivation period is over").Wait();
+                    return BadRequest("Deactivation period is over");
+                }
+
+                // Verify the password
+                bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
+                if (!verified)
+                {
+                    // Log failed reactivation attempt
+                    _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "Failed Reactivation: Incorrect password").Wait();
+                    return BadRequest("Incorrect password");
+                }
+
+                // Reactivate the account
+                foundUser.Status = "activated";
+                foundUser.Deactivefully = null; // Reset deactivation period
+
+                // Save changes to the database
+                _context.SaveChanges();
+
+                // Log successful reactivation
+                _auditLogHelper.LogUserActivityAsync(foundUser.Id.ToString(), "User account reactivated").Wait();
+
+                return Ok("Account reactivated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error when reactivating account");
+                return StatusCode(500);
+            }
+        }
+
+
         [HttpDelete("{deleteid}/{deleterid}"), Authorize]
         public IActionResult DeleteUser(int deleteid, int deleterid)
         {
@@ -377,33 +604,34 @@ namespace Enterprise_Development_Project_Assignment.Controllers
             }
         }
 
-        [HttpPost("popualteadminaccs"), Authorize]
-        public IActionResult PopulateAdminAccs()
+        [HttpPost("populateadminaccs"), Authorize]
+        public IActionResult PopulateAdminAccs(int numberOfAccounts)
         {
             try
             {
                 // Check if the authenticated user has the "admin" role
                 var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                if (roleClaim == null || roleClaim.Value.ToLower() != "admin")
+                if (roleClaim == null || !roleClaim.Value.ToLower().Equals("admin"))
                 {
                     return StatusCode(403, new { error = "You do not have authorization to perform this action." });
                 }
 
-                // Define a list of test admin accounts
-                var adminAccounts = new List<RegisterRequest>
-        {
-            new RegisterRequest { Name = "Admin1", Email = "admin1@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin2", Email = "admin2@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin3", Email = "admin3@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin4", Email = "admin4@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin5", Email = "admin5@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin6", Email = "admin6@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin7", Email = "admin7@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin8", Email = "admin8@admin.com", Password = "Admin@1234567" },
-            new RegisterRequest { Name = "Admin9", Email = "admin9@admin.com", Password = "Admin@1234567" },
+                // Define a list to hold the admin accounts
+                var adminAccounts = new List<RegisterRequest>();
 
-            // Add more admin accounts as needed
-        };
+                // Determine the starting index for the new admin accounts
+                int startIndex = _context.Users.Count(u => u.Role.ToLower() == "admin") + 1;
+
+                // Generate the specified number of admin accounts starting from the next index
+                for (int i = startIndex; i < startIndex + numberOfAccounts; i++)
+                {
+                    string email = $"admin{i}@admin.com";
+                    string name = $"Admin{i}";
+                    string password = "Admin@1234567"; // You may want to generate unique passwords
+
+                    // Add the admin account to the list
+                    adminAccounts.Add(new RegisterRequest { Name = name, Email = email, Password = password });
+                }
 
                 foreach (var adminAccount in adminAccounts)
                 {
@@ -431,7 +659,8 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                         Password = passwordHash,
                         CreatedAt = now,
                         UpdatedAt = now,
-                        Role = role
+                        Role = role,
+                        Status = "activated",
                     };
 
                     // Add user
@@ -440,7 +669,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 // Log the user activity
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                _auditLogHelper.LogUserActivityAsync(userId, "Populated Admin Accounts").Wait();
+                _auditLogHelper.LogUserActivityAsync(userId, $"Populated {numberOfAccounts} Admin Accounts").Wait();
 
                 // Save changes after adding all admin accounts
                 _context.SaveChanges();
