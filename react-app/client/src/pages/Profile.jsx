@@ -159,6 +159,44 @@ function UserProfile() {
             <MDBCard className="mb-4 mb-lg-0">
               <MDBCardBody className="p-0">
                 <MDBListGroup flush className="rounded-3">
+
+                {user && user.role === "admin" && (
+                    <>
+                <Link to={`/activitiesDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="chart-line" style={{ color: '#333333' }}/>
+                        <MDBCardText>Activities Dashboard</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+
+                    <Link to={`/bookingsDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="quran"style={{ color: '#333333' }} />
+                        <MDBCardText>Bookings Dashboard</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+
+                    <Link to={`/users`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="user-injured" style={{ color: '#333333' }}/>
+                        <MDBCardText>Users</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+
+                    <Link to={`/auditlog`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="paperclip" style={{ color: '#333333' }}/>
+                        <MDBCardText>Audit Log</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
+
+
+
+                    </>
+                    )}
+
+                {user && user.role === "user" && (
+                    <>
                     <Link to={`/creditcard`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
                   <MDBIcon fas icon="credit-card"style={{ color: '#333333' }} />
@@ -197,6 +235,8 @@ function UserProfile() {
                         <MDBCardText>Forum</MDBCardText>
                     </MDBListGroupItem>
                     </Link>
+                    </>
+                    )}
                 </MDBListGroup>
               </MDBCardBody>
             </MDBCard>
