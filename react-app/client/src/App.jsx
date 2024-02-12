@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect, useContext } from 'react';
-import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button,MenuItem, Menu, Link as MuiLink } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Grid, BottomNavigation, Box, Button,MenuItem, Menu, Link as MuiLink,Avatar } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import MyTheme from './themes/MyTheme';
@@ -58,6 +58,7 @@ import ThreadDetail  from './pages/Thread';
 function App() {
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     if (localStorage.getItem("accessToken")) {
@@ -65,7 +66,15 @@ function App() {
         setUser(res.data.user);
       });
     }
-  }, []);
+    getUserProfile();
+  }, [user]);
+  const getUserProfile = () => {
+    if (user) {
+        http.get(`/user/${user.id}`).then((res) => {
+            setUserProfile(res.data);
+        });
+    }
+};
 
   const logout = () => {
     localStorage.clear();
@@ -86,7 +95,7 @@ function App() {
         <AppBar position="static" className='AppBar'>
           <Container>
             <Toolbar disableGutters={true}>
-              <Link to="/">
+              <Link to="/activities">
                 <img src={Logo} alt="logo" width={100} />
               </Link>
               <Link to="/activities"><Typography>Activities</Typography></Link>
@@ -103,41 +112,14 @@ function App() {
               <Link to="/userBookings" ><Typography>Bookings</Typography></Link>
       
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
-              {user && user.role === "admin" && (
-              <>
-                <Button
-                  onClick={handleMenuOpen}
-                  style={{
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit',
-                    fontWeight: 'inherit',
-                    textTransform: 'none', // Prevent uppercase transformation
-                    textDecoration: 'none', // Remove underline
-                    color: 'inherit', // Inherit color
-                    padding: 0, // Remove default padding
-                    margin: '0 8px', // Add some margin for spacing
-                    background: 'none', // Remove background
-                    border: 'none', // Remove border
-                    cursor: 'pointer', // Change cursor to indicate it's clickable
-                  }}
-                >Admin Privileges</Button>
-                <Menu
-                  id="admin-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem component={Link} to="/activitiesDashboard" onClick={handleMenuClose}>Activity Dashboard</MenuItem>
-                  <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>Bookings Dashboard</MenuItem>
-                  <MenuItem component={Link} to="/users" onClick={handleMenuClose}>Users</MenuItem>
-                  <MenuItem component={Link} to="/auditlog" onClick={handleMenuClose}>Audit Log</MenuItem>
-                </Menu>
-              </>
-              )}
               <Box sx={{ flexGrow: 1 }}></Box>
-              {user && (
+              {user && userProfile && (
                 <>
-                  <Link to="/profile"><Typography>{user.name}</Typography></Link>
+                  <Link to="/profile"><Avatar
+                  alt="Profile Picture"
+                  src={`${import.meta.env.VITE_FILE_BASE_URL}${userProfile.imageFile}`}
+                  sx={{ width: 50, height: 50, borderRadius: '50%' }}
+                /></Link>
                   <Button onClick={logout}><Typography>Logout</Typography></Button>
                 </>
               )
@@ -154,7 +136,7 @@ function App() {
 
         <Container>
           <Routes>
-            <Route path={"/"} element={<Home />} />
+            <Route path={"/"} element={<Activities />} />
             <Route path={"/suggestionForm"} element={<SuggestionForm />} />
             <Route path={"/displaySuggestionForm"} element={<DisplaySuggestionForm />} />
             <Route path={"/editSuggestionForm/:id"} element={<EditSuggestionForm />} />
