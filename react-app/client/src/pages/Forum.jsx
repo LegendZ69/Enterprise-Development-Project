@@ -9,7 +9,6 @@ function ThreadList() {
   const [hasVoted, setHasVoted] = useState({});
   const [voteType, setVoteType] = useState({});
   const [sortCriteria, setSortCriteria] = useState('replies');
-
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -22,7 +21,7 @@ function ThreadList() {
   };
   const fetchThreads = async () => {
     try {
-      const response = await http.get("/Thread");
+      const response = await http.get("/Thread")
       console.log(response)
       const threadsWithReplies = await Promise.all(response.data.map(async (thread) => {
         try {

@@ -22,11 +22,14 @@ function EditProfile() {
     const [loading, setLoading] = useState(true);
     const [imageFile, setImageFile] = useState(null);
     const [userStatus, setUserStatus] = useState('activated'); // Initially set to 'activated'
+    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
     useEffect(() => {
         http.get(`/user/${id}`).then((res) => {
             setUser(res.data);
             setImageFile(res.data.imageFile)
+            setTwoFactorEnabled(res.data.twoFactorEnabled || false);
+
             setLoading(false);
         });
     }, []);
@@ -56,6 +59,8 @@ function EditProfile() {
             data.email = data.email.trim();
             data.phoneNumber = data.phoneNumber.trim();
             data.status = userStatus; // Set user status
+            data.twoFactorEnabled = twoFactorEnabled; // Set two factor enabled
+
             // Check if the email is updated
             const isEmailUpdated = data.email !== user.email;
 
@@ -154,6 +159,15 @@ function EditProfile() {
                                             inputProps={{ 'aria-label': 'toggle user status' }}
                                         />
                                         {userStatus === 'activated' ? 'Activated' : 'Deactivated'}
+                                    </Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                        <Typography variant="body1">Two-Factor Authentication (Email):</Typography>
+                                        <Switch
+                                            checked={twoFactorEnabled}
+                                            onChange={() => setTwoFactorEnabled(!twoFactorEnabled)}
+                                            inputProps={{ 'aria-label': 'toggle two factor authentication' }}
+                                        />
+                                        {twoFactorEnabled ? 'Enabled' : 'Disabled'}
                                     </Box>
                                 {/* Add additional fields as needed */}
                             </Grid>
