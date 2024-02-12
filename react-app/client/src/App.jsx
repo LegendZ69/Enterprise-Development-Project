@@ -127,8 +127,8 @@ function App() {
                   open={Boolean(anchorEl)}
                   onClose={handleMenuClose}
                 >
-                  <MenuItem component={Link} to="/activitiesDashboard" onClick={handleMenuClose}>AdminActivity</MenuItem>
-                  <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>AdminBookings</MenuItem>
+                  <MenuItem component={Link} to="/activitiesDashboard" onClick={handleMenuClose}>Activity Dashboard</MenuItem>
+                  <MenuItem component={Link} to="/bookingsDashboard" onClick={handleMenuClose}>Bookings Dashboard</MenuItem>
                   <MenuItem component={Link} to="/users" onClick={handleMenuClose}>Users</MenuItem>
                   <MenuItem component={Link} to="/auditlog" onClick={handleMenuClose}>Audit Log</MenuItem>
                 </Menu>

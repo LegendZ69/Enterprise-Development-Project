@@ -161,6 +161,26 @@ public class BookingController : ControllerBase
         return Ok(adminBookingDTOs);
     }
 
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult DeleteBooking(int id)
+    {
+        var booking = _context.Bookings.FirstOrDefault(b => b.Id == id);
+
+        if (booking == null)
+        {
+            return NotFound();
+        }
+
+        _context.Bookings.Remove(booking);
+        _context.SaveChanges();
+
+        return NoContent();
+    }
+
+
     private void SendBookingConfirmationEmail(string userEmail, string activityTitle, DateTime bookingDate)
     {
         using (MailMessage mail = new MailMessage())
