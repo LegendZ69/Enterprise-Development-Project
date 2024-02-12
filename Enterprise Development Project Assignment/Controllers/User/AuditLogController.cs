@@ -31,7 +31,12 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 IQueryable<AuditLog> result = _context.AuditLogs;
                 if(search != null)
                 {
-                    result = result.Where(x => x.Action.Contains(search) || x.UserId.Contains(search));
+                    result = result.Where(x =>
+                         x.Action.Contains(search) ||
+                         x.UserId.ToString().Contains(search) ||
+                         x.Timestamp.ToString().Contains(search)||
+                         x.Id.ToString().Contains(search)
+                     );
                 }
                 var list = result.OrderByDescending(x => x.Timestamp).ToList();
                 IEnumerable<AuditLogDTO> data = list.Select(u => _mapper.Map<AuditLogDTO>(u));

@@ -203,65 +203,65 @@ function BookingsDashboard() {
                   <MDBListGroup flush className="rounded-3">
                     {user && user.role === "admin" && (
                       <>
-                      <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                       <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
                   <MDBIcon fas icon="chart-line" style={{ color: '#333333' }}/>
                         <MDBCardText>Profile</MDBCardText>
                     </MDBListGroupItem>
                     </Link>
-                        <Link
-                          to={`/activitiesDashboard`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+
+                <Link to={`/activitiesDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="chart-line"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon fas icon="chart-line" style={{ color: '#333333' }} />
                             <MDBCardText>Activities Dashboard</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/bookingsDashboard`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/bookingsDashboard`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="quran"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon fas icon="quran" style={{ color: '#333333' }} />
                             <MDBCardText>Bookings Dashboard</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/users`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/displaySuggestionForm`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="user-injured"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon far icon="lightbulb" style={{ color: '#333333' }} />
+                            <MDBCardText>Suggestions Dashboard</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+
+                        <Link to={`/displayFeedbackForm`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                            <MDBIcon far icon="comment" style={{ color: '#333333' }} />
+                            <MDBCardText>Feedbacks Dashboard</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+
+                        <Link to={`/displayRatingsAndReviews`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                            <MDBIcon far icon="star" style={{ color: '#333333' }} />
+                            <MDBCardText>Ratings Dashboard</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+                        
+                        <Link to={`/users`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                            <MDBIcon fas icon="user-injured" style={{ color: '#333333' }} />
                             <MDBCardText>Users</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/auditlog`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/auditlog`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="paperclip"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon fas icon="paperclip" style={{ color: '#333333' }} />
                             <MDBCardText>Audit Log</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+                        <Link to={`/coupons`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                          <MDBIcon fas icon="ticket-alt" style={{ color: '#333333' }}/>
+                            <MDBCardText>Coupons</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
                       </>
@@ -275,73 +275,45 @@ function BookingsDashboard() {
                         <MDBCardText>Profile</MDBCardText>
                     </MDBListGroupItem>
                     </Link>
-                        <Link
-                          to={`/creditcard`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
-                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="credit-card"
-                              style={{ color: "#333333" }}
-                            />
-                            <MDBCardText>Credit Cards</MDBCardText>
-                          </MDBListGroupItem>
-                        </Link>
+                    
+                    <Link to={`/creditcard`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                  <MDBIcon fas icon="credit-card"style={{ color: '#333333' }} />
+                        <MDBCardText>Credit Cards</MDBCardText>
+                    </MDBListGroupItem>
+                    </Link>
 
-                        <Link
-                          to={`/userbookings`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/userbookings`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="history"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon fas icon="history" style={{ color: '#333333' }} />
                             <MDBCardText>Bookings</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/displayfeedbackform`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/displaySuggestionForm`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="comment"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon far icon="lightbulb" style={{ color: '#333333' }} />
+                            <MDBCardText>Suggestions</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
 
+                        <Link to={`/displayFeedbackForm`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                            <MDBIcon far icon="comment" style={{ color: '#333333' }} />
                             <MDBCardText>Feedbacks</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/displayRatingsAndReviews`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/displayRatingsAndReviews`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fas
-                              icon="star"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon far icon="star" style={{ color: '#333333' }} />
                             <MDBCardText>Ratings</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
-                        <Link
-                          to={`/Forum`}
-                          style={{ textDecoration: "none", color: "inherit" }}
-                        >
+                        <Link to={`/Forum`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                            <MDBIcon
-                              fab
-                              icon="rocketchat"
-                              style={{ color: "#333333" }}
-                            />
+                            <MDBIcon fab icon="rocketchat" style={{ color: '#333333' }} />
 
                             <MDBCardText>Forum</MDBCardText>
                           </MDBListGroupItem>

@@ -140,8 +140,7 @@ function UserProfile() {
                   </div>
                   <p className="text-muted mb-1">Name: {userProfile.name}</p>
                   <p className="text-muted mb-1">Role: {userProfile.role}</p>
-                  <p className="text-muted mb-1">User Status: {userProfile.status}</p>
-                  <p className="text-muted mb-1">User since {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}</p>
+                  
 
                   <div className="d-flex justify-content-center mb-2">
                     <Link to={`/editprofile/${user.id}`} style={{ marginRight: '10px' }}>
@@ -215,6 +214,12 @@ function UserProfile() {
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
                             <MDBIcon fas icon="paperclip" style={{ color: '#333333' }} />
                             <MDBCardText>Audit Log</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+                        <Link to={`/coupons`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                          <MDBIcon fas icon="ticket-alt" style={{ color: '#333333' }}/>
+                            <MDBCardText>Coupons</MDBCardText>
                           </MDBListGroupItem>
                         </Link>
 
@@ -315,6 +320,24 @@ function UserProfile() {
                     </MDBCol>
                     <MDBCol sm="9">
                       <MDBCardText className="text-muted"> {userProfile.twoFactorEnabled ? "Enabled" : "Disabled"}</MDBCardText>
+                    </MDBCol>
+                  </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol sm="3">
+                      <MDBCardText>User Since:</MDBCardText>
+                    </MDBCol>
+                    <MDBCol sm="9">
+                      <MDBCardText className="text-muted">  {dayjs(userProfile.createdAt).format('YYYY-MM-DD')}</MDBCardText>
+                    </MDBCol>
+                  </MDBRow>
+                  <hr />
+                  <MDBRow>
+                    <MDBCol sm="3">
+                      <MDBCardText>User Status:</MDBCardText>
+                    </MDBCol>
+                    <MDBCol sm="9">
+                      <MDBCardText className="text-muted">  {userProfile.status}</MDBCardText>
                     </MDBCol>
                   </MDBRow>
                 </MDBCardBody>
