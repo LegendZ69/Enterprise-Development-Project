@@ -107,8 +107,7 @@ function App() {
               <Link to="/activities"><Typography>Activities</Typography></Link>
               <Link to="/feedbackForm" ><Typography>Contact Us</Typography></Link>
               <Link to="/aboutUs" ><Typography>About Us</Typography></Link>
-              <Link to="/faqs" ><Typography>FAQs</Typography></Link>
-              <Link to="/checkout" ><Typography>Checkout</Typography></Link>      
+              <Link to="/faqs" ><Typography>FAQs</Typography></Link>    
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
               
               

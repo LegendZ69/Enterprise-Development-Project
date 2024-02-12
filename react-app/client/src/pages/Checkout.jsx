@@ -66,7 +66,7 @@ function Checkout() {
         http.get(`/coupons?name=${couponName}`)
             .then((res) => {
                 const coupons = res.data;
-                const coupon = coupons.find(coupon => coupon.couponName === couponName);
+                const coupon = coupons.find(coupon => coupon.couponName === couponName && coupon.valid && coupon.usage > 0); // Check for valid and used coupons
                 if (coupon) {
                     setDiscount(coupon.discount);
                     const calculatedCostReduction = originalPrice - (originalPrice - coupon.discount);
@@ -76,8 +76,8 @@ function Checkout() {
                     setErrorMessage('Coupon Applied');
                 } else {
                     setDiscount(0);
-                    setFinalPrice(originalPrice); // Reset final price if coupon not found
-                    setErrorMessage('Coupon not found');
+                    setFinalPrice(originalPrice); // Reset final price if coupon not found or invalid
+                    setErrorMessage('Invalid or expired coupon');
                 }
             })
             .catch((error) => {
@@ -162,6 +162,11 @@ function Checkout() {
                     </Typography>
                     <Typography variant="h6">
                         Original Price: ${originalPrice}
+                        <br />
+                        &nbsp;
+                    </Typography>
+                    <Typography variant="h6">
+                        You can use the coupon "Coupon" for $20 off
                         <br />
                         &nbsp;
                     </Typography>
