@@ -57,6 +57,7 @@ import ReactivateAccount from './pages/ReactivateAccount';
 import Verify from './pages/Verify';
 import Cart from './pages/Cart';
 import CheckoutSuccess from './pages/CheckoutSuccess';
+import ViewPayments from './pages/ViewPayments';
 
 import ThreadList from './pages/Forum';
 import CreateThread from './pages/CreateThread'
@@ -109,6 +110,7 @@ function App() {
               <Link to="/aboutUs" ><Typography>About Us</Typography></Link>
               <Link to="/faqs" ><Typography>FAQs</Typography></Link>    
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
+              <Link to ="/viewpayments"><Typography>View payments</Typography></Link>
               
               
               <Box sx={{ flexGrow: 1 }}></Box>
@@ -189,6 +191,7 @@ function App() {
             <Route path={"/Thread/:threadId"} element={<ThreadDetail />} />
             <Route path={"/cart"} element ={<Cart/>} />
             <Route path="/checkoutsuccess" element ={<CheckoutSuccess/>} />
+            <Route path="/viewpayments" element = {<ViewPayments/>} />
           </Routes>
         </Container>
 

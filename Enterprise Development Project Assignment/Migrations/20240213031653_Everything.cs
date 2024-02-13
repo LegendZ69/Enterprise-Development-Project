@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-    public partial class a : Migration
+    public partial class Everything : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -198,6 +198,7 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ActivityTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BookedDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)

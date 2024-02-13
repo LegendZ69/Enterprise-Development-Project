@@ -4,6 +4,7 @@ import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import UserContext from '../contexts/UserContext';
 
 function Checkout() {
@@ -90,35 +91,53 @@ function Checkout() {
     const handleFormSubmit = (values) => {
         console.log(values); // You can handle form submission here
     
-        // Fetch user bookings to get the list of booking IDs
-        http.get(`/Booking/userBookings`)
+        // Prepare payment data
+        const paymentData = {
+            price: finalPrice,
+            activityTitle: bookings.map(booking => booking.activityTitle).join(' + '),
+            bookedDate: bookings.map(booking => dayjs(booking.bookingDate).format('YYYY-MM-DD')).join(' + '),
+        };
+    
+        // Send payment data to the server
+        http.post('/Payments', paymentData)
             .then((res) => {
-                const bookings = res.data;
-                const userId = user.id;
+                console.log('Payment successful:', res.data);
+                // Fetch user bookings to get the list of booking IDs
+                http.get(`/Booking/userBookings`)
+                    .then((res) => {
+                        const bookings = res.data;
+                        const userId = user.id;
     
-                // Filter bookings for the current user
-                const userBookings = bookings.filter(booking => booking.userId === userId);
+                        // Filter bookings for the current user
+                        const userBookings = bookings.filter(booking => booking.userId === userId);
     
-                // Delete all bookings associated with the current user
-                userBookings.forEach((booking) => {
-                    http.delete(`/Booking/${booking.id}`)
-                        .then((res) => {
-                            console.log(`Booking ${booking.id} deleted successfully`);
-                        })
-                        .catch((error) => {
-                            console.error(`Failed to delete booking ${booking.id}:`, error);
-                            // Handle error
+                        // Delete all bookings associated with the current user
+                        userBookings.forEach((booking) => {
+                            http.delete(`/Booking/${booking.id}`)
+                                .then((res) => {
+                                    console.log(`Booking ${booking.id} deleted successfully`);
+                                })
+                                .catch((error) => {
+                                    console.error(`Failed to delete booking ${booking.id}:`, error);
+                                    // Handle error
+                                });
                         });
-                });
     
-                // Navigate to the checkout success page
-                navigate('/checkoutsuccess');
+                        // Navigate to the checkout success page
+                        navigate('/checkoutsuccess');
+                    })
+                    .catch((error) => {
+                        console.error('Failed to fetch user bookings:', error);
+                        // Handle error
+                    });
             })
             .catch((error) => {
-                console.error('Failed to fetch user bookings:', error);
-                // Handle error
+                console.error('Payment failed:', error);
+                // Handle payment failure
             });
     };
+    
+    
 
     const validationSchema = yup.object({
         cardNumber: yup.string()

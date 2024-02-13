@@ -305,6 +305,9 @@ namespace Enterprise_Development_Project_Assignment.Migrations
                     b.Property<string>("ActivityTitle")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BookedDate")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
