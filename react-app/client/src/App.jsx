@@ -138,7 +138,7 @@ function App() {
 
         <Container>
           <Routes>
-              <Route path={"/"} element={<Home />} />
+              <Route path={"/"} element={<Activities />} />
               
             <Route path={"/suggestionForm"} element={<SuggestionForm />} />
             <Route path={"/displaySuggestionForm"} element={<DisplaySuggestionForm />} />
