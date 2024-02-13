@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Enterprise_Development_Project_Assignment.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:Enterprise Development Project Assignment/Migrations/20240213050743_l.cs
-    public partial class l : Migration
-========
-    public partial class create : Migration
->>>>>>>> b8dc3670f517452424bb5e1db5698d51030dff8b:Enterprise Development Project Assignment/Migrations/20240213060310_create.cs
+    public partial class a : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
