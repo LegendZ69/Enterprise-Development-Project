@@ -74,7 +74,5 @@ namespace Enterprise_Development_Project_Assignment
 		public DbSet<ThreadModel> Threads { get; set; }
 		public DbSet<ReplyModel> Replies { get; set; }
         public DbSet<Payment> Payments { get; set; }
-
-
     }
 }

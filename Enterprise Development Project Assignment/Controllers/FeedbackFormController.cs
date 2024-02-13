@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Enterprise_Development_Project_Assignment.Helpers;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -24,21 +25,15 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly MyDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<FeedbackFormController> _logger;
+        private readonly AuditLogHelper _auditLogHelper;
 
-        public FeedbackFormController(MyDbContext context, IMapper mapper, ILogger<FeedbackFormController> logger)
+        public FeedbackFormController(MyDbContext context, IMapper mapper, ILogger<FeedbackFormController> logger, AuditLogHelper auditLogHelper)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
-
-        /*private JsonSerializerOptions GetJsonSerializerOptions()
-        {
-            return new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
-        }*/
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<FeedbackFormDTO>), StatusCodes.Status200OK)]
@@ -115,6 +110,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 FeedbackForm? newFeedbackForm = _context.FeedbackForms.Include(t => t.User)
                     .FirstOrDefault(t => t.Id == myFeedbackForm.Id);
                 FeedbackFormDTO feedbackFormDTO = _mapper.Map<FeedbackFormDTO>(newFeedbackForm);
+                _auditLogHelper.LogUserActivityAsync(myFeedbackForm.UserId.ToString(), "User ID " + myFeedbackForm.UserId + " posted Feedback ID " + myFeedbackForm.Id).Wait();
                 return Ok(feedbackFormDTO);
             }
             catch (Exception ex)
@@ -164,6 +160,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 myFeedbackForm.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myFeedbackForm.UserId.ToString(), "User ID " + myFeedbackForm.UserId + " updated Feedback ID " + myFeedbackForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -190,7 +187,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 }
                 myFeedbackForm.UpdatedAt = DateTime.Now;
 
-                _context.SaveChanges();
+                _context.SaveChanges(); _auditLogHelper.LogUserActivityAsync(myFeedbackForm.UserId.ToString(), "Admin left staff remark on Feedback ID " + myFeedbackForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -219,6 +216,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.FeedbackForms.Remove(myFeedbackForm);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myFeedbackForm.UserId.ToString(), "User ID " + myFeedbackForm.UserId + " deleted Feedback ID " + myFeedbackForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -241,6 +239,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.FeedbackForms.Remove(myFeedbackForm);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myFeedbackForm.UserId.ToString(), "Admin deleted Feedback ID " + myFeedbackForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)

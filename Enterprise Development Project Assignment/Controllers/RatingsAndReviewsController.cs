@@ -1,4 +1,5 @@
 using AutoMapper;
+using Enterprise_Development_Project_Assignment.Helpers;
 using Enterprise_Development_Project_Assignment.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly MyDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<RatingsAndReviewsController> _logger;
+        private readonly AuditLogHelper _auditLogHelper;
 
-        public RatingsAndReviewsController(MyDbContext context, IMapper mapper, ILogger<RatingsAndReviewsController> logger)
+        public RatingsAndReviewsController(MyDbContext context, IMapper mapper, ILogger<RatingsAndReviewsController> logger, AuditLogHelper auditLogHelper)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
 
         [HttpGet]
@@ -117,6 +120,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                     .Include(b => b.Booking)
                     .FirstOrDefault(t => t.Id == myRatingsAndReviews.Id);
                 RatingsAndReviewsDTO ratingsAndReviewsDTO = _mapper.Map<RatingsAndReviewsDTO>(newRatingsAndReviews);
+                _auditLogHelper.LogUserActivityAsync(myRatingsAndReviews.UserId.ToString(), "User ID " + myRatingsAndReviews.UserId + " posted Review ID " + myRatingsAndReviews.Id).Wait();
                 return Ok(ratingsAndReviewsDTO);
             }
             catch (Exception ex)
@@ -178,6 +182,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 myRatingsAndReviews.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myRatingsAndReviews.UserId.ToString(), "User ID " + myRatingsAndReviews.UserId + " updated Review ID " + myRatingsAndReviews.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -205,6 +210,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 myRatingsAndReviews.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myRatingsAndReviews.UserId.ToString(), "Admin left staff remark on Review ID " + myRatingsAndReviews.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -233,6 +239,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.RatingsAndReviews.Remove(myRatingsAndReviews);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myRatingsAndReviews.UserId.ToString(), "User ID " + myRatingsAndReviews.UserId + " deleted Review ID " + myRatingsAndReviews.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -255,6 +262,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.RatingsAndReviews.Remove(myRatingsAndReviews);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(myRatingsAndReviews.UserId.ToString(), "Admin deleted Review ID " + myRatingsAndReviews.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
