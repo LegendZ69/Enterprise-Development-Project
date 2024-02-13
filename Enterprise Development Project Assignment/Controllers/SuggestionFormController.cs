@@ -6,6 +6,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Enterprise_Development_Project_Assignment.Helpers;
+using System.Diagnostics;
 
 namespace Enterprise_Development_Project_Assignment.Controllers
 {
@@ -23,12 +25,14 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly MyDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<SuggestionFormController> _logger;
+        private readonly AuditLogHelper _auditLogHelper;
 
-        public SuggestionFormController(MyDbContext context, IMapper mapper, ILogger<SuggestionFormController> logger)
+        public SuggestionFormController(MyDbContext context, IMapper mapper, ILogger<SuggestionFormController> logger, AuditLogHelper auditLogHelper)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _auditLogHelper = auditLogHelper;
         }
 
         [HttpGet]
@@ -106,6 +110,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 SuggestionForm? newSuggestionForm = _context.SuggestionForms.Include(t => t.User)
                     .FirstOrDefault(t => t.Id == mySuggestionForm.Id);
                 SuggestionFormDTO suggestionFormDTO = _mapper.Map<SuggestionFormDTO>(newSuggestionForm);
+                _auditLogHelper.LogUserActivityAsync(mySuggestionForm.UserId.ToString(), "User ID " + mySuggestionForm.UserId + " posted Suggestion ID " + mySuggestionForm.Id).Wait();
                 return Ok(suggestionFormDTO);
             }
             catch (Exception ex)
@@ -155,6 +160,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 mySuggestionForm.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(mySuggestionForm.UserId.ToString(), "User ID " + mySuggestionForm.UserId + " updated Suggestion ID " + mySuggestionForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -182,6 +188,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
                 mySuggestionForm.UpdatedAt = DateTime.Now;
 
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(mySuggestionForm.UserId.ToString(), "Admin left staff remark on Suggestion ID " + mySuggestionForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -211,6 +218,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.SuggestionForms.Remove(mySuggestionForm);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(mySuggestionForm.UserId.ToString(), "User ID " + mySuggestionForm.UserId + " deleted Suggestion ID " + mySuggestionForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)
@@ -234,6 +242,7 @@ namespace Enterprise_Development_Project_Assignment.Controllers
 
                 _context.SuggestionForms.Remove(mySuggestionForm);
                 _context.SaveChanges();
+                _auditLogHelper.LogUserActivityAsync(mySuggestionForm.UserId.ToString(), "Admin deleted Suggestion ID " + mySuggestionForm.Id).Wait();
                 return Ok();
             }
             catch (Exception ex)

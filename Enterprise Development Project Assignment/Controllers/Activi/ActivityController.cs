@@ -22,7 +22,6 @@ namespace Enterprise_Development_Project_Assignment.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly AuditLogHelper _auditLogHelper;
 
-
         public ActivityController(MyDbContext context, IMapper mapper, IHttpClientFactory httpClientFactory,
             ILogger<UserController> logger, AuditLogHelper auditLogHelper)
         {
