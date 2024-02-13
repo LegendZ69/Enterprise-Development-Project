@@ -15,6 +15,7 @@ function EditFeedbackForm() {
     const [feedbackForm, setFeedbackForm] = useState({
         topic: "",
         message: "",
+        staffRemark: ""
     });
 
     useEffect(() => {
@@ -55,7 +56,7 @@ function EditFeedbackForm() {
                 http.put(`/feedbackForm/admin/${id}`, data)
                     .then((res) => {
                         console.log(res.data);
-                        navigate("/adminDisplayFeedbackForm");
+                        navigate("/displayFeedbackForm");
                     })
                     .catch(function (err) {
                         console.log(err.response);
@@ -98,7 +99,7 @@ function EditFeedbackForm() {
             http.delete(`/feedbackForm/admin/${id}`)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/adminDisplayFeedbackForm");
+                    navigate("/displayFeedbackForm");
                 })
                 .catch(function (err) {
                     console.log(err.response);

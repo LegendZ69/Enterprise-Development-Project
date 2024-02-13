@@ -50,7 +50,7 @@ function DisplayFeedbackForm() {
     return (
         <Box>
             <Typography variant="h1" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
-                My Feedback
+                {user.role === 'admin' ? 'Feedbacks Dashboard' : 'My Feedbacks'}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -74,7 +74,7 @@ function DisplayFeedbackForm() {
                 </Link>
             </Box>
             {
-                user && feedbackFormList.map((feedbackForm, i) => {
+                user.role == "user" && feedbackFormList.map((feedbackForm, i) => {
                     return (
                         user.id === feedbackForm.userId && (
                             <Grid item xs={12} md={6} lg={4} key={feedbackForm.id}>

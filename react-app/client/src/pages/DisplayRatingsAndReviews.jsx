@@ -50,7 +50,7 @@ function DisplayRatingsAndReviews() {
     return (
         <Box>
             <Typography variant="h1" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
-                My Review {user.role === 'admin' ? 'Admin Reviews' : 'My Reviews'}
+                {user.role === 'admin' ? 'Reviews Dashboard' : 'My Reviews'}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -106,13 +106,6 @@ function DisplayRatingsAndReviews() {
                                             {ratingsAndReviews.review}
                                         </Typography>
 
-                                        <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
-                                            Staff Remarks:
-                                        </Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                            {ratingsAndReviews.staffRemark}
-                                        </Typography>
-
                                         {
                                             ratingsAndReviews.imageFile && (
                                                 <Box className="aspect-ratio-container">
@@ -120,6 +113,14 @@ function DisplayRatingsAndReviews() {
                                                 </Box>
                                             )
                                         }
+
+                                        <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+                                        <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
+                                            Staff Remarks:
+                                        </Typography>
+                                        <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                            {ratingsAndReviews.staffRemark}
+                                        </Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -164,13 +165,6 @@ function DisplayRatingsAndReviews() {
                                                 {ratingsAndReviews.review}
                                             </Typography>
 
-                                            <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
-                                                Staff Remarks:
-                                            </Typography>
-                                            <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-                                                {ratingsAndReviews.staffRemark}
-                                            </Typography>
-
                                             {
                                                 ratingsAndReviews.imageFile && (
                                                     <Box className="aspect-ratio-container">
@@ -178,6 +172,14 @@ function DisplayRatingsAndReviews() {
                                                     </Box>
                                                 )
                                             }
+
+                                            <Divider sx={{ border: '1px solid grey', my: 2 }}></Divider>
+                                            <Typography variant='h7' sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary', fontWeight: 'bold' }}>
+                                                Staff Remarks:
+                                            </Typography>
+                                            <Typography sx={{ whiteSpace: 'pre-wrap' }}>
+                                                {ratingsAndReviews.staffRemark}
+                                            </Typography>
                                         </CardContent>
                                     </Card>
                                 </Grid>

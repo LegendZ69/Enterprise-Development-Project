@@ -20,7 +20,8 @@ function EditRatingsAndReviews() {
     const [ratingsAndReviews, setRatingsAndReviews] = useState({
         rating: "",
         review: "",
-        imageFile: ""
+        imageFile: "",
+        staffRemark: ""
     });
 
     useEffect(() => {
@@ -39,7 +40,7 @@ function EditRatingsAndReviews() {
             }
             let formData = new FormData();
             formData.append('file', file);
-            http.put('/file/upload', formData, {
+            http.post('/file/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -90,7 +91,7 @@ function EditRatingsAndReviews() {
                 http.put(`/ratingsAndReviews/admin/${id}`, data)
                     .then((res) => {
                         console.log(res.data);
-                        navigate("/adminDisplayRatingsAndReviews");
+                        navigate("/displayRatingsAndReviews");
                     })
                     .catch(function (err) {
                         console.log(err.response);
@@ -132,7 +133,7 @@ function EditRatingsAndReviews() {
             http.delete(`/ratingsAndReviews/admin/${id}`)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/adminDisplayRatingsAndReviews");
+                    navigate("/displayRatingsAndReviews");
                 })
                 .catch(function (err) {
                     console.log(err.response);

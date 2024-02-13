@@ -13,6 +13,7 @@ function EditSuggestionForm() {
     const { user } = useContext(UserContext);
 
     const [suggestionForm, setSuggestionForm] = useState({
+        email: "",
         activityName: "",
         activityType: "",
         activityDescription: "",
@@ -68,7 +69,7 @@ function EditSuggestionForm() {
                 http.put(`/suggestionForm/admin/${id}`, data)
                     .then((res) => {
                         console.log(res.data);
-                        navigate("/adminDisplaySuggestionForm");
+                        navigate("/displaySuggestionForm");
                     })
                     .catch(function (err) {
                         console.log(err.response);
@@ -110,7 +111,7 @@ function EditSuggestionForm() {
             http.delete(`/suggestionForm/admin/${id}`)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/adminDisplaySuggestionForm");
+                    navigate("/displaySuggestionForm");
                 })
                 .catch(function (err) {
                     console.log(err.response);
@@ -128,17 +129,6 @@ function EditSuggestionForm() {
                 user && (
                     <Box>
                         <Box component="form" onSubmit={formik.handleSubmit}>
-                            <TextField
-                                fullWidth margin="dense" autoComplete="off"
-                                label="Email"
-                                name="email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
-                            />
-
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <TextField
@@ -154,9 +144,10 @@ function EditSuggestionForm() {
                                 </Grid>
                                 <Grid item xs={6} sx={{ mt: 1 }}>
                                     <FormControl fullWidth>
-                                        <InputLabel id='activityType'>Activity Type</InputLabel>
+                                        <InputLabel id='activityType' value={formik.values.activityType}>Activity Type</InputLabel>
                                         <Select margin="dense" autoComplete="off"
                                             label="Activity Type"
+                                            labelId='activityType'
                                             name="activityType"
                                             value={formik.values.activityType}
                                             onChange={formik.handleChange}

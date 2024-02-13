@@ -20,6 +20,9 @@ import DisplayRatingsAndReviews from './pages/DisplayRatingsAndReviews';
 import EditRatingsAndReviews from './pages/EditRatingsAndReviews';
 
 import FormSuccess from './pages/FormSuccess';
+import SuggestionSuccess from './pages/SuggestionSuccess';
+import ReviewSuccess from './pages/ReviewSuccess';
+
 import AboutUs from './pages/AboutUs';
 import FAQs from './pages/FAQs';
 
@@ -152,7 +155,11 @@ function App() {
             <Route path={"/displayRatingsAndReviews"} element={<DisplayRatingsAndReviews />} />
               <Route path={"/editRatingsAndReviews/:id"} element={<EditRatingsAndReviews />} />
 
-            <Route path={"/formSuccess"} element={<FormSuccess />} />
+              <Route path={"/formSuccess"} element={<FormSuccess />} />
+              <Route path={"/suggestionSuccess"} element={<SuggestionSuccess />} />
+              <Route path={"/reviewSuccess"} element={<ReviewSuccess />} />
+
+
             <Route path={"/aboutUs"} element={<AboutUs />} />
             <Route path={"/faqs"} element={<FAQs />} />
 

@@ -52,7 +52,7 @@ function SuggestionForm() {
             http.post("/suggestionForm", data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/formSuccess");
+                    navigate("/suggestionSuccess");
                 })
                 .catch(function (err) {
                     console.log(err.response);

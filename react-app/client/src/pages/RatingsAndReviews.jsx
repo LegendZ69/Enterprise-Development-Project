@@ -88,7 +88,7 @@ function RatingsAndReviews() {
             http.post("/ratingsAndReviews", data)
                 .then((res) => {
                     console.log(res.data);
-                    navigate("/formSuccess");
+                    navigate("/reviewSuccess");
                 })
                 .catch(function (err) {
                     console.log(err.response);

@@ -50,7 +50,7 @@ function DisplaySuggestionForm() {
     return (
         <Box>
             <Typography variant="h1" sx={{ my: 2, textAlign: 'center', fontWeight: 'bold' }}>
-                My Suggestion
+                {user.role === 'admin' ? 'Suggestions Dashboard' : 'My Suggestions'}
             </Typography>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -75,7 +75,7 @@ function DisplaySuggestionForm() {
             </Box>
 
             {
-                user && suggestionFormList.map((suggestionForm, i) => {
+                user.role == "user" && suggestionFormList.map((suggestionForm, i) => {
                     return (
                         user.id === suggestionForm.userId && (
                             <Grid item xs={12} md={6} lg={4} key={suggestionForm.id}>
