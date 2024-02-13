@@ -249,6 +249,13 @@ function UserProfile() {
                           </MDBListGroupItem>
                         </Link>
 
+                        <Link to={`/viewpayments`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                            <MDBIcon fas icon="history" style={{ color: '#333333' }} />
+                            <MDBCardText>View Payments</MDBCardText>
+                          </MDBListGroupItem>
+                        </Link>
+
                         <Link to={`/displaySuggestionForm`} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
                             <MDBIcon far icon="lightbulb" style={{ color: '#333333' }} />

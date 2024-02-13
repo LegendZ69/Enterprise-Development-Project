@@ -108,17 +108,7 @@ function RatingsAndReviews() {
                 </Typography>
             ) : (
                 <Box>
-                    {/* <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                        Activity Name: integrate with team member for part 2
-                    </Typography>
-                    <Box sx={{ display: 'flex', mb: 2 }} color="text.secondary">
-                        <AccessTime fontSize='small' />
-                        <Typography variant='body2'>
-                            Booking Date{dayjs(booking.createdAt).format(global.datetimeFormat)}: integrate with team member for part 2
-                        </Typography>
-                    </Box> */}
-
-                        <Box component="form" onSubmit={formik.handleSubmit}>
+                    <Box component="form" onSubmit={formik.handleSubmit}>
                         <Rating
                             name="rating"
                             size='large'
@@ -128,7 +118,7 @@ function RatingsAndReviews() {
                                 formik.setFieldValue('rating', newValue); // Update formik value
                             }}
                             fullWidth
-                                // multiline minRows={2}
+                            // multiline minRows={2}
                             label="Rating"
                             error={formik.touched.rating && Boolean(formik.errors.rating)}
                             helperText={formik.touched.rating && formik.errors.rating}

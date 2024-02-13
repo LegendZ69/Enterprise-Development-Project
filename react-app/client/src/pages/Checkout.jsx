@@ -193,6 +193,7 @@ function Checkout() {
                     <TextField
                         label="Coupon Name"
                         value={couponName}
+                        
                         onChange={(e) => setCouponName(e.target.value)}
                     />
                     <Box mt={2}>

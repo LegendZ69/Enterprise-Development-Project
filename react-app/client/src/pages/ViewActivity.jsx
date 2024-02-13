@@ -8,8 +8,8 @@ import LeisureIcon from '@mui/icons-material/BeachAccess';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EventIcon from '@mui/icons-material/Event';
 import { DatePicker } from '@mui/x-date-pickers';
-import { LocalizationProvider } from '@mui/x-date-pickers'; 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; 
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 // import 'dayjs/locale/en-sg';
 import http from '../http';
@@ -53,13 +53,13 @@ function ViewActivity() {
       .catch((error) => {
         console.error('Error fetching activity:', error.message);
       });
-    
+
     getRatingsAndReviews();
 
   }, [id]);
 
   window.initMap = () => {
-   
+
     console.log('Function');
     const map = new window.google.maps.Map(document.getElementById('map'), {
       center: { lat: parseFloat(activity.latitude), lng: parseFloat(activity.longitude) },
@@ -71,42 +71,42 @@ function ViewActivity() {
       map,
       title: activity.title,
     });
-  
+
   };
-  
-  
-
-// new code
-useEffect(() => {
-if (activity && !googleScriptLoaded) {
-  // Load Google Maps API script
-  const googleMapsScript = document.createElement('script');
-  googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBKhaM1vsmsMJEd0-8F9u4-typ3ABA3eKw&libraries=places&callback=initMap`; // Replace YOUR_API_KEY with your actual API key
-  googleMapsScript.onload = () => {
-    console.log('Google Maps API script loaded successfully');
-    setGoogleScriptLoaded(true);
-  };
-  googleMapsScript.onerror = () => {
-    console.error('Error loading Google Maps API script');
-  };
-  window.document.body.appendChild(googleMapsScript);
-}
-}, [activity, googleScriptLoaded]);
 
 
 
-useEffect(() => {
-if (googleScriptLoaded && activity) {
-  // Call the initMap function once the Google Maps API script has been loaded
-  console.log('Called');
+  // new code
+  useEffect(() => {
+    if (activity && !googleScriptLoaded) {
+      // Load Google Maps API script
+      const googleMapsScript = document.createElement('script');
+      googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBKhaM1vsmsMJEd0-8F9u4-typ3ABA3eKw&libraries=places&callback=initMap`; // Replace YOUR_API_KEY with your actual API key
+      googleMapsScript.onload = () => {
+        console.log('Google Maps API script loaded successfully');
+        setGoogleScriptLoaded(true);
+      };
+      googleMapsScript.onerror = () => {
+        console.error('Error loading Google Maps API script');
+      };
+      window.document.body.appendChild(googleMapsScript);
+    }
+  }, [activity, googleScriptLoaded]);
 
-  window.initMap();
-}
-}, [googleScriptLoaded, activity]);
+
+
+  useEffect(() => {
+    if (googleScriptLoaded && activity) {
+      // Call the initMap function once the Google Maps API script has been loaded
+      console.log('Called');
+
+      window.initMap();
+    }
+  }, [googleScriptLoaded, activity]);
 
   const handleBookingDateChange = (date) => {
     setBookingDate(date);
-};
+  };
 
 
   const handleQuantityChange = (event) => {
@@ -131,7 +131,7 @@ if (googleScriptLoaded && activity) {
         const newBookingId = res.data.id;
         console.log('Booking successful:', res.data);
         toast.success('Activity added to cart');
-        
+
       })
       .catch((error) => {
         console.error('Booking failed:', error.message);
@@ -146,7 +146,7 @@ if (googleScriptLoaded && activity) {
 
 
 
-  
+
 
   const { user } = useContext(UserContext);
 
@@ -154,7 +154,7 @@ if (googleScriptLoaded && activity) {
     setSearch(e.target.value);
   };
 
-  
+
 
   const searchRatingsAndReviews = () => {
     http.get(`/ratingsAndReviews?search=${search}`).then((res) => {
@@ -264,32 +264,32 @@ if (googleScriptLoaded && activity) {
 
             {/* Booking Date Picker */}
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-sg'>
-                            <DatePicker
-                                sx={{ width: '100%' }}
-                                margin="dense"
-                                label="Select Booking Date"
-                                name="bookingDate"
-                                value={bookingDate}
-                                onChange={handleBookingDateChange}
-                                onBlur={handleBookingDateChange}
-                                renderInput={(params) => <TextField {...params} sx={{ mb: 2 }} />}
-                            />
-                        </LocalizationProvider>
+              <DatePicker
+                sx={{ width: '100%' }}
+                margin="dense"
+                label="Select Booking Date"
+                name="bookingDate"
+                value={bookingDate}
+                onChange={handleBookingDateChange}
+                onBlur={handleBookingDateChange}
+                renderInput={(params) => <TextField {...params} sx={{ mb: 2 }} />}
+              />
+            </LocalizationProvider>
 
             {/* Time Slot Dropdown */}
             <TextField
-  select
-  label="Select Time Slot"
-  value={selectedTimeSlot || ''}
-  onChange={handleTimeSlotChange}
-  sx={{ width: '100%', mb: 2 }}
->
-  {timeSlotsList.map((slot, index) => (
-    <MenuItem key={index} value={slot.startTime + '-' + slot.endTime}>
-      {dayjs(slot.startTime).format('HH:mm')} - {dayjs(slot.endTime).format('HH:mm')}
-    </MenuItem>
-  ))}
-</TextField>
+              select
+              label="Select Time Slot"
+              value={selectedTimeSlot || ''}
+              onChange={handleTimeSlotChange}
+              sx={{ width: '100%', mb: 2 }}
+            >
+              {timeSlotsList.map((slot, index) => (
+                <MenuItem key={index} value={slot.startTime + '-' + slot.endTime}>
+                  {dayjs(slot.startTime).format('HH:mm')} - {dayjs(slot.endTime).format('HH:mm')}
+                </MenuItem>
+              ))}
+            </TextField>
 
 
             {/* Buttons Container */}
@@ -344,90 +344,52 @@ if (googleScriptLoaded && activity) {
         </Link>
       </Box>
 
-      {/* {
-        ratingsAndReviewsList.map((ratingsAndReviews, i) => (
-          <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
-            <Card>
-              <CardContent>
-                <Box sx={{ display: 'flex' }}>
-                  <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                    {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
-                  </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                  <AccountCircle />
-                  <Typography sx={{ mr: 1 }}>
-                    {ratingsAndReviews.user?.name}
-                  </Typography>
-                  <AccessTime fontSize='small' />
-                  <Typography variant='body2'>
-                    {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
-                  <Rating value={ratingsAndReviews.rating} readOnly />
-                </Box>
-                <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                  {ratingsAndReviews.review}
-                </Typography>
-                {
-                  ratingsAndReviews.imageFile && (
-                    <Box className="aspect-ratio-container">
-                      <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
-                    </Box>
-                  )
-                }
-              </CardContent>
-            </Card>
-          </Grid>
-        ))
-      } */}
-
       {
-        ratingsAndReviewsList.map((ratingsAndReviews, i) => (
-          // activity.id === ratingsAndReviews.activityId && (
-            <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
-                      {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
-                    </Typography>
-                  </Box>
+        ratingsAndReviewsList.length === 0 ? (
+          <Typography variant="body1" sx={{ textAlign: 'center' }}>
+            No reviews yet.
+          </Typography>
+        ) :
+          (
+            ratingsAndReviewsList.map((ratingsAndReviews, i) => (
+              <Grid item xs={12} md={6} lg={4} key={ratingsAndReviews.id}>
+                <Card>
+                  <CardContent>
+                    <Box sx={{ display: 'flex' }}>
+                      <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>
+                        {ratingsAndReviews.firstName} {ratingsAndReviews.lastName}
+                      </Typography>
+                    </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
-                    <AccountCircle />
-                    <Typography sx={{ mr: 1 }}>
-                      {ratingsAndReviews.user?.name}
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }} color="text.secondary">
+                      <AccountCircle />
+                      <Typography sx={{ mr: 1 }}>
+                        {ratingsAndReviews.user?.name}
+                      </Typography>
+                      <AccessTime fontSize='small' />
+                      <Typography variant='body2'>
+                        {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
+                      <Rating value={ratingsAndReviews.rating} readOnly />
+                    </Box>
+                    <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
+                      {ratingsAndReviews.review}
                     </Typography>
-                    <AccessTime fontSize='small' />
-                    <Typography variant='body2'>
-                      {dayjs(ratingsAndReviews.createdAt).format(global.datetimeFormat)}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', mb: 1 }} color="text.secondary">
-                    <Rating value={ratingsAndReviews.rating} readOnly />
-                  </Box>
-                  <Typography gutterBottom sx={{ whiteSpace: 'pre-wrap' }}>
-                    {ratingsAndReviews.review}
-                  </Typography>
-                  {
-                    ratingsAndReviews.imageFile && (
-                      <Box className="aspect-ratio-container">
-                        <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
-                      </Box>
-                    )
-                  }
-                </CardContent>
-              </Card>
-            </Grid>
+                    {
+                      ratingsAndReviews.imageFile && (
+                        <Box className="aspect-ratio-container">
+                          <img alt="Reviews Photo" src={`${import.meta.env.VITE_FILE_BASE_URL}${ratingsAndReviews.imageFile}`}></img>
+                        </Box>
+                      )
+                    }
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
           )
-        )
-        // )
       }
-
-
       <ToastContainer />
     </Box>
   );

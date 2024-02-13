@@ -113,8 +113,6 @@ function App() {
               <Link to="/aboutUs" ><Typography>About Us</Typography></Link>
               <Link to="/faqs" ><Typography>FAQs</Typography></Link>    
               <Link to ="/Forum"><Typography>Forums</Typography></Link>
-              <Link to ="/viewpayments"><Typography>View payments</Typography></Link>
-              
               
               <Box sx={{ flexGrow: 1 }}></Box>
               {user && userProfile && (
